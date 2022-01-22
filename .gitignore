@@ -1,0 +1,10 @@
+data/
+*.egg-info
+__pycache__
+.idea/
+.DS_Store
+.env
+node_modules/
+static/
+staticfiles/
+*.sqlite3

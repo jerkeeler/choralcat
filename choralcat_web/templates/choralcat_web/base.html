@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}choralcat{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bundle.css' %}">
+</head>
+<body>
+    {% include "choralcat_web/_navbar.html" %}
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'bundle.js' %}"></script>
+</body>
+</html>
