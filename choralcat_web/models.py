@@ -13,6 +13,8 @@ class Person(UserModel):
     birth = models.DateField(null=True, blank=True)
     death = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True)
+    poc = models.BooleanField(default=False)
+    non_male_identifying = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["last_name", "first_name"]
@@ -44,6 +46,10 @@ class Instrument(SimpleModel):
     pass
 
 
+class Topic(SimpleModel):
+    pass
+
+
 class Tag(SimpleModel):
     value = models.CharField(max_length=VARCHAR_LENGTH, blank=True, null=True)
 
@@ -68,6 +74,7 @@ class Composition(UserModel):
     categories = models.ManyToManyField(Category, blank=True)
     accompaniment = models.ManyToManyField(Instrument, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
+    topics = models.ManyToManyField(Topic, blank=True)
 
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)], blank=True, null=True
@@ -89,6 +96,7 @@ class Program(UserModel):
     compositions = models.ManyToManyField(Composition, blank=True)
     ordering = models.JSONField(default=dict, blank=True)
     season = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
+    topics = models.ManyToManyField(Topic, blank=True)
 
     class Meta:
         ordering = ["season", "title"]

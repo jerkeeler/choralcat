@@ -1,0 +1,20 @@
+{% extends "choralcat_web/base.html" %}
+
+{% load static %}
+{% block content %}
+  <div class="flex justify-center">
+    <div class="w-64 py-4">
+      {% if user.is_authenticated %}
+        <p>Already logged in</p>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="flex justify-center mt-2">
+            {% include "partials/button.html" with type="submit" text="Log In" %}
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

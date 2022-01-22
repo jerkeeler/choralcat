@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/forms": "^0.4.0",
     "alpinejs": "^3.8.1",
     "autoprefixer": "^10.4.2",
     "css-loader": "^6.5.1",
