@@ -71,7 +71,7 @@ class CatalogView(LoginRequiredMixin, ListView):
         return context
 
 
-class CompositionDetailView(DetailView, LoginRequiredMixin):
+class CompositionDetailView(LoginRequiredMixin, DetailView):
     model = Composition
     context_object_name = "composition"
     template_name = "choralcat_web/catalog/composition_detail.html"
@@ -99,37 +99,41 @@ composition_editable_fields = [
 ]
 
 
-class CompositionCreateView(UserCreateView, LoginRequiredMixin):
+class CompositionCreateView(LoginRequiredMixin, UserCreateView):
     model = Composition
     fields = composition_editable_fields
     template_name = "choralcat_web/catalog/composition_create.html"
 
 
-class CompositionUpdateView(UserUpdateView, LoginRequiredMixin):
+class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Composition
     fields = composition_editable_fields
     template_name = "choralcat_web/catalog/composition_edit.html"
 
 
-class ProgramListView(ListView, LoginRequiredMixin):
+class ProgramListView(LoginRequiredMixin, ListView):
     model = Program
     template_name = "choralcat_web/program/programs.html"
     context_object_name = "programs"
 
 
-class ProgramDetailView(DetailView, LoginRequiredMixin):
+class ProgramDetailView(LoginRequiredMixin, DetailView):
     model = Program
     template_name = "choralcat_web/program/program_detail.html"
     context_object_name = "program"
 
 
-class ProgramCreateView(UserCreateView, LoginRequiredMixin):
+class ProgramCreateView(LoginRequiredMixin, UserCreateView):
     model = Program
     fields = ["title", "season"]
     template_name = "choralcat_web/program/program_create.html"
 
+    def form_valid(self, form):
+        form.instance.ordering = {"compositions": []}
+        return super().form_valid(form)
 
-class ProgramUpdateView(UserUpdateView, LoginRequiredMixin):
+
+class ProgramUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Program
     fields = ["title", "season"]
     template_name = "choralcat_web/program/program_edit.html"
@@ -192,19 +196,19 @@ def _render_program_catalog(request, program):
     )
 
 
-class PersonListView(ListView, LoginRequiredMixin):
+class PersonListView(LoginRequiredMixin, ListView):
     model = Person
     template_name = "choralcat_web/people/persons.html"
     context_object_name = "persons"
 
 
-class PersonDetailView(DetailView, LoginRequiredMixin):
+class PersonDetailView(LoginRequiredMixin, DetailView):
     model = Person
     template_name = "choralcat_web/people/person_detail.html"
     context_object_name = "person"
 
 
-class PersonCreateView(UserCreateView, LoginRequiredMixin):
+class PersonCreateView(LoginRequiredMixin, UserCreateView):
     model = Person
     fields = [
         "first_name",
@@ -218,7 +222,7 @@ class PersonCreateView(UserCreateView, LoginRequiredMixin):
     template_name = "choralcat_web/people/person_create.html"
 
 
-class PersonUpdateView(UserUpdateView, LoginRequiredMixin):
+class PersonUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Person
     fields = [
         "first_name",
