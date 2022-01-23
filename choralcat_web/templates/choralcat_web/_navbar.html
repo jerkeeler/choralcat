@@ -1,6 +1,6 @@
 {% load static %}
 <!-- This example requires Tailwind CSS v2.0+ -->
-<nav class="bg-white border-b-2 border-primary" x-data="{ open: false }">
+<nav class="bg-white shadow border-b-2 border-primary" x-data="{ open: false }">
   <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
     <div class="relative flex items-center justify-between h-16">
       <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -52,16 +52,16 @@
 
             <a href="{% url 'catalog' %}"
                class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Catalog</a>
+            <a href="{% url 'persons' %}"
+               class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">People</a>
             <a href="{% url 'programs' %}"
                class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Programs</a>
-            <a href="{% url 'persons' %}"
-               class="text-gray-700 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Persons</a>
           </div>
         </div>
       </div>
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
         {% if user.is_authenticated %}
-          <span class="mr-2">{{ user.username }}</span>
+          <span class="mr-2 hidden sm:block">{{ user.username }}</span>
           {% url 'logout' as logout_url %}
           {% include 'partials/button_link.html' with location=logout_url text="Log Out" %}
         {% else %}
@@ -80,10 +80,10 @@
 
       <a href="{% url 'catalog' %}"
          class="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Catalog</a>
-      <a href="{% url 'programs' %}"
-         class="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Programs</a>
       <a href="{% url 'persons' %}"
          class="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Persons</a>
+      <a href="{% url 'programs' %}"
+         class="text-gray-700 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Programs</a>
     </div>
   </div>
 </nav>

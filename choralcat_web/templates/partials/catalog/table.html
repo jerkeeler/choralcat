@@ -1,0 +1,29 @@
+<div class="flex flex-col mt-4">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+          <tr>
+            {% include "partials/catalog/table_header_item.html" with text="Composition" %}
+            {% include "partials/catalog/table_header_item.html" with text="Category" %}
+            {% include "partials/catalog/table_header_item.html" with text="Topics" %}
+            {% include "partials/catalog/table_header_item.html" with text="Voicing" %}
+            {% include "partials/catalog/table_header_item.html" with text="Key" %}
+            {% include "partials/catalog/table_header_item.html" with text="Tags" %}
+            {% include "partials/catalog/table_header_item.html" with text="Duration" %}
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Add to Program</span>
+            </th>
+          </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+          {% for composition in compositions %}
+            {% include "partials/catalog/table_row.html" %}
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

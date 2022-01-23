@@ -1,0 +1,11 @@
+<div class="bg-white shadow overflow-hidden sm:rounded-md">
+  <ul role="list" class="divide-y divide-gray-200 sortable"
+      hx-trigger="end"
+      hx-post="{% url 'program_reorder' program.slug %}"
+      hx-include="[name='slug']"
+      hx-target="#program-catalog">
+    {% for composition in program.compositions_ordered %}
+      {% include "partials/program/list_item.html" %}
+    {% endfor %}
+  </ul>
+</div>

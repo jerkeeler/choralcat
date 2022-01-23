@@ -1,12 +1,10 @@
 // tailwind.config.js
 module.exports = {
-  purge: {
-    content: [
-      './choralcat_core/**/*.html',
-      './choralcat_web/**/*.html',
-    ],
-  },
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    './choralcat_core/**/*.html',
+    './choralcat_web/**/*.{html,py}',
+  ],
+  darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {
@@ -50,7 +48,6 @@ module.exports = {
       }
     },
   },
-  variants: {},
   plugins: [
     require('@tailwindcss/forms'),
   ],

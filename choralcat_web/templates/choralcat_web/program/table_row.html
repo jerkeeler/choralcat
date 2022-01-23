@@ -1,0 +1,16 @@
+<tr>
+  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+    <a href="{% url 'program_detail' program.slug %}">
+      {{ program.title }}
+    </a>
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    {{ program.season }}
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    {{ program.updated_at }}
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    <a href="{% url 'program_edit' program.slug %}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+  </td>
+</tr>

@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.shortcuts import reverse
 
 from choralcat_core.consts import VARCHAR_LENGTH
 from choralcat_core.fields import AutoSlugField
@@ -8,7 +9,7 @@ from choralcat_core.models import UserModel
 
 class Person(UserModel):
     first_name = models.CharField(max_length=VARCHAR_LENGTH)
-    name_slug = AutoSlugField(populated_from="first_name")
+    slug = AutoSlugField(populated_from="first_name")
     last_name = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     birth = models.DateField(null=True, blank=True)
     death = models.DateField(null=True, blank=True)
@@ -18,11 +19,21 @@ class Person(UserModel):
 
     class Meta:
         ordering = ["last_name", "first_name"]
+        verbose_name_plural = "People"
 
     def __str__(self):
         if self.last_name:
             return f"{self.last_name}, {self.first_name} "
         return self.first_name
+
+    @property
+    def name(self):
+        if self.last_name:
+            return f"{self.last_name}, {self.first_name} "
+        return self.first_name
+
+    def get_absolute_url(self):
+        return reverse("person_detail", kwargs={"slug": self.slug})
 
 
 class SimpleModel(UserModel):
@@ -31,6 +42,7 @@ class SimpleModel(UserModel):
     )
 
     class Meta:
+        ordering = ["value", "user"]
         abstract = True
 
     def __str__(self):
@@ -59,7 +71,7 @@ class Tag(SimpleModel):
 
 class Composition(UserModel):
     title = models.CharField(max_length=VARCHAR_LENGTH)
-    title_slug = AutoSlugField(populated_from="title")
+    slug = AutoSlugField(populated_from="title")
     composers = models.ManyToManyField(Person, related_name="composers", blank=True)
     arrangers = models.ManyToManyField(Person, related_name="arrangers", blank=True)
     duration = models.DurationField(null=True, blank=True)
@@ -89,10 +101,24 @@ class Composition(UserModel):
     def __str__(self):
         return self.title
 
+    @property
+    def duration_mmss(self):
+        if not self.duration:
+            return ""
+        sec = self.duration.total_seconds()
+        return f"{int(sec / 60) % 60:02d}:{int(sec % 60):02d}"
+
+    @property
+    def stars(self):
+        return range(self.rating)
+
+    def get_absolute_url(self):
+        return reverse("composition_detail", kwargs={"slug": self.slug})
+
 
 class Program(UserModel):
     title = models.CharField(max_length=VARCHAR_LENGTH)
-    title_slug = AutoSlugField(populated_from="title")
+    slug = AutoSlugField(populated_from="title")
     compositions = models.ManyToManyField(Composition, blank=True)
     ordering = models.JSONField(default=dict, blank=True)
     season = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
@@ -103,3 +129,15 @@ class Program(UserModel):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("program_detail", kwargs={"slug": self.slug})
+
+    @property
+    def duration(self):
+        return self.compositions.aggregate(models.Sum("duration"))["duration__sum"]
+
+    @property
+    def compositions_ordered(self):
+        slug_to_comp = {c.slug: c for c in self.compositions.all()}
+        return [slug_to_comp[slug] for slug in self.ordering["compositions"]]

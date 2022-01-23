@@ -5,8 +5,13 @@ from .utils import gen_token
 
 
 class TimeStampMixin(object):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        abstract = True
+
+
+class CreatedByMixin(object):
+    class Meta:
+        abstract = True
 
 
 class TokenModel(models.Model):
@@ -30,11 +35,10 @@ class TokenModel(models.Model):
         super(TokenModel, self).save(*args, **kwargs)
 
 
-class CreatedByMixin(object):
+class UserModel(TokenModel):
     created_by = models.ForeignKey(
         "auth.User",
         on_delete=models.SET_NULL,
-        editable=False,
         blank=True,
         null=True,
         related_name="%(app_label)s_%(class)s_creator_related",
@@ -43,20 +47,13 @@ class CreatedByMixin(object):
     updated_by = models.ForeignKey(
         "auth.User",
         on_delete=models.SET_NULL,
-        editable=False,
         blank=True,
         null=True,
         related_name="%(app_label)s_%(class)s_updater_related",
         related_query_name="%(app_label)s_%(class)ss_updater",
     )
-
-
-class StandardModel(TokenModel, TimeStampMixin):
-    class Meta:
-        abstract = True
-
-
-class UserModel(StandardModel, CreatedByMixin):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
 
     class Meta:
