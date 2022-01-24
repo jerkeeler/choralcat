@@ -47,9 +47,9 @@
     {{ composition.voicing }}
   </td>
   <td class="px-6 py-4 whitespace-nowrap">
-    {% if composition.starting_key or composition.ending_key %}
-      {{ composition.starting_key }}/{{ composition.ending_key }}
-    {% endif %}
+    {% if composition.score_link %}
+    <a href="{{ composition.score_link }}" class="text-indigo-600">link</a>
+  {% endif %}
   </td>
   <td class="px-6 py-4">
     {% for tag in composition.tags.all %}

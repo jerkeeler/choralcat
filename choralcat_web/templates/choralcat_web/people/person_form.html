@@ -1,0 +1,95 @@
+{% csrf_token %}
+
+{{ form.non_field_errors }}
+<div class="space-y-8 divide-y divide-gray-200">
+  <div>
+    <div>
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Person
+      </h3>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+      <div class="sm:col-span-3">
+        {{ form.first_name.errors }}
+        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          First name
+        </label>
+        <div class="mt-1">
+          {{ form.first_name }}
+        </div>
+      </div>
+
+      {{ form.last_name.errors }}
+      <div class="sm:col-span-3">
+        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          Last name
+        </label>
+        <div class="mt-1">
+          {{ form.last_name }}
+        </div>
+      </div>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+      {{ form.birth.error }}
+      <div class="sm:col-span-3">
+        <label for="{{ form.birth.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          Birth date
+        </label>
+        <div class="mt-1">
+          {{ form.birth }}
+        </div>
+      </div>
+
+      {{ form.death.errors }}
+      <div class="sm:col-span-3">
+        <label for="{{ form.death.id_for_label }}" class="block text-sm font-medium text-gray-700">
+          Death date
+        </label>
+        <div class="mt-1">
+          {{ form.death }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pt-4">
+  <fieldset>
+    {#    <legend class="text-base font-medium text-gray-900">#}
+    {#      By Email#}
+    {#    </legend>#}
+    <div class="mt-4 space-y-4">
+      <div class="relative flex items-start">
+        {{ form.poc.errors }}
+        <div class="flex items-center h-5">
+          {{ form.poc }}
+        </div>
+        <div class="ml-3 text-sm">
+          <label for="{{ form.poc.id_for_label }}" class="font-medium text-gray-700">Person of color</label>
+        </div>
+      </div>
+      <div class="relative flex items-start">
+        {{ form.non_male_identifying.errors }}
+        <div class="flex items-center h-5">
+          {{ form.non_male_identifying }}
+        </div>
+        <div class="ml-3 text-sm">
+          <label for="{{ form.non_male_identifying.id_for_label }}" class="font-medium text-gray-700">Non-male
+            identifying</label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+<div class="pt-4">
+  <div class="sm:col-span-6">
+    {{ form.bio.errors }}
+    <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700">
+      Bio
+    </label>
+    <div class="mt-1">
+      {{ form.bio }}
+    </div>
+  </div>
+</div>
+
+

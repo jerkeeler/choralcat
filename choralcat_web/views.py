@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
 
 from choralcat_core.views import UserCreateView, UserUpdateView
+from .forms import PersonForm, ProgramForm
 from .models import Composition, Person, Program, Tag, Category, Topic
 
 
@@ -125,7 +126,7 @@ class ProgramDetailView(LoginRequiredMixin, DetailView):
 
 class ProgramCreateView(LoginRequiredMixin, UserCreateView):
     model = Program
-    fields = ["title", "season"]
+    form_class = ProgramForm
     template_name = "choralcat_web/program/program_create.html"
 
     def form_valid(self, form):
@@ -135,7 +136,7 @@ class ProgramCreateView(LoginRequiredMixin, UserCreateView):
 
 class ProgramUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Program
-    fields = ["title", "season"]
+    form_class = ProgramForm
     template_name = "choralcat_web/program/program_edit.html"
 
 
@@ -210,27 +211,11 @@ class PersonDetailView(LoginRequiredMixin, DetailView):
 
 class PersonCreateView(LoginRequiredMixin, UserCreateView):
     model = Person
-    fields = [
-        "first_name",
-        "last_name",
-        "birth",
-        "death",
-        "poc",
-        "non_male_identifying",
-        "bio",
-    ]
+    form_class = PersonForm
     template_name = "choralcat_web/people/person_create.html"
 
 
 class PersonUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Person
-    fields = [
-        "first_name",
-        "last_name",
-        "birth",
-        "death",
-        "poc",
-        "non_male_identifying",
-        "bio",
-    ]
+    form_class = PersonForm
     template_name = "choralcat_web/people/person_edit.html"
