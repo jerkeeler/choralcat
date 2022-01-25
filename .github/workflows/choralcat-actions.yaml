@@ -1,7 +1,9 @@
-name: ChoralCat Actions
+name: ChoralCat CI
 on: [push]
+env:
+  DEBUG: True
 jobs:
-  Run-Tests:
+  test:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -12,7 +14,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.10
+          python-version: 3.10.2
       - name: Setup node
         uses: actions/setup-node@v2
         with:
@@ -24,4 +26,10 @@ jobs:
         run: make build
       - name: Run tests
         run: make test
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - run: echo "🥳 Successfully deployed ChoralCat!"
 
