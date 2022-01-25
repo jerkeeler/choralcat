@@ -50,14 +50,13 @@ jobs:
       - name: Transfer static files
 
         run: scp staticfiles.tar ${{secrets.SSH_USER}}@${{ secrets.SSH_HOST }}:/apps/choralcat
-# This must be commented out to bootstrap the process and have the deploy script on the host
-#      - name: Run deploy script on host
-#        uses: appleboy/ssh-action@v0.1.4
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          script: /apps/choralcat/deploy.sh ${{ github.sha }}
-
-
-
+      # The following step must be commented out when setting up the CI/CD in order
+      # to bootstrap the process, since the initial repo might not have the deploy
+      # script.
+      - name: Run deploy script on host
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: /apps/choralcat/deploy.sh ${{ github.sha }}
