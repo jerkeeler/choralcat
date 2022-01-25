@@ -19,6 +19,8 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: make install
+      - name: Build static files
+        run: make build
       - name: Run tests
         run: make test
       - name: Bundle static files
