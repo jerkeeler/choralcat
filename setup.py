@@ -13,5 +13,6 @@ setup(
         "black",
         "django-stubs",
         "ipython",
+        "fabric",
     ],
 )

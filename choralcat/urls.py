@@ -13,11 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
+from django.views.defaults import page_not_found
 
 urlpatterns = [
     path("", include("choralcat_web.urls")),
     path("admin/", admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [path("404/", page_not_found, {"exception": Exception("Example")})]
