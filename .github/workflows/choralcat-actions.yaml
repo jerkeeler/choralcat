@@ -6,9 +6,6 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Setup python
@@ -22,14 +19,45 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: make install
-      - name: Build js/css files
+      - name: Build static files
         run: make build
       - name: Run tests
         run: make test
+      - name: Bundle static files
+        run: tar -cvf staticfiles.tar staticfiles/
+      - name: Store static files
+        uses: actions/upload-artifact@v2
+        with:
+          name: staticfiles
+          path: staticfiles.tar
   deploy:
-    runs-on: ubuntu-20.04
     needs: test
+    concurrency: deploy-prod
+    runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/master'
     steps:
-      - run: echo "🥳 Successfully deployed ChoralCat!"
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: dummy_value
+      - name: Add known hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Download static files
+        uses: actions/download-artifact@v2
+        with:
+          name: staticfiles
+      - name: Transfer static files
+
+        run: scp staticfiles.tar ${{secrets.SSH_USER}}@${{ secrets.SSH_HOST }}:/apps/choralcat
+# This must be commented out to bootstrap the process and have the deploy script on the host
+#      - name: Run deploy script on host
+#        uses: appleboy/ssh-action@v0.1.4
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          script: /apps/choralcat/deploy.sh ${{ github.sha }}
+
+
 
