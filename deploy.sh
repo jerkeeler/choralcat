@@ -7,9 +7,9 @@ echo "Checking out commit $1..."
 git checkout $1
 # Install new dependencies and migrate database
 echo "Installing python dependencies..."
-pip install -e .
+.venv/bin/pip install -e .
 echo "Migrating the database..."
-python3 manage.py migrate
+.venv/bin/python manage.py migrate
 # Untar staticfiles and delete tarball
 echo "Unbundling static files..."
 tar -xvf staticfiles.tar staticfiles/

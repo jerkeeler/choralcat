@@ -4,7 +4,7 @@ install:
 
 build:
 	npm run prod
-	python manage.py collectstatic
+	DEBUG=True python manage.py collectstatic --noinput
 
 test:
 	python manage.py test

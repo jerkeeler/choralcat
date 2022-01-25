@@ -1,7 +1,7 @@
 name: ChoralCat CI
 on: [push]
 env:
-  DEBUG: True
+  DEBUG: 'True'
 jobs:
   test:
     runs-on: ubuntu-20.04
