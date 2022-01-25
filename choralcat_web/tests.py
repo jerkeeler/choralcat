@@ -1,3 +1,6 @@
 from django.test import TestCase
 
-# Create your tests here.
+
+class BadTest(TestCase):
+    def test_fail(self):
+        self.assertTrue(False)
