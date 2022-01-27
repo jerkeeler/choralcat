@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
 
 from choralcat_core.views import UserCreateView, UserUpdateView
-from .forms import PersonForm, ProgramForm
+from .forms import CompositionForm, PersonForm, ProgramForm
 from .models import Composition, Person, Program, Tag, Category, Topic
 
 
@@ -78,37 +78,15 @@ class CompositionDetailView(LoginRequiredMixin, DetailView):
     template_name = "choralcat_web/catalog/composition_detail.html"
 
 
-composition_editable_fields = [
-    "title",
-    "composers",
-    "arrangers",
-    "duration",
-    "starting_key",
-    "ending_key",
-    "time_period",
-    "language",
-    "number_of_voices",
-    "voicing",
-    "categories",
-    "accompaniment",
-    "tags",
-    "topics",
-    "rating",
-    "score_link",
-    "notes",
-    "edition_notes",
-]
-
-
 class CompositionCreateView(LoginRequiredMixin, UserCreateView):
     model = Composition
-    fields = composition_editable_fields
+    form_class = CompositionForm
     template_name = "choralcat_web/catalog/composition_create.html"
 
 
 class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
     model = Composition
-    fields = composition_editable_fields
+    form_class = CompositionForm
     template_name = "choralcat_web/catalog/composition_edit.html"
 
 

@@ -1,7 +1,13 @@
 {% extends "choralcat_web/base.html" %}
 {% block main %}
-  <form action="{% url 'composition_new' %}" method="post">
+  <form action="{% url 'composition_new' %}" method="post" class="space-y-8 divide-gray-200">
     {% include "choralcat_web/catalog/catalog_form.html"  %}
-    <input type="submit" value="Create">
+    <div class="pt-5">
+      <div class="flex justify-end">
+        {% url 'catalog' as back_url %}
+        {% include "partials/forms/cancel_button.html" with label="Canel" url=back_url %}
+        {% include "partials/forms/action_button.html" with label="Create" %}
+      </div>
+    </div>
   </form>
 {% endblock %}
