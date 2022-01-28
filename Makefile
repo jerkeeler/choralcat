@@ -1,5 +1,5 @@
 requirements:
-	pip-compile --generate-hashes requirements.in
+	pip-compile requirements.in --generate-hashes --allow-unsafe
 
 install:
 	pip install -r requirements.txt
