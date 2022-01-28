@@ -1,3 +1,6 @@
+requirements:
+	pip-compile --generate-hashes requirements.in
+
 install:
 	pip install -r requirements.txt
 	npm ci
