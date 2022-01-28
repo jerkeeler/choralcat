@@ -145,7 +145,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CELERY CONFIG
 REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
 REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
-REDIS_PASSWORD = os.environ["REDIS_PASSWORD"]
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
 
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 CELERY_RESULT_BACKEND = "django-db"
