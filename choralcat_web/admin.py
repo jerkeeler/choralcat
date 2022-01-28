@@ -1,6 +1,20 @@
 from django.contrib import admin
 
-from .models import Person, Category, Instrument, Tag, Composition, Program, Topic
+from .models import (
+    Person,
+    Category,
+    Instrument,
+    Tag,
+    Composition,
+    Program,
+    Topic,
+    UserProfile,
+)
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "timezone")
 
 
 @admin.register(Person)

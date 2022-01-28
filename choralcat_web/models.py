@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.shortcuts import reverse
@@ -5,6 +6,13 @@ from django.shortcuts import reverse
 from choralcat_core.consts import VARCHAR_LENGTH
 from choralcat_core.fields import AutoSlugField
 from choralcat_core.models import UserModel
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
+    )
+    timezone = models.CharField(max_length=VARCHAR_LENGTH, default=settings.TIME_ZONE)
 
 
 class Person(UserModel):

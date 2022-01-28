@@ -8,6 +8,9 @@ setup(
         "Django>=4,<5",
         "python-dotenv>=0.19,<1",
         "django-extensions",
+        "celery[redis]",
+        "django-celery-results",
+        "django-celery-beat",
         # Dev dependencies, version shouldn't matter
         "mypy",
         "black",

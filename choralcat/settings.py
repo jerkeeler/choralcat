@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "django_celery_results",
+    "django_celery_beat",
     "choralcat_core.apps.ChoralcatCoreConfig",
     "choralcat_web.apps.ChoralcatWebConfig",
 ]
@@ -56,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "choralcat_core.middleware.TimezoneMiddleware",
 ]
 
 ROOT_URLCONF = "choralcat.urls"
@@ -138,3 +141,12 @@ if DEBUG:
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CELERY CONFIG
+REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
+REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
+REDIS_PASSWORD = os.environ["REDIS_PASSWORD"]
+
+CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
