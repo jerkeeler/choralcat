@@ -16,5 +16,7 @@ tar -xvf staticfiles.tar staticfiles/
 rm staticfiles.tar
 # Restart gunicorn
 echo "Restarting services..."
-sudo systemctl restart gunicorn
+sudo systemctl restart gunicorn.service
+sudo systemctl restart celery.service
+sudo systemctl restart celerybeat.service
 echo "Deploy complete!"

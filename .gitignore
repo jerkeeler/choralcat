@@ -9,3 +9,4 @@ __pycache__
 /staticfiles
 *.sqlite3
 .venv/
+/backups
