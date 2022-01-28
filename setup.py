@@ -11,6 +11,7 @@ setup(
         "celery[redis]",
         "django-celery-results",
         "django-celery-beat",
+        "gunicorn",
         # Dev dependencies, version shouldn't matter
         "mypy",
         "black",
