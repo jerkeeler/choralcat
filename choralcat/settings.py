@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS", "localhost")]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definition
@@ -149,7 +149,10 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
-ADMINS = [(os.environ.get("ADMIN_NAME"), os.environ.get("ADMIN_EMAIL"))]
+if os.environ.get("ADMIN_NAMES") and os.environ.get("ADMIN_EMAILS"):
+    ADMIN_NAMES = os.environ.get("ADMIN_NAMES").split(",")
+    ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS").split(",")
+    ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
 
 # CELERY CONFIG
 REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
