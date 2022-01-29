@@ -11,8 +11,8 @@ create programs of music it.
 ### Requirements
 
 - Redis
-  - Ensure that authentication is enabled and password is generated, but the password in the .env file
-- Python3.10
+  - Ensure that authentication is enabled and password is generated, put the password in the .env file
+- Python 3.10
 - Node v14
 
 ### Setup
