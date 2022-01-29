@@ -23,10 +23,11 @@ create programs of music it.
 4. Copy `.env.example` to `.env` and fill in actual values
    - All example values should be fine for local development, except if you want to test celery. To test celery locally you must provide a valid REDIS_PASSWORD.
 5. Migrate your database `./manage migrate`
-6. Create a superuser for testing `./manage createsuperuser`
+6. Load fixture data `make load_testdata`
 7. Start a separate terminal session and start the JS/CSS development with `npm run dev`
 8. Run the Django development server with `./manage.py runserver`
 9. Enjoy and start development! Try visiting [localhost:8000](http://localhost:8000) and explore the app!
+   - Feel free to use `test_user` with `testpassword` (from fixtures) or create a super user with `./manage.py createsuperuser`
 
 ### Code Formatting
 

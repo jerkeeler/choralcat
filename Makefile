@@ -11,3 +11,6 @@ build:
 
 test:
 	python manage.py test
+
+load_testdata:
+	python manage.py loaddata choralcat_web/fixtures/*
