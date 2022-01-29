@@ -1,7 +1,11 @@
+import logging
+
 from django.db import models
 
 from .consts import VARCHAR_LENGTH
 from .utils import gen_token
+
+logger = logging.getLogger(__name__)
 
 
 class TimeStampMixin(object):
@@ -31,6 +35,9 @@ class TokenModel(models.Model):
             poss_token = gen_token()
             while len(type(self).objects.filter(token=poss_token)) > 0:
                 poss_token = gen_token()
+            logger.debug(
+                f"Created new token {poss_token} for model {self.__class__.__name__}"
+            )
             self.token = poss_token
         super(TokenModel, self).save(*args, **kwargs)
 

@@ -58,3 +58,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: /apps/choralcat/deploy.sh ${{ github.sha }}
       - run: echo '🥳 Deploy complete!'
+      - name: Send deploy email
+        uses: dawidd6/action-send-mail@v3.6.0
+        with:
+          server_address: ${{ secrets.EMAIL_SERVER }}
+          server_port: ${{ secrets.EMAIL_PORT }}
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          secure: true
+          to: equal.year8534@fastmail.com
+          from:  GitHub Action - deploy
+          subject: New deploy for ${{ github.repository }}
+          body: Deploy successful for ${{ github.repository }}, deployed commit ${{ github.sha }}
