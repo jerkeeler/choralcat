@@ -5,8 +5,6 @@ celery[redis]
 django-celery-results
 django-celery-beat
 gunicorn
-setuptools
-pip
 # Dev dependencies version shouldn't matter
 mypy
 black

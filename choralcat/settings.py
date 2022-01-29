@@ -88,7 +88,7 @@ WSGI_APPLICATION = "choralcat.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "data", "db.sqlite3"),
     }
 }
 
@@ -159,3 +159,71 @@ REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
+LOG_LOCATION = os.environ.get(
+    "LOG_LOCATION", os.path.join("data", "logs", "application.log")
+)
+
+# If you create a new python module be sure to add it to this list of modules to
+# enable default logging
+logged_modules = ["choralcat", "choralcat_core", "choralcat_web"]
+loggers = {
+    name: {
+        "handlers": ["console", "file", "mail_admins"],
+        "level": LOG_LEVEL,
+    }
+    for name in logged_modules
+}
+loggers["django.request"] = {
+    "handlers": ["mail_admins"],
+    "level": "ERROR",
+}
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {name} {process:d} {thread:d} - {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {asctime} {name} - {message}",
+            "style": "{",
+        },
+    },
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
+            "formatter": "simple",
+            "class": "logging.StreamHandler",
+        },
+        "file": {
+            "level": "DEBUG",
+            "formatter": "verbose",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "W6",
+            "utc": True,
+            "filename": LOG_LOCATION,
+            "backupCount": 4,
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+    },
+    "loggers": loggers,
+}

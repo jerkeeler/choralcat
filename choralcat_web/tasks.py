@@ -18,7 +18,7 @@ def backup_sqlite_database():
     now = datetime.utcnow()
     backup_name = f"db_backup_{now:%Y-%m-%dT%H%M}.sqlite3"
     con = sqlite3.connect("db.sqlite3")
-    bck = sqlite3.connect(os.path.join("backups", backup_name))
+    bck = sqlite3.connect(os.path.join("data", "backups", backup_name))
     with bck:
         con.backup(bck, pages=1, progress=progress)
     bck.close()
