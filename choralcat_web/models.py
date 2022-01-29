@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -6,6 +8,8 @@ from django.shortcuts import reverse
 from choralcat_core.consts import VARCHAR_LENGTH
 from choralcat_core.fields import AutoSlugField
 from choralcat_core.models import UserModel
+
+logger = logging.getLogger(__name__)
 
 
 class UserProfile(models.Model):
@@ -147,5 +151,37 @@ class Program(UserModel):
 
     @property
     def compositions_ordered(self):
+        if self.ordering.get("compositions") is None:
+            logger.warning(f"No composition ordering was found for {self}")
+
         slug_to_comp = {c.slug: c for c in self.compositions.all()}
-        return [slug_to_comp[slug] for slug in self.ordering["compositions"]]
+        slugs = list(slug_to_comp.keys())
+        ordering = self.ordering.get("compositions", [])
+        if set(slugs) - set(ordering):
+            logger.warning(
+                f"Not all compositions were found in ordering for program {self}, defaulting to alphabetical order"
+            )
+            ordering = sorted(slugs)
+            self.ordering["compositions"] = ordering
+            self.save()
+        return [slug_to_comp[slug] for slug in ordering]
+
+    def add(self, composition: Composition):
+        logger.debug(f"Adding {composition} to program {self}")
+        self.compositions.add(composition)
+        if "compositions" not in self.ordering:
+            logger.warning("Composition ordering was uninstantiated")
+            self.ordering["compositions"] = [composition.slug]
+        else:
+            self.ordering["compositions"].append(composition.slug)
+
+    def remove(self, composition: Composition):
+        logger.debug(f"Removing {composition} from program {self}")
+        self.compositions.remove(composition)
+        self.ordering["compositions"] = [
+            c for c in self.ordering["compositions"] if c != composition.slug
+        ]
+
+    def reorder(self, new_order: list[str]):
+        logger.debug(f"Reordering program {self} to {new_order}")
+        self.ordering["compositions"] = new_order

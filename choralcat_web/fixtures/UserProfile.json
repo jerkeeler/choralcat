@@ -1,0 +1,10 @@
+[
+  {
+    "model": "choralcat_web.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "timezone": "America/New_York"
+    }
+  }
+]

@@ -1,17 +1,13 @@
-{% csrf_token %}
-
 {{ form.non_field_errors }}
-<div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-  <div class="pt-8">
-    <div>
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
-        {{ title }}
-      </h3>
-    </div>
-    <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-      {% include "partials/forms/text_input.html" with field=form.title label="Title" %}
-      {% include "partials/forms/text_input.html" with field=form.season label="Season" %}
-    </div>
+<div>
+  <div>
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Program
+    </h3>
+  </div>
+  <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+    {% include "partials/forms/text_input.html" with field=form.title label="Title" %}
+    {% include "partials/forms/text_input.html" with field=form.season label="Season" %}
   </div>
 </div>
 

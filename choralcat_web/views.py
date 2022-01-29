@@ -144,12 +144,7 @@ def program_add(request, slug):
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
     logger.debug(f"Adding {composition} to program {program}")
-
-    program.compositions.add(composition)
-    if "compositions" not in program.ordering:
-        program.ordering["compositions"] = [composition.slug]
-    else:
-        program.ordering["compositions"].append(composition.slug)
+    program.add(composition)
     program.save()
     return _render_catalog_modal(request, composition_slug)
 
@@ -160,12 +155,7 @@ def program_remove(request, slug):
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
-    logger.debug(f"Removing {composition} from program {program}")
-
-    program.compositions.remove(composition)
-    program.ordering["compositions"] = [
-        c for c in program.ordering["compositions"] if c != composition.slug
-    ]
+    program.remove(composition)
     program.save()
     return _render_program(request, program)
 
@@ -184,9 +174,7 @@ def _render_program(request, program):
 def program_reorder(request, slug):
     new_ordering = request.POST.getlist("slug")
     program = get_object_or_404(Program, slug=slug)
-    logger.debug(f"Reordering program {program} to {new_ordering}")
-
-    program.ordering["compositions"] = new_ordering
+    program.reorder(new_ordering)
     program.save()
     return _render_program_catalog(request, program)
 

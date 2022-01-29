@@ -1,12 +1,15 @@
 {% extends "choralcat_web/base.html" %}
 {% block main %}
-  <form action="{% url 'program_new' %}" method="post" class="space-y-8 divide-y divide-gray-200">
-    {% include "choralcat_web/program/program_form.html" with title="New Program" %}
-    <div class="pt-5">
-      <div class="flex justify-end">
-        {% url 'programs' as back_url %}
-        {% include "partials/forms/cancel_button.html" with url=back_url label="Cancel" %}
-        {% include "partials/forms/action_button.html" with label="Create" %}
+  <form action="{% url 'program_new' %}" method="post">
+    {% csrf_token %}
+    <div class="space-y-8 divide-y divide-gray-200">
+      {{ form }}
+      <div class="pt-5">
+        <div class="flex justify-end">
+          {% url 'programs' as back_url %}
+          {% include "partials/forms/cancel_button.html" with url=back_url label="Cancel" %}
+          {% include "partials/forms/action_button.html" with label="Create" %}
+        </div>
       </div>
     </div>
   </form>

@@ -72,6 +72,10 @@ celery -A choralcat worker --loglevel=INFO
 celery -A choralcat beat -l INFO
 ```
 
+### Testing
+
+test_user password is `test_password`
+
 ## Deployment
 
 This repo is equipped with CI/CD via GitHub Actions ([view workflow](./.github/workflows/choralcat-actions.yaml)). Tests are run on every

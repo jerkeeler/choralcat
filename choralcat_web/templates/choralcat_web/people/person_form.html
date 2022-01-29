@@ -1,7 +1,5 @@
-{% csrf_token %}
-
 {{ form.non_field_errors }}
-<div class="space-y-8 divide-y divide-gray-200">
+<div>
   <div>
     <div>
       <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -17,17 +15,15 @@
       {% include "partials/forms/text_input.html" with label="Death date" field=form.death %}
     </div>
   </div>
+  <div class="pt-4">
+    <fieldset>
+      <div class="mt-4 space-y-4">
+        {% include "partials/forms/checkbox.html" with field=form.poc label="Person of color" %}
+        {% include "partials/forms/checkbox.html" with field=form.non_male_identifying label="Non-male identifying" %}
+      </div>
+    </fieldset>
+  </div>
+  <div class="pt-4">
+    {% include "partials/forms/text_input.html" with field=form.bio label="Bio" %}
+  </div>
 </div>
-<div class="pt-4">
-  <fieldset>
-    <div class="mt-4 space-y-4">
-      {% include "partials/forms/checkbox.html" with field=form.poc label="Person of color" %}
-      {% include "partials/forms/checkbox.html" with field=form.non_male_identifying label="Non-male identifying" %}
-    </div>
-  </fieldset>
-</div>
-<div class="pt-4">
-  {% include "partials/forms/text_input.html" with field=form.bio label="Bio" %}
-</div>
-
-

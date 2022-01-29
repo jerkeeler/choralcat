@@ -1,48 +1,44 @@
-{% csrf_token %}
-
 {{ form.non_field_errors }}
-<div class="space-y-8 divide-y divide-gray-200">
+<div>
   <div>
-    <div>
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
-        Composition
-      </h3>
-    </div>
-    <div class="mt-3">
-      {% include "partials/forms/text_input.html" with label="Title" field=form.title %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Composers" field=form.composers %}
-      {% include "partials/forms/text_input.html" with label="Arrangers" field=form.arrangers %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Categories" field=form.categories %}
-      {% include "partials/forms/text_input.html" with label="Topics" field=form.topics %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Tags" field=form.tags %}
-      {% include "partials/forms/text_input.html" with label="Accompaniment" field=form.accompaniment %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-9 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Starting key" field=form.starting_key %}
-      {% include "partials/forms/text_input.html" with label="Ending key" field=form.ending_key %}
-      {% include "partials/forms/text_input.html" with label="Voicing" field=form.voicing %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4">
-      {% include "partials/forms/text_input.html" with label="Duration" field=form.duration %}
-      {% include "partials/forms/text_input.html" with label="Number of voices" field=form.number_of_voices %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 sm:grid-cols-9 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Time period" field=form.time_period %}
-      {% include "partials/forms/text_input.html" with label="Language" field=form.language %}
-      {% include "partials/forms/text_input.html" with label="Rating" field=form.rating %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 gap-y-6 gap-x-4 ">
-      {% include "partials/forms/text_input.html" with label="Score link" field=form.score_link %}
-    </div>
-    <div class="mt-3 grid grid-cols-1 gap-y-6 gap-x-4">
-      {% include "partials/forms/text_input.html" with label="Notes" field=form.notes %}
-      {% include "partials/forms/text_input.html" with label="Edition notes" field=form.edition_notes %}
-    </div>
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Composition
+    </h3>
+  </div>
+  <div class="mt-3">
+    {% include "partials/forms/text_input.html" with label="Title" field=form.title %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Composers" field=form.composers %}
+    {% include "partials/forms/text_input.html" with label="Arrangers" field=form.arrangers %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Categories" field=form.categories %}
+    {% include "partials/forms/text_input.html" with label="Topics" field=form.topics %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Tags" field=form.tags %}
+    {% include "partials/forms/text_input.html" with label="Accompaniment" field=form.accompaniment %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-9 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Starting key" field=form.starting_key %}
+    {% include "partials/forms/text_input.html" with label="Ending key" field=form.ending_key %}
+    {% include "partials/forms/text_input.html" with label="Voicing" field=form.voicing %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-6 gap-y-6 gap-x-4">
+    {% include "partials/forms/text_input.html" with label="Duration" field=form.duration %}
+    {% include "partials/forms/text_input.html" with label="Number of voices" field=form.number_of_voices %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 sm:grid-cols-9 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Time period" field=form.time_period %}
+    {% include "partials/forms/text_input.html" with label="Language" field=form.language %}
+    {% include "partials/forms/text_input.html" with label="Rating" field=form.rating %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 gap-y-6 gap-x-4 ">
+    {% include "partials/forms/text_input.html" with label="Score link" field=form.score_link %}
+  </div>
+  <div class="mt-3 grid grid-cols-1 gap-y-6 gap-x-4">
+    {% include "partials/forms/text_input.html" with label="Notes" field=form.notes %}
+    {% include "partials/forms/text_input.html" with label="Edition notes" field=form.edition_notes %}
   </div>
 </div>

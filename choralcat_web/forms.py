@@ -29,6 +29,8 @@ text_input_classes = (
 
 
 class ProgramForm(ModelForm):
+    template_name = "choralcat_web/program/program_form.html"
+
     class Meta:
         model = Program
         fields = ["title", "season"]
@@ -54,6 +56,8 @@ checkbox_input_classes = (
 
 
 class PersonForm(ModelForm):
+    template_name = "choralcat_web/people/person_form.html"
+
     class Meta:
         model = Person
         fields = [
@@ -79,6 +83,8 @@ class PersonForm(ModelForm):
 
 
 class CompositionForm(ModelForm):
+    template_name = "choralcat_web/catalog/catalog_form.html"
+
     class Meta:
         model = Composition
         fields = [

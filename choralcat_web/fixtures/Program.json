@@ -1,0 +1,80 @@
+[
+  {
+    "model": "choralcat_web.program",
+    "pk": 8,
+    "fields": {
+      "token": "n9Zu2wEn0EU1wSim",
+      "created_by": 2,
+      "updated_by": 2,
+      "created_at": "2022-01-24T00:57:49.226Z",
+      "updated_at": "2022-01-29T21:03:45.286Z",
+      "user": 2,
+      "title": "Live from London",
+      "slug": "live-from-london-S4xg",
+      "ordering": {
+        "compositions": [
+          "festino-1a6S",
+          "fratres-ego-enim-accepi-RKAQ",
+          "my-special-piece-8cwr",
+          "wondrous-love-4oKt",
+          "missa-malheur-me-bat-dduB"
+        ]
+      },
+      "season": "2021",
+      "compositions": [
+        5,
+        2,
+        7,
+        6,
+        4
+      ],
+      "topics": []
+    }
+  },
+  {
+    "model": "choralcat_web.program",
+    "pk": 9,
+    "fields": {
+      "token": "ozJ_54nBdhR0raZk",
+      "created_by": 2,
+      "updated_by": 2,
+      "created_at": "2022-01-24T00:58:31.600Z",
+      "updated_at": "2022-01-29T21:01:36.839Z",
+      "user": 2,
+      "title": "Hello world231231",
+      "slug": "hello-world-vNE3",
+      "ordering": {
+        "compositions": [
+          "my-special-piece-8cwr",
+          "wondrous-love-4oKt"
+        ]
+      },
+      "season": "20-20",
+      "compositions": [
+        6,
+        4
+      ],
+      "topics": []
+    }
+  },
+  {
+    "model": "choralcat_web.program",
+    "pk": 10,
+    "fields": {
+      "token": "dU_UmGebYL5UMso6",
+      "created_by": 2,
+      "updated_by": 2,
+      "created_at": "2022-01-29T19:20:17.905Z",
+      "updated_at": "2022-01-29T19:22:39.328Z",
+      "user": 2,
+      "title": "test2asfdasd",
+      "slug": "test-_Mc5",
+      "ordering": {
+        "compositions": []
+      },
+      "season": "21312312",
+      "compositions": [],
+      "topics": []
+    }
+  }
+]
