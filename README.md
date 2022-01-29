@@ -10,7 +10,7 @@ create programs of music it.
 
 ### Requirements
 
-- Redis
+- Redis (not needed if not using celery)
   - Ensure that authentication is enabled and password is generated, put the password in the .env file
 - Python 3.10
 - Node v14

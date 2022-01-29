@@ -1,6 +1,10 @@
+import logging
+
 from django.db import models
 
 from .utils import gen_slug
+
+logger = logging.getLogger(__name__)
 
 
 class AutoSlugField(models.SlugField):
@@ -56,4 +60,5 @@ class AutoSlugField(models.SlugField):
             if not others:
                 # make the updated slug available as instance attribute
                 setattr(model_instance, self.name, slug)
+                logger.debug(f"Generated new slug for field {self.name}: {slug}")
                 return slug

@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Q
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import ListView, DetailView
@@ -16,6 +17,19 @@ logger = logging.getLogger(__name__)
 
 def index_view(request):
     return render(request, template_name="choralcat_web/index.html")
+
+
+class ChoralcatLoginView(LoginView):
+    def get_success_url(self):
+        logger.info(f"User {self.request.POST['username']} has logged in")
+        return super().get_success_url()
+
+
+class ChoralcatLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user and self.request.user.is_authenticated:
+            logger.info(f"User {self.request.user} has logged out")
+        return super().dispatch(request, *args, **kwargs)
 
 
 @login_required
@@ -129,8 +143,9 @@ def program_add(request, slug):
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
-    program.compositions.add(composition)
     logger.debug(f"Adding {composition} to program {program}")
+
+    program.compositions.add(composition)
     if "compositions" not in program.ordering:
         program.ordering["compositions"] = [composition.slug]
     else:
@@ -145,8 +160,9 @@ def program_remove(request, slug):
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
-    program.compositions.remove(composition)
     logger.debug(f"Removing {composition} from program {program}")
+
+    program.compositions.remove(composition)
     program.ordering["compositions"] = [
         c for c in program.ordering["compositions"] if c != composition.slug
     ]
@@ -169,6 +185,7 @@ def program_reorder(request, slug):
     new_ordering = request.POST.getlist("slug")
     program = get_object_or_404(Program, slug=slug)
     logger.debug(f"Reordering program {program} to {new_ordering}")
+
     program.ordering["compositions"] = new_ordering
     program.save()
     return _render_program_catalog(request, program)

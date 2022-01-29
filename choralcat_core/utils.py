@@ -33,7 +33,7 @@ def timer(func: Callable) -> Callable:
         start = time.time()
         response = func(*args, **kwargs)
         length = time.time() - start
-        logger.info(f"Took {length:.8f} seconds")
+        logger.info(f"Took {length:.3f} seconds")
         return response
 
     return wrapper
