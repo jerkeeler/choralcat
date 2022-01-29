@@ -32,7 +32,7 @@ jobs:
           path: staticfiles.tar
   deploy:
     needs: test
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     concurrency: deploy-prod
     runs-on: ubuntu-20.04
     steps:
