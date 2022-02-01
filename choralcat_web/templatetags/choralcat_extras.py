@@ -15,11 +15,31 @@ tag_colors = [
 ]
 
 
+def _consistent_hash(input_str: str) -> str:
+    return hashlib.md5(input_str.encode("utf-8")).hexdigest()
+
+
+def _get_color(input_str: str) -> tuple[str, str]:
+    return tag_colors[int(_consistent_hash(input_str), 16) % len(tag_colors)]
+
+
 @register.inclusion_tag("partials/tag.html")
-def create_tag(tag):
-    color = abs(hash(tag)) % len(tag_colors)
+def create_tag(tag: str):
+    return _get_tag_info(tag)
+
+
+@register.inclusion_tag("partials/tag_with_remove.html")
+def create_closeable_tag(tag: str, tag_url: str, widget_name: str):
+    tag_info = _get_tag_info(tag)
+    tag_info["tag_url"] = tag_url
+    tag_info["widget_name"] = widget_name
+    return tag_info
+
+
+def _get_tag_info(tag: str):
+    color = _get_color(tag)
     return {
         "tag": tag,
-        "bg_class": tag_colors[color][0],
-        "text_class": tag_colors[color][1],
+        "bg_class": color[0],
+        "text_class": color[1],
     }

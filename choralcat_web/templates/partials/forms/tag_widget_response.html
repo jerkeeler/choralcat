@@ -1,0 +1,13 @@
+{% load choralcat_extras %}
+<select multiple
+        id="id_{{ widget_name }}"
+        name="{{ widget_name }}"
+        hidden
+>
+  {% for opt in selected %}
+    <option value="{{ opt.value }}" selected name="{{ widget_name }}">{{ opt.label }}</option>
+  {% endfor %}
+</select>
+{% for opt in selected %}
+  {% create_closeable_tag opt.label tag_url widget_name%}
+{% endfor %}

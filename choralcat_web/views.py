@@ -3,14 +3,16 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db import transaction
 from django.db.models import Q
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
 
 from choralcat_core.views import UserCreateView, UserUpdateView
 from .forms import CompositionForm, PersonForm, ProgramForm
-from .models import Composition, Person, Program, Tag, Category, Topic
+from .models import Composition, Person, Program, Tag, Category, Topic, Instrument
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +111,70 @@ class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
     template_name = "choralcat_web/catalog/composition_edit.html"
 
 
+@login_required
+@require_POST
+def category_add(request):
+    return _simple_add_view(
+        request, Category, "categories", reverse_lazy("category_add")
+    )
+
+
+@login_required
+@require_POST
+def instrument_add(request):
+    return _simple_add_view(
+        request, Instrument, "accompaniment", reverse_lazy("instrument_add")
+    )
+
+
+@login_required
+@require_POST
+def topic_add(request):
+    return _simple_add_view(request, Topic, "topics", reverse_lazy("topic_add"))
+
+
+@login_required
+@require_POST
+def tag_add(request):
+    return _simple_add_view(request, Tag, "tags", reverse_lazy("tag_add"))
+
+
+@transaction.atomic
+def _simple_add_view(request, model, relationship_name, tag_url):
+    selected_values = request.POST.getlist(relationship_name)
+    new_value = request.POST.get(f"new_{relationship_name}")
+    removed_value = request.POST.get("remove")
+    logger.debug(f"selected values: {selected_values}")
+
+    current_values = []
+    if selected_values:
+        pks = [int(c) for c in selected_values]
+        current_values = {c.pk: c for c in model.objects.filter(pk__in=pks)}
+        current_values = [current_values[pk] for pk in pks]
+
+    if new_value:
+        try:
+            new_object = model.objects.get(value=new_value)
+            logger.debug(f"Found value {new_value}")
+        except model.DoesNotExist:
+            new_object = model.objects.create(value=new_value, user=request.user)
+            logger.info(f"{request.user} created new {model.__name__} {new_value}")
+        if new_object not in current_values:
+            current_values.append(new_object)
+
+    if removed_value:
+        logger.debug(f"Removing {removed_value}")
+        removed_value = get_object_or_404(model, value=removed_value)
+        current_values = [c for c in current_values if c != removed_value]
+
+    context = {
+        "widget_name": relationship_name,
+        "selected": [{"label": c.value, "value": c.id} for c in current_values],
+        "tag_url": tag_url,
+    }
+    return render(request, "partials/forms/tag_widget_response.html", context=context)
+
+
 class ProgramListView(LoginRequiredMixin, ListView):
     model = Program
     template_name = "choralcat_web/program/programs.html"
@@ -174,6 +240,7 @@ def _render_program(request, program):
 def program_reorder(request, slug):
     new_ordering = request.POST.getlist("slug")
     program = get_object_or_404(Program, slug=slug)
+    logger.debug(f"Reordering program {program} to {new_ordering}")
     program.reorder(new_ordering)
     program.save()
     return _render_program_catalog(request, program)

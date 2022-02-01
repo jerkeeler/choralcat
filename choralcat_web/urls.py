@@ -22,6 +22,10 @@ from .views import (
     PersonDetailView,
     PersonCreateView,
     PersonUpdateView,
+    category_add,
+    instrument_add,
+    topic_add,
+    tag_add,
 )
 
 urlpatterns = [
@@ -51,6 +55,10 @@ urlpatterns = [
     path("people/<str:slug>/", PersonDetailView.as_view(), name="person_detail"),
     path("people/<str:slug>/edit/", PersonUpdateView.as_view(), name="person_edit"),
     path("search/catalog/", catalog_search, name="catalog_search"),
+    path("categories/", category_add, name="category_add"),
+    path("instruments/", instrument_add, name="instrument_add"),
+    path("topics/", topic_add, name="topic_add"),
+    path("tags/", tag_add, name="tag_add"),
     # ==========
     # Auth
     # ==========

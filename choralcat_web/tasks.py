@@ -21,7 +21,7 @@ def backup_sqlite_database():
     logger.info("Starting new database backup")
     now = datetime.utcnow()
     backup_name = f"db_backup_{now:%Y-%m-%dT%H%M}.sqlite3"
-    con = sqlite3.connect("db.sqlite3")
+    con = sqlite3.connect(os.path.join("data", "db.sqlite3"))
     bck = sqlite3.connect(os.path.join("data", "backups", backup_name))
     with bck:
         con.backup(bck, pages=1, progress=progress)

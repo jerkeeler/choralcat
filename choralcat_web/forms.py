@@ -1,8 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import widgets
 from django.forms import ModelForm
+from django.urls import reverse_lazy
 
 from .models import Program, Composition, Person
+from .widgets import TagWidget
 
 
 class CustomLoginForm(AuthenticationForm):
@@ -150,10 +152,28 @@ class CompositionForm(ModelForm):
             ),
             "arrangers": widgets.SelectMultiple(attrs={"class": text_input_classes}),
             "composers": widgets.SelectMultiple(attrs={"class": text_input_classes}),
-            "categories": widgets.SelectMultiple(attrs={"class": text_input_classes}),
-            "tags": widgets.SelectMultiple(attrs={"class": text_input_classes}),
-            "topics": widgets.SelectMultiple(attrs={"class": text_input_classes}),
-            "accompaniment": widgets.SelectMultiple(
-                attrs={"class": text_input_classes}
+            "categories": TagWidget(
+                attrs={
+                    "placeholder": "Search for a category...",
+                    "tag_url": reverse_lazy("category_add"),
+                }
+            ),
+            "tags": TagWidget(
+                attrs={
+                    "placeholder": "Search for a tag...",
+                    "tag_url": reverse_lazy("tag_add"),
+                }
+            ),
+            "topics": TagWidget(
+                attrs={
+                    "placeholder": "Search for a topic...",
+                    "tag_url": reverse_lazy("topic_add"),
+                }
+            ),
+            "accompaniment": TagWidget(
+                attrs={
+                    "placeholder": "Search for an instrument...",
+                    "tag_url": reverse_lazy("instrument_add"),
+                }
             ),
         }
