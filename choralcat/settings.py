@@ -21,7 +21,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
@@ -32,7 +31,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
-
 
 # Application definition
 
@@ -81,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "choralcat.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -91,7 +88,6 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "data", "db.sqlite3"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -115,7 +111,6 @@ LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/catalog"
 LOGOUT_REDIRECT_URL = "/"
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -126,7 +121,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -167,22 +161,24 @@ LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 LOG_LOCATION = os.environ.get(
     "LOG_LOCATION", os.path.join("data", "logs", "application.log")
 )
+ERROR_LOG_LOCATION = os.environ.get(
+    "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
+)
 
 # If you create a new python module be sure to add it to this list of modules to
 # enable default logging
 logged_modules = ["choralcat", "choralcat_core", "choralcat_web"]
 loggers = {
     name: {
-        "handlers": ["console", "file", "mail_admins"],
+        "handlers": ["console", "file", "file_error", "mail_admins"],
         "level": LOG_LEVEL,
     }
     for name in logged_modules
 }
 loggers["django.request"] = {
-    "handlers": ["mail_admins"],
+    "handlers": ["file_error"],
     "level": "ERROR",
 }
-
 
 LOGGING = {
     "version": 1,
@@ -220,6 +216,16 @@ LOGGING = {
             "when": "W6",
             "utc": True,
             "filename": LOG_LOCATION,
+            "backupCount": 4,
+        },
+        "file_error": {
+            "level": "ERROR",
+            "formatter": "verbose",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "W6",
+            "utc": True,
+            "filename": ERROR_LOG_LOCATION,
             "backupCount": 4,
         },
         "mail_admins": {
