@@ -10,6 +10,8 @@ appnope==0.1.2
     # via ipython
 asgiref==3.4.1
     # via django
+assertpy==1.1
+    # via -r requirements.in
 asttokens==2.0.5
     # via stack-data
 backcall==0.2.0

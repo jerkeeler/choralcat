@@ -1,19 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from .models import Program, Composition
-
-default_fixtures = [
-    "Program",
-    "Composition",
-    "User",
-    "Tag",
-    "Category",
-    "Person",
-    "Instrument",
-    "UserProfile",
-    "Topic",
-]
+from ..models import Program, Composition
 
 
 class ProgramTestCase(TestCase):
