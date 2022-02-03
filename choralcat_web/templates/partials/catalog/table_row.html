@@ -63,7 +63,7 @@
     <button class="text-indigo-600 hover:text-indigo-900"
             @click="open('{{ composition.slug }}')"
             hx-get="{% url 'catalog_modal' composition.slug %}"
-            hx-target="#modalContent"
+            hx-target="{% firstof hx_target '#modalContent' %}"
     >
       <svg class="w-6 h-6 hover:cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"
            xmlns="http://www.w3.org/2000/svg">

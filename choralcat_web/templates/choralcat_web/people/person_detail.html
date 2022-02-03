@@ -30,4 +30,35 @@
       </span>
     </div>
   </div>
+  <div class="mt-3"
+       x-data="{
+      modalOpen: false,
+      open(piece) {
+        this.modalOpen = true;
+        this.piece = piece;
+      },
+      piece: '',
+    }">
+    <h3 class="font-header text-lg">Compositions</h3>
+
+    {% include "partials/catalog/table.html" with compositions=person.composers.all %}
+
+    {% include "partials/program_modal/modal_base.html" %}
+  </div>
+  <div x-data="{
+      modalOpen: false,
+      open(piece) {
+        this.modalOpen = true;
+        this.piece = piece;
+      },
+      piece: '',
+    }"
+       class="mt-3"
+  >
+    <h3 class="font-header text-lg">Arrangements</h3>
+
+    {% include "partials/catalog/table.html" with compositions=person.arrangers.all hx_target="#fakething" %}
+
+    {% include "partials/program_modal/modal_base.html" with modal_id="fakething" %}
+  </div>
 {% endblock %}
