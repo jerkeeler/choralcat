@@ -28,6 +28,7 @@ class Person(UserModel):
     bio = models.TextField(blank=True)
     poc = models.BooleanField(default=False)
     non_male_identifying = models.BooleanField(default=False)
+    nationality = models.TextField(blank=True)
 
     class Meta:
         ordering = ["last_name", "first_name"]
@@ -118,7 +119,7 @@ class Composition(UserModel):
         if not self.duration:
             return ""
         sec = self.duration.total_seconds()
-        return f"{int(sec / 60) % 60:02d}:{int(sec % 60):02d}"
+        return f"{int(sec / 60):02d}:{int(sec % 60):02d}"
 
     @property
     def stars(self):

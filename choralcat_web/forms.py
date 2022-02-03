@@ -70,6 +70,7 @@ class PersonForm(ModelForm):
             "poc",
             "non_male_identifying",
             "bio",
+            "nationality",
         ]
         widgets = {
             "first_name": widgets.TextInput(attrs={"class": text_input_classes}),
@@ -80,6 +81,7 @@ class PersonForm(ModelForm):
             "non_male_identifying": widgets.CheckboxInput(
                 attrs={"class": checkbox_input_classes}
             ),
+            "nationality": widgets.TextInput(attrs={"class": text_input_classes}),
             "bio": widgets.Textarea(attrs={"class": text_input_classes}),
         }
 

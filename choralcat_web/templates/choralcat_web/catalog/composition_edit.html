@@ -7,7 +7,7 @@
       <div class="pt-5">
         <div class="flex justify-end">
           {% url 'composition_detail' composition.slug as back_url %}
-          {% include "partials/forms/cancel_button.html" with label="Canel" url=back_url %}
+          {% include "partials/forms/cancel_button.html" with label="Cancel" url=back_url %}
           {% include "partials/forms/action_button.html" with label="Save" %}
         </div>
       </div>

@@ -10,13 +10,13 @@ logger = logging.getLogger(__name__)
 
 @shared_task(bind=True)
 def choralcat_debug(self, x):
-    print(f"Request: {self.request!r}")
+    logger.info(f"Request: {self.request!r}")
 
 
 @shared_task
 def backup_sqlite_database():
     def progress(_, remaining, total):
-        print(f"Copied {total - remaining} of {total} pages...")
+        logger.info(f"Copied {total - remaining} of {total} pages...")
 
     logger.info("Starting new database backup")
     now = datetime.utcnow()

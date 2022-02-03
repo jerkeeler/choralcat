@@ -24,6 +24,9 @@
     </fieldset>
   </div>
   <div class="pt-4">
+    {% include "partials/forms/text_input.html" with field=form.nationality label="Nationality" %}
+  </div>
+  <div class="pt-4">
     {% include "partials/forms/text_input.html" with field=form.bio label="Bio" %}
   </div>
 </div>
