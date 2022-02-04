@@ -1,0 +1,99 @@
+<div x-data="{
+options: [
+  {% for opt in sorted_options %}
+    [{{ opt.value }}, '{{ opt.label }}'],
+  {% endfor %}
+],
+filtered: [
+  {% for opt in sorted_options %}
+    [{{ opt.value }}, '{{ opt.label }}'],
+  {% endfor %}
+],
+selected: [
+  {% for opt in selected %}
+  [{{ opt.value }}, '{{ opt.label }}'],
+  {% endfor %}
+],
+idx: -1,
+maxIdx: {{ sorted_options|length }},
+itemVal: '',
+showDropdown: false,
+filterOptions() {
+  this.filtered = this.options.filter((val) => val[1].toLowerCase().includes(this.itemVal.toLowerCase()));
+  this.maxIdx = this.filtered.length;
+  if (this.filtered.length === 0) this.showDropdown = false;
+  else this.showDropdown = true;
+},
+addValue() {
+  const alreadyAdded = this.selected.find(val => val[0] === this.filtered[this.idx][0]);
+  if (this.idx !== -1 && !alreadyAdded) this.selected.push(this.filtered[this.idx]);
+  this.idx = -1;
+  this.itemVal = '';
+  this.filterOptions();
+},
+removeValue(opt) {
+  this.selected = this.selected.filter(val => val[0] !== opt[0]);
+}
+}"
+     class="relative"
+>
+  <div>
+    <select multiple
+            id="id_{{ widget_name }}"
+            name="{{ widget_name }}"
+            hidden
+    >
+      <template x-for="opt in selected">
+        <option :value="opt[0]" selected name="{{ widget_name }}" x-text="opt[1]"></option>
+      </template>
+    </select>
+    <template x-for="opt in selected">
+      <div class="flex items-center">
+        <p class="text-md text-gray-800" x-text="opt[1]"></p>
+        <span class="ml-3 hover:cursor-pointer text-red-500" @click="removeValue(opt)">
+          <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"/>
+          </svg>
+        </span>
+      </div>
+    </template>
+  </div>
+  <input type="text"
+         name="new_{{ widget.name }}"
+         id="new_id_{{ widget.name }}"
+         class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md mt-1"
+         placeholder="{{ widget.attrs.placeholder }}"
+         @keyup="filterOptions()"
+         @keydown.enter.prevent
+         @keydown.enter="addValue()"
+         @keydown.arrow-up.prevent="idx = idx <= 0 ? -1 : idx - 1"
+         @keydown.arrow-down.prevent="idx = idx + 1 === maxIdx ? idx : idx + 1"
+         @keydown.escape.window="showDropdown = false"
+         @blur="showDropdown = false"
+         @click.away="showDropdown = false"
+         @focus="showDropdown = true;filterOptions()"
+         x-model="itemVal"
+         maxlength="256"
+  >
+  <ul class="absolute z-10 mt-2 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+      tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3"
+      x-show="showDropdown"
+      x-transition:leave="transition ease-in duration-100"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+  >
+    <template x-for="(value, index) in filtered">
+      <li class="cursor-default select-none relative py-2 pl-3 pr-9"
+          :id="'listbox-option-' + index"
+          :class="{'text-white bg-indigo-600': idx == index, 'text-gray-900': idx != index}"
+          @mouseenter="idx = index"
+          @click="addValue()"
+          role="option">
+        <span class="block truncate"
+              :class="{'font-semibold': idx == index, 'font-normal': idx != index}"
+              x-text="value[1]"
+        ></span>
+      </li>
+    </template>
+  </ul>
+</div>

@@ -6,7 +6,7 @@ maxIdx: {{ ordered_options|length }},
 {{ widget.name }}: '{% firstof widget.value '' %}',
 showDropdown: false,
 filterOptions() {
-  this.filtered = this.options.filter((val) => val.includes(this.{{ widget.name }}));
+  this.filtered = this.options.filter((val) => val.toLowerCase().includes(this.{{ widget.name }}.toLowerCase()));
   this.maxIdx = this.filtered.length;
   if (this.filtered.length === 0) this.showDropdown = false;
   else this.showDropdown = true;

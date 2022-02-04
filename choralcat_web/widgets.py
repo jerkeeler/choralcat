@@ -53,3 +53,7 @@ class AutocompleteStringWidget(TextInput):
         ]
         context["ordered_options"] = ordered_opts
         return context
+
+
+class MtMStringWidget(TagWidget):
+    template_name = "choralcat_web/widgets/mtm_widget.html"

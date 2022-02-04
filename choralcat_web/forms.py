@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from django.urls import reverse_lazy
 
 from .models import Program, Composition, Person
-from .widgets import AutocompleteStringWidget, TagWidget
+from .widgets import AutocompleteStringWidget, TagWidget, MtMStringWidget
 
 
 class CustomLoginForm(AuthenticationForm):
@@ -154,8 +154,8 @@ class CompositionForm(ModelForm):
             "edition_notes": widgets.Textarea(
                 attrs={"class": text_input_classes, "placeholder": "Arabian Nights"}
             ),
-            "arrangers": widgets.SelectMultiple(attrs={"class": text_input_classes}),
-            "composers": widgets.SelectMultiple(attrs={"class": text_input_classes}),
+            "composers": MtMStringWidget(attrs={"placeholder": "Search artists..."}),
+            "arrangers": MtMStringWidget(attrs={"placeholder": "Search artists..."}),
             "categories": TagWidget(
                 attrs={
                     "placeholder": "Search for a category...",
