@@ -81,7 +81,9 @@ class PersonForm(ModelForm):
             "non_male_identifying": widgets.CheckboxInput(
                 attrs={"class": checkbox_input_classes}
             ),
-            "nationality": widgets.TextInput(attrs={"class": text_input_classes}),
+            "nationality": AutocompleteStringWidget(
+                model=Person, field="nationality", attrs={"placeholder": "georgian"}
+            ),
             "bio": widgets.Textarea(attrs={"class": text_input_classes}),
         }
 
