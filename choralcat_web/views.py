@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
 from django.urls import reverse_lazy
@@ -11,6 +12,7 @@ from django.views.generic import ListView, DetailView
 from django.shortcuts import render, get_object_or_404
 
 from choralcat_core.views import UserCreateView, UserUpdateView
+from .consts import DEFAULT_NUM_PER_PAGE
 from .forms import CompositionForm, PersonForm, ProgramForm
 from .models import Composition, Person, Program, Tag, Category, Topic, Instrument
 
@@ -37,18 +39,28 @@ class ChoralcatLogoutView(LogoutView):
 @login_required
 @require_POST
 def catalog_search(request):
-    term = request.POST["search"]
+    term = request.POST.get("search")
+    page = request.POST.get("page", 1)
+    per_page = request.POST.get("per_page", DEFAULT_NUM_PER_PAGE)
     logger.debug(f"Querying database for compositions related to: {term}")
-    context = {
-        "compositions": Composition.objects.filter(
+    if term:
+        compositions = Composition.objects.filter(
             Q(title__icontains=term)
             | Q(composers__first_name__icontains=term)
             | Q(composers__last_name__icontains=term)
             | Q(arrangers__first_name__icontains=term)
             | Q(arrangers__last_name__icontains=term)
-        )
-    }
-    return render(request, template_name="partials/catalog/table.html", context=context)
+        ).distinct()
+    else:
+        compositions = Composition.objects.all()
+    paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
+    page = paginator.get_page(page)
+    context = {"compositions": page.object_list, "page_obj": page}
+    return render(
+        request,
+        template_name="partials/catalog/table_with_pagination.html",
+        context=context,
+    )
 
 
 @login_required
@@ -76,6 +88,7 @@ class CatalogView(LoginRequiredMixin, ListView):
     model = Composition
     context_object_name = "compositions"
     template_name = "choralcat_web/catalog/catalog.html"
+    paginate_by = DEFAULT_NUM_PER_PAGE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

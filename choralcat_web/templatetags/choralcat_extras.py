@@ -43,3 +43,10 @@ def _get_tag_info(tag: str):
         "bg_class": color[0],
         "text_class": color[1],
     }
+
+
+@register.simple_tag
+def get_elided_page_range(paginator, number, on_each_side=3, on_ends=2):
+    return paginator.get_elided_page_range(
+        number=number, on_each_side=on_each_side, on_ends=on_ends
+    )
