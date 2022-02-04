@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from django.urls import reverse_lazy
 
 from .models import Program, Composition, Person
-from .widgets import TagWidget
+from .widgets import AutocompleteStringWidget, TagWidget
 
 
 class CustomLoginForm(AuthenticationForm):
@@ -122,8 +122,8 @@ class CompositionForm(ModelForm):
             "ending_key": widgets.TextInput(
                 attrs={"class": text_input_classes, "placeholder": "Cm"}
             ),
-            "voicing": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "satb"}
+            "voicing": AutocompleteStringWidget(
+                model=Composition, field="voicing", attrs={"placeholder": "satb"}
             ),
             "duration": widgets.TextInput(
                 attrs={"class": text_input_classes, "placeholder": "03:00"}
@@ -131,11 +131,11 @@ class CompositionForm(ModelForm):
             "number_of_voices": widgets.NumberInput(
                 attrs={"class": text_input_classes, "placeholder": 4}
             ),
-            "time_period": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "Modern"}
+            "time_period": AutocompleteStringWidget(
+                model=Composition, field="time_period", attrs={"placeholder": "Modern"}
             ),
-            "language": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "Klingon"}
+            "language": AutocompleteStringWidget(
+                model=Composition, field="language", attrs={"placeholder": "Klingon"}
             ),
             "rating": widgets.NumberInput(
                 attrs={"class": text_input_classes, "placeholder": "1-5"}

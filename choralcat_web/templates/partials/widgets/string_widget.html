@@ -1,0 +1,61 @@
+<div x-data="{
+options: [{% for opt in ordered_options %}'{{ opt }}',{% endfor %}],
+filtered: [{% for opt in ordered_options %}'{{ opt }}',{% endfor %}],
+idx: -1,
+maxIdx: {{ ordered_options|length }},
+{{ widget.name }}: '{% firstof widget.value '' %}',
+showDropdown: false,
+filterOptions() {
+  this.filtered = this.options.filter((val) => val.includes(this.{{ widget.name }}));
+  this.maxIdx = this.filtered.length;
+  if (this.filtered.length === 0) this.showDropdown = false;
+  else this.showDropdown = true;
+},
+setValue() {
+  if (this.idx !== -1) this.{{ widget.name }} = this.filtered[this.idx];
+  this.idx = -1;
+  this.filterOptions();
+}
+}"
+     class="relative"
+>
+  <input type="text"
+         name="{{ widget.name }}"
+         id="id_{{ widget.name }}"
+         class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+         placeholder="{{ widget.attrs.placeholder }}"
+         @keyup="filterOptions()"
+         @keydown.enter.prevent
+         @keydown.enter="setValue()"
+         @keydown.arrow-up.prevent="idx = idx <= 0 ? -1 : idx - 1"
+         @keydown.arrow-down.prevent="idx = idx + 1 === maxIdx ? idx : idx + 1"
+         @keydown.escape.window="showDropdown = false"
+         @blur="showDropdown = false"
+         @click.away="showDropdown = false"
+         @focus="showDropdown = true;filterOptions()"
+         x-model="{{ widget.name }}"
+         maxlength="256"
+         value="{{ widget.value }}"
+  >
+  <ul class="absolute z-10 mt-2 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+      tabindex="-1" role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-option-3"
+      x-show="showDropdown"
+      x-transition:leave="transition ease-in duration-100"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+  >
+    <template x-for="(value, index) in filtered">
+      <li class="cursor-default select-none relative py-2 pl-3 pr-9"
+          :id="'listbox-option-' + index"
+          :class="{'text-white bg-indigo-600': idx == index, 'text-gray-900': idx != index}"
+          @mouseenter="idx = index"
+          @click="{{ widget.name }} = value;showDropdown = false"
+          role="option">
+        <span class="block truncate"
+              :class="{'font-semibold': idx == index, 'font-normal': idx != index}"
+              x-text="value"
+        ></span>
+      </li>
+    </template>
+  </ul>
+</div>
