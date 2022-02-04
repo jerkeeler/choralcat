@@ -23,12 +23,12 @@ def _get_color(input_str: str) -> tuple[str, str]:
     return tag_colors[int(_consistent_hash(input_str), 16) % len(tag_colors)]
 
 
-@register.inclusion_tag("partials/tag.html")
+@register.inclusion_tag("choralcat_web/tag.html")
 def create_tag(tag: str):
     return _get_tag_info(tag)
 
 
-@register.inclusion_tag("partials/tag_with_remove.html")
+@register.inclusion_tag("choralcat_web/tag_with_remove.html")
 def create_closeable_tag(tag: str, tag_url: str, widget_name: str):
     tag_info = _get_tag_info(tag)
     tag_info["tag_url"] = tag_url

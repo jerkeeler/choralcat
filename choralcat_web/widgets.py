@@ -6,7 +6,7 @@ from django.forms.widgets import SelectMultiple, TextInput
 
 
 class TagWidget(SelectMultiple):
-    template_name = "partials/forms/templates/partials/widgets/tag_widget.html"
+    template_name = "choralcat_web/widgets/tag_widget.html"
 
     def get_context(self, name: str, value: Any, attrs):
         context = super().get_context(name, value, attrs)
@@ -33,7 +33,7 @@ class TagWidget(SelectMultiple):
 
 
 class AutocompleteStringWidget(TextInput):
-    template_name = "partials/widgets/string_widget.html"
+    template_name = "choralcat_web/widgets/string_widget.html"
 
     def __init__(self, model: Type[models.Model], field: str, attrs=None):
         super().__init__(attrs)

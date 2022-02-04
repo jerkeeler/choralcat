@@ -174,7 +174,7 @@ def _simple_add_view(request, model, relationship_name, tag_url):
     }
     return render(
         request,
-        "partials/forms/templates/partials/widgets/tag_widget_response.html",
+        "choralcat_web/widgets/tag_widget_response.html",
         context=context,
     )
 
