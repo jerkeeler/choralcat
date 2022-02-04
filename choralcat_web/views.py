@@ -172,7 +172,11 @@ def _simple_add_view(request, model, relationship_name, tag_url):
         "selected": [{"label": c.value, "value": c.id} for c in current_values],
         "tag_url": tag_url,
     }
-    return render(request, "partials/forms/tag_widget_response.html", context=context)
+    return render(
+        request,
+        "partials/forms/templates/partials/widgets/tag_widget_response.html",
+        context=context,
+    )
 
 
 class ProgramListView(LoginRequiredMixin, ListView):

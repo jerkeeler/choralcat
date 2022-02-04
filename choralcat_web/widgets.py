@@ -6,7 +6,7 @@ from django.forms.widgets import SelectMultiple, TextInput
 
 
 class TagWidget(SelectMultiple):
-    template_name = "partials/forms/tag_widget.html"
+    template_name = "partials/forms/templates/partials/widgets/tag_widget.html"
 
     def get_context(self, name: str, value: Any, attrs):
         context = super().get_context(name, value, attrs)
