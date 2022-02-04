@@ -42,17 +42,39 @@ def catalog_search(request):
     term = request.POST.get("search")
     page = request.POST.get("page", 1)
     per_page = request.POST.get("per_page", DEFAULT_NUM_PER_PAGE)
+    categories = [c for c in request.POST.getlist("category") if c and c != "undefined"]
+    tags = [c for c in request.POST.getlist("tags") if c and c != "undefined"]
+    topics = [c for c in request.POST.getlist("topics") if c and c != "undefined"]
+    voicings = [c for c in request.POST.getlist("voicings") if c and c != "undefined"]
     logger.debug(f"Querying database for compositions related to: {term}")
+    compositions = Composition.objects.all()
+
     if term:
-        compositions = Composition.objects.filter(
+        logger.debug(f"Searching for term: {term}")
+        compositions = compositions.filter(
             Q(title__icontains=term)
             | Q(composers__first_name__icontains=term)
             | Q(composers__last_name__icontains=term)
             | Q(arrangers__first_name__icontains=term)
             | Q(arrangers__last_name__icontains=term)
-        ).distinct()
-    else:
-        compositions = Composition.objects.all()
+        )
+
+    if categories:
+        logger.debug(f"Filtering by categories: {categories}")
+        compositions = compositions.filter(categories__value__in=categories)
+
+    if tags:
+        logger.debug(f"Filtering by tags: {tags}")
+        compositions = compositions.filter(tags__value__in=tags)
+
+    if topics:
+        logger.debug(f"Filtering by topics: {topics}")
+        compositions = compositions.filter(topics__value__in=topics)
+
+    if voicings:
+        logger.debug(f"Filtering by voicings: {voicings}")
+        compositions = compositions.filter(voicing__in=voicings)
+
     paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
     page = paginator.get_page(page)
     context = {"compositions": page.object_list, "page_obj": page}

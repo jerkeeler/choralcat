@@ -17,7 +17,11 @@
                placeholder="Search by title/composer/arranger" type="search"
                hx-post="{% url 'catalog_search' %}"
                hx-trigger="keyup changed delay:500ms, search"
-               hx-target="#search-results">
+               hx-target="#search-results"
+               hx-params="search, category, topics, tags, voicings"
+               hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
+               autocomplete="off"
+        >
       </div>
     </div>
   </div>
