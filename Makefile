@@ -4,7 +4,7 @@ requires:
 
 
 install:
-	pip-sync requirements/requirements.txt
+	.venv/bin/pip-sync requirements/requirements.txt
 
 install_dev:
 	pip install pip-tools==6.5.0
