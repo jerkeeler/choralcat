@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_celery_results",
     "django_celery_beat",
-    "django_rename_app",
     "choralcat.core.apps.ChoralcatCoreConfig",
     "choralcat.web.apps.ChoralcatWebConfig",
 ]
