@@ -3,7 +3,5 @@
 mypy
 black
 django-stubs
-ipython
 fabric
-pip-tools
 assertpy

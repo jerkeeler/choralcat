@@ -6,3 +6,5 @@ django-celery-results
 django-celery-beat
 gunicorn
 django-rename-app
+ipython
+pip-tools
