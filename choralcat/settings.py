@@ -184,7 +184,7 @@ LOG_LOCATION = os.environ.get(
 ERROR_LOG_LOCATION = os.environ.get(
     "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
 )
-LOGTAIL_TOKEN = os.environ.get("LOGTAIL_TOKEN")
+
 extra_handlers = []
 if not DEBUG:
     extra_handlers = ["rollbar"]
@@ -249,12 +249,6 @@ LOGGING = {
             "environment": "production",
             "class": "rollbar.logger.RollbarHandler"
         },
-        "logtail": {
-            "level": "DEBUG",
-            "filters": ["require_debug_false"],
-            "class": "logtail.LogtailHandler",
-            "source_token": LOGTAIL_TOKEN,
-        }
     },
     "loggers": {
         "django.request": {
@@ -262,7 +256,7 @@ LOGGING = {
             "level": "ERROR",
         },
         "choralcat": {
-            "handlers": ["console", "file", "file_error", "logtail"] + extra_handlers,
+            "handlers": ["console", "file", "file_error"] + extra_handlers,
             "level": LOG_LEVEL,
             "propagate": True,
         },
