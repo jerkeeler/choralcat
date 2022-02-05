@@ -7,6 +7,7 @@ install:
 	pip-sync requirements/requirements.txt
 
 install_dev:
+	pip install pip-tools==6.5.0
 	pip-sync requirements/requirements.txt requirements/dev-requirements.txt
 	npm ci
 
