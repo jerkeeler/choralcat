@@ -165,20 +165,6 @@ ERROR_LOG_LOCATION = os.environ.get(
     "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
 )
 
-# If you create a new python module be sure to add it to this list of modules to
-# enable default logging
-logged_modules = ["choralcat", "web"]
-loggers = {
-    name: {
-        "handlers": ["console", "file", "file_error", "mail_admins"],
-        "level": LOG_LEVEL,
-    }
-    for name in logged_modules
-}
-loggers["django.request"] = {
-    "handlers": ["file_error"],
-    "level": "ERROR",
-}
 
 LOGGING = {
     "version": 1,
@@ -234,5 +220,15 @@ LOGGING = {
             "class": "django.utils.log.AdminEmailHandler",
         },
     },
-    "loggers": loggers,
+    "loggers": {
+        "django.request": {
+            "handlers": ["file_error"],
+            "level": "ERROR",
+        },
+        "choralcat": {
+            "handlers": ["console", "file", "file_error", "mail_admins"],
+            "level": LOG_LEVEL,
+            "propagate": True,
+        },
+    },
 }

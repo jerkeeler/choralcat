@@ -248,7 +248,6 @@ def program_add(request, slug):
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
-    logger.debug(f"Adding {composition} to program {program}")
     program.add(composition)
     program.save()
     return _render_catalog_modal(request, composition_slug)
@@ -279,7 +278,6 @@ def _render_program(request, program):
 def program_reorder(request, slug):
     new_ordering = request.POST.getlist("slug")
     program = get_object_or_404(Program, slug=slug)
-    logger.debug(f"Reordering program {program} to {new_ordering}")
     program.reorder(new_ordering)
     program.save()
     return _render_program_catalog(request, program)
