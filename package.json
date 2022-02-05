@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx webpack --mode development --watch",
-    "prod": "NODE_ENV=production npx webpack --mode production",
+    "dev": "npx webpack --mode development --watch --config frontend/webpack.config.js",
+    "prod": "NODE_ENV=production npx webpack --mode production --config frontend/webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

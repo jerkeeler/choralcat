@@ -8,7 +8,7 @@ module.exports = {
   entry: './frontend/js/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './static/'),
+    path: path.resolve(__dirname, '..', 'static'),
   },
   plugins: [
     new MiniCssExtractPlugin({filename: 'bundle.css'}),
@@ -29,11 +29,11 @@ module.exports = {
             }
           },
           {
-            loader: 'postcss-loader'
+            loader: 'postcss-loader',
           },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   optimization: {
     minimizer: [
