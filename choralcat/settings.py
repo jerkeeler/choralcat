@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+import sentry_sdk
 from dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
+from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv()
 
@@ -37,14 +39,22 @@ app_version_path = os.path.join(BASE_DIR, ".version")
 if os.path.exists(app_version_path):
     APP_VERSION = open(app_version_path).read().strip()
 
-ROLLBAR_ACCESS_TOKEN = os.environ.get("ROLLBAR_ACCESS_TOKEN")
-ROLLBAR = {
-    "access_token": ROLLBAR_ACCESS_TOKEN,
-    "environment": "development" if DEBUG else "production",
-    "root": str(BASE_DIR),
-    "code_version": APP_VERSION,
-    "capture_username": True,
-}
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+        release=APP_VERSION,
+        environment="development" if DEBUG else "production",
+    )
 
 # Application definition
 
@@ -72,11 +82,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "choralcat.core.middleware.TimezoneMiddleware",
 ]
-
-if not DEBUG and ROLLBAR_ACCESS_TOKEN:
-    MIDDLEWARE += [
-        "rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404",
-    ]
 
 ROOT_URLCONF = "choralcat.urls"
 
@@ -162,7 +167,7 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
-# Disabling admin emails/names in favor of rollbar integration
+# Disabling admin emails/names in favor of sentry integration
 # if os.environ.get("ADMIN_NAMES") and os.environ.get("ADMIN_EMAILS"):
 #     ADMIN_NAMES = os.environ.get("ADMIN_NAMES").split(",")
 #     ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS").split(",")
@@ -184,10 +189,6 @@ LOG_LOCATION = os.environ.get(
 ERROR_LOG_LOCATION = os.environ.get(
     "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
 )
-
-extra_handlers = []
-if not DEBUG:
-    extra_handlers = ["rollbar"]
 
 LOGGING = {
     "version": 1,
@@ -242,13 +243,6 @@ LOGGING = {
             "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler",
         },
-        "rollbar": {
-            "level": "WARNING",
-            "filters": ["require_debug_false"],
-            "access_token": ROLLBAR["access_token"],
-            "environment": "production",
-            "class": "rollbar.logger.RollbarHandler"
-        },
     },
     "loggers": {
         "django.request": {
@@ -256,7 +250,7 @@ LOGGING = {
             "level": "ERROR",
         },
         "choralcat": {
-            "handlers": ["console", "file", "file_error"] + extra_handlers,
+            "handlers": ["console", "file", "file_error"],
             "level": LOG_LEVEL,
             "propagate": True,
         },

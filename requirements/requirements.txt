@@ -24,9 +24,7 @@ celery[redis]==5.2.3
     #   django-celery-beat
     #   django-celery-results
 certifi==2021.10.8
-    # via requests
-charset-normalizer==2.0.11
-    # via requests
+    # via sentry-sdk
 click==8.0.3
     # via
     #   black
@@ -63,8 +61,6 @@ executing==0.8.2
     # via stack-data
 gunicorn==20.1.0
     # via -r requirements/requirements.in
-idna==3.3
-    # via requests
 ipython==8.0.1
     # via -r requirements/requirements.in
 jedi==0.18.1
@@ -115,16 +111,13 @@ pytz==2021.3
     #   django-timezone-field
 redis==4.1.2
     # via celery
-requests==2.27.1
-    # via rollbar
-rollbar==0.16.2
+sentry-sdk==1.5.4
     # via -r requirements/requirements.in
 six==1.16.0
     # via
     #   asttokens
     #   click-repl
     #   python-dateutil
-    #   rollbar
 sqlparse==0.4.2
     # via django
 stack-data==0.1.4
@@ -138,7 +131,7 @@ traitlets==5.1.1
     #   ipython
     #   matplotlib-inline
 urllib3==1.26.8
-    # via requests
+    # via sentry-sdk
 vine==5.0.0
     # via
     #   amqp

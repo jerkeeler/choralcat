@@ -7,4 +7,4 @@ gunicorn
 ipython
 pip-tools
 python-dotenv>=0.19<1
-rollbar
+sentry-sdk
