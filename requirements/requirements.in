@@ -5,6 +5,7 @@ django-celery-results
 django-extensions
 gunicorn
 ipython
+logtail-python
 pip-tools
 python-dotenv>=0.19<1
 rollbar

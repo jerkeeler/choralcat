@@ -37,8 +37,9 @@ app_version_path = os.path.join(BASE_DIR, ".version")
 if os.path.exists(app_version_path):
     APP_VERSION = open(app_version_path).read().strip()
 
+ROLLBAR_ACCESS_TOKEN = os.environ.get("ROLLBAR_ACCESS_TOKEN")
 ROLLBAR = {
-    "access_token": os.environ.get("ROLLBAR_ACCESS_TOKEN"),
+    "access_token": ROLLBAR_ACCESS_TOKEN,
     "environment": "development" if DEBUG else "production",
     "root": str(BASE_DIR),
     "code_version": APP_VERSION,
@@ -72,7 +73,7 @@ MIDDLEWARE = [
     "choralcat.core.middleware.TimezoneMiddleware",
 ]
 
-if not DEBUG:
+if not DEBUG and ROLLBAR_ACCESS_TOKEN:
     MIDDLEWARE += [
         "rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404",
     ]
@@ -183,6 +184,10 @@ LOG_LOCATION = os.environ.get(
 ERROR_LOG_LOCATION = os.environ.get(
     "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
 )
+LOGTAIL_TOKEN = os.environ.get("LOGTAIL_TOKEN")
+extra_handlers = []
+if not DEBUG:
+    extra_handlers = ["rollbar"]
 
 LOGGING = {
     "version": 1,
@@ -244,6 +249,12 @@ LOGGING = {
             "environment": "production",
             "class": "rollbar.logger.RollbarHandler"
         },
+        "logtail": {
+            "level": "DEBUG",
+            "filters": ["require_debug_false"],
+            "class": "logtail.LogtailHandler",
+            "source_token": LOGTAIL_TOKEN,
+        }
     },
     "loggers": {
         "django.request": {
@@ -251,7 +262,7 @@ LOGGING = {
             "level": "ERROR",
         },
         "choralcat": {
-            "handlers": ["console", "file", "file_error", "rollbar"],
+            "handlers": ["console", "file", "file_error", "logtail"] + extra_handlers,
             "level": LOG_LEVEL,
             "propagate": True,
         },
