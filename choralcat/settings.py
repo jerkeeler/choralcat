@@ -42,6 +42,7 @@ ROLLBAR = {
     "environment": "development" if DEBUG else "production",
     "root": BASE_DIR,
     "code_version": APP_VERSION,
+    "capture_username": True,
 }
 
 # Application definition
@@ -73,7 +74,7 @@ MIDDLEWARE = [
 
 if not DEBUG:
     MIDDLEWARE += [
-        "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
+        "rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404",
     ]
 
 ROOT_URLCONF = "choralcat.urls"
@@ -235,6 +236,13 @@ LOGGING = {
             "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler",
         },
+        "rollbar": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "access_token": ROLLBAR["access_token"],
+            "environment": "production",
+            "class": "rollbar.logger.RollbarHandler"
+        },
     },
     "loggers": {
         "django.request": {
@@ -242,7 +250,7 @@ LOGGING = {
             "level": "ERROR",
         },
         "choralcat": {
-            "handlers": ["console", "file", "file_error", "mail_admins"],
+            "handlers": ["console", "file", "file_error", "mail_admins", "rollbar"],
             "level": LOG_LEVEL,
             "propagate": True,
         },
