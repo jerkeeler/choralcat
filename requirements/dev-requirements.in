@@ -1,0 +1,9 @@
+-c requirements.txt
+# Dev dependencies version shouldn't matter
+mypy
+black
+django-stubs
+ipython
+fabric
+pip-tools
+assertpy

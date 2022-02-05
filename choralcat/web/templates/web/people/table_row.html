@@ -1,0 +1,39 @@
+{% load static %}
+<tr>
+  <td class="px-6 py-4 whitespace-nowrap">
+    <a href="{% url 'person_detail' person.slug %}">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 h-10 w-10">
+          <img class="h-10 w-10 rounded-full"
+               src="{% static 'web/profile-placeholder.jpg' %}"
+               alt="">
+        </div>
+        <div class="ml-4">
+          <div class="text-sm font-medium text-gray-900">
+            {{ person }}
+          </div>
+          {% if person.birth or person.death %}
+            <div class="text-sm text-gray-500">
+              {% if person.birth %}{{ person.birth.year }}{% endif %}
+              {% if person.birth or person.death %} - {% endif %}
+              {% if person.death %}{{ person.death.year }}{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </a>
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-gray-900 text-sm">
+    {% if person.poc %}{{ person.poc|yesno|capfirst }}{% endif %}
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+    {% if person.non_male_identifying %}{{ person.non_male_identifying|yesno|capfirst }}{% endif %}
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+    {% if person.nationality %}{{ person.nationality|capfirst }}{% endif %}
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    <a href="{% url 'person_edit' person.slug %}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+  </td>
+</tr>
+

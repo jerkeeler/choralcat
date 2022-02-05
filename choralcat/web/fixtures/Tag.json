@@ -1,0 +1,41 @@
+[
+  {
+    "model": "web.tag",
+    "pk": 1,
+    "fields": {
+      "token": "7ShiV9442K0XmPmp",
+      "created_by": null,
+      "updated_by": null,
+      "created_at": "2022-01-23T18:04:14.495Z",
+      "updated_at": "2022-01-23T18:04:14.511Z",
+      "user": 2,
+      "value": "test tag"
+    }
+  },
+  {
+    "model": "web.tag",
+    "pk": 2,
+    "fields": {
+      "token": "hRJueDH8TgiH2nij",
+      "created_by": null,
+      "updated_by": null,
+      "created_at": "2022-01-23T18:04:14.495Z",
+      "updated_at": "2022-01-23T18:04:14.511Z",
+      "user": 2,
+      "value": "we love"
+    }
+  },
+  {
+    "model": "web.tag",
+    "pk": 3,
+    "fields": {
+      "token": "ut7jMPpCqFBwrBXl",
+      "created_by": null,
+      "updated_by": null,
+      "created_at": "2022-01-23T18:04:14.495Z",
+      "updated_at": "2022-01-23T18:04:14.511Z",
+      "user": 2,
+      "value": "to tag things"
+    }
+  }
+]

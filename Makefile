@@ -1,8 +1,14 @@
 requirements:
-	pip-compile requirements.in
+	pip-compile requirements/requirements.in
+	pip-compile requirements/dev-requirements.in
+
 
 install:
-	pip install -r requirements.txt
+	pip-sync requirements/requirements.txt
+	npm ci
+
+install_dev:
+	pip-sync requirements/requirements.txt requirements/dev-requirements.txt
 	npm ci
 
 build:
@@ -13,4 +19,4 @@ test:
 	python manage.py test
 
 load_testdata:
-	python manage.py loaddata choralcat_web/fixtures/*
+	python manage.py loaddata choralcat/web/fixtures/*

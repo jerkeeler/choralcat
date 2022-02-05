@@ -1,8 +1,7 @@
 // tailwind.config.js
 module.exports = {
   content: [
-    './choralcat_core/**/*.html',
-    './choralcat_web/**/*.{html,py}',
+    './choralcat/**/*.{html,py}',
   ],
   darkMode: 'media',
   theme: {

@@ -1,0 +1,27 @@
+{% extends "web/base.html" %}
+
+{% block title %} - Catalog{% endblock %}
+
+{% load static %}
+{% block main %}
+  {% url "composition_new" as location %}
+  {% include "partials/table_header_with_action.html" with text="Catalog" action_text="New Composition" location=location %}
+
+  {% include "partials/catalog/search_bar.html" %}
+
+  {% include "partials/catalog/filters.html" %}
+  <div x-data="{
+      modalOpen: false,
+      open(piece) {
+        this.modalOpen = true;
+        this.piece = piece;
+      },
+      piece: '',
+    }">
+    <div id="search-results">
+      {% include "partials/catalog/table_with_pagination.html" %}
+    </div>
+
+    {% include "partials/program_modal/modal_base.html" %}
+  </div>
+{% endblock %}

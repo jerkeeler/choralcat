@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_celery_results",
     "django_celery_beat",
-    "choralcat_core.apps.ChoralcatCoreConfig",
-    "choralcat_web.apps.ChoralcatWebConfig",
+    "django_rename_app",
+    "choralcat.core.apps.ChoralcatCoreConfig",
+    "choralcat.web.apps.ChoralcatWebConfig",
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "choralcat_core.middleware.TimezoneMiddleware",
+    "choralcat.core.middleware.TimezoneMiddleware",
 ]
 
 ROOT_URLCONF = "choralcat.urls"
@@ -167,7 +168,7 @@ ERROR_LOG_LOCATION = os.environ.get(
 
 # If you create a new python module be sure to add it to this list of modules to
 # enable default logging
-logged_modules = ["choralcat", "choralcat_core", "choralcat_web"]
+logged_modules = ["choralcat", "web"]
 loggers = {
     name: {
         "handlers": ["console", "file", "file_error", "mail_admins"],

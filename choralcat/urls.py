@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.views.defaults import page_not_found
 
 urlpatterns = [
-    path("", include("choralcat_web.urls")),
+    path("", include("choralcat.web.urls")),
     path("admin/", admin.site.urls),
 ]
 
