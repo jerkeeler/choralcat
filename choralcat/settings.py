@@ -40,7 +40,7 @@ if os.path.exists(app_version_path):
 ROLLBAR = {
     "access_token": os.environ.get("ROLLBAR_ACCESS_TOKEN"),
     "environment": "development" if DEBUG else "production",
-    "root": BASE_DIR,
+    "root": str(BASE_DIR),
     "code_version": APP_VERSION,
     "capture_username": True,
 }
