@@ -32,10 +32,13 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
+APP_VERSION = open(os.path.join(BASE_DIR, ".version")).read().strip()
+
 ROLLBAR = {
     "access_token": os.environ.get("ROLLBAR_ACCESS_TOKEN"),
     "environment": "development" if DEBUG else "production",
     "root": BASE_DIR,
+    "code_version": APP_VERSION,
 }
 
 # Application definition

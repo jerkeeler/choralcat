@@ -1,3 +1,4 @@
+.version
 /data
 *.egg-info
 __pycache__

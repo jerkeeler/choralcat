@@ -5,6 +5,7 @@ echo "Pulling latest code from master..."
 git fetch
 echo "Checking out commit $1..."
 git checkout $1
+echo "$1" > .version
 # Install new dependencies and migrate database
 echo "Installing python dependencies..."
 make install
