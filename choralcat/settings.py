@@ -161,10 +161,11 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
-if os.environ.get("ADMIN_NAMES") and os.environ.get("ADMIN_EMAILS"):
-    ADMIN_NAMES = os.environ.get("ADMIN_NAMES").split(",")
-    ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS").split(",")
-    ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
+# Disabling admin emails/names in favor of rollbar integration
+# if os.environ.get("ADMIN_NAMES") and os.environ.get("ADMIN_EMAILS"):
+#     ADMIN_NAMES = os.environ.get("ADMIN_NAMES").split(",")
+#     ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS").split(",")
+#     ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
 
 # CELERY CONFIG
 REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
@@ -250,7 +251,7 @@ LOGGING = {
             "level": "ERROR",
         },
         "choralcat": {
-            "handlers": ["console", "file", "file_error", "mail_admins", "rollbar"],
+            "handlers": ["console", "file", "file_error", "rollbar"],
             "level": LOG_LEVEL,
             "propagate": True,
         },
