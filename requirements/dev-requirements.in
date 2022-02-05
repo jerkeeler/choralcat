@@ -1,7 +1,7 @@
 -c requirements.txt
 # Dev dependencies version shouldn't matter
-mypy
+assertpy
 black
 django-stubs
 fabric
-assertpy
+mypy

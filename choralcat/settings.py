@@ -32,6 +32,12 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
+ROLLBAR = {
+    "access_token": os.environ.get("ROLLBAR_ACCESS_TOKEN"),
+    "environment": "development" if DEBUG else "production",
+    "root": BASE_DIR,
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,6 +63,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "choralcat.core.middleware.TimezoneMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
 ROOT_URLCONF = "choralcat.urls"
@@ -164,7 +171,6 @@ LOG_LOCATION = os.environ.get(
 ERROR_LOG_LOCATION = os.environ.get(
     "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
 )
-
 
 LOGGING = {
     "version": 1,
