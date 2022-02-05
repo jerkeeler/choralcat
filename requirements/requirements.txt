@@ -46,15 +46,12 @@ django==4.0.1
     #   -r requirements/requirements.in
     #   django-celery-beat
     #   django-extensions
-    #   django-rename-app
     #   django-timezone-field
 django-celery-beat==2.1.0
     # via -r requirements/requirements.in
 django-celery-results==2.2.0
     # via -r requirements/requirements.in
 django-extensions==3.1.5
-    # via -r requirements/requirements.in
-django-rename-app==0.1.3
     # via -r requirements/requirements.in
 django-timezone-field==4.2.3
     # via django-celery-beat

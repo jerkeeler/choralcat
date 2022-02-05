@@ -1,11 +1,10 @@
-requirements:
+requires:
 	pip-compile requirements/requirements.in
 	pip-compile requirements/dev-requirements.in
 
 
 install:
 	pip-sync requirements/requirements.txt
-	npm ci
 
 install_dev:
 	pip-sync requirements/requirements.txt requirements/dev-requirements.txt

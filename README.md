@@ -19,7 +19,7 @@ create programs of music it.
 
 1. Clone this repo
 2. Create a python virtual environment
-3. Install dependencies `make install`
+3. Install dependencies `make install_dev`
 4. Copy `.env.example` to `.env` and fill in actual values
    - All example values should be fine for local development, except if you want to test celery. To test celery locally you must provide a valid REDIS_PASSWORD.
 5. Migrate your database `./manage migrate`
@@ -33,6 +33,13 @@ create programs of music it.
 
 All Python code should be formatted with [Black](https://github.com/psf/black). 
 JavaScript code is not currently automatically formatted.
+
+### Adding new dependency
+
+If it's a dev dependency add it to [requirements/dev-requirements.in](./requirements/dev-requirements.in) if it's both
+a prod and dev dependency add it to [requirements/requirements.in](./requirements/requirements.in). Then
+run `make requires` to run pip-compile and automatically update the requirements.txt files which pin
+versions and are use for actually installing dependencies.
 
 ### Commands
 
