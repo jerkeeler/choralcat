@@ -32,7 +32,10 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
-APP_VERSION = open(os.path.join(BASE_DIR, ".version")).read().strip()
+APP_VERSION = None
+app_version_path = os.path.join(BASE_DIR, ".version")
+if os.path.exists(app_version_path):
+    APP_VERSION = open(app_version_path).read().strip()
 
 ROLLBAR = {
     "access_token": os.environ.get("ROLLBAR_ACCESS_TOKEN"),
@@ -66,8 +69,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "choralcat.core.middleware.TimezoneMiddleware",
-    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
+
+if not DEBUG:
+    MIDDLEWARE += [
+        "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
+    ]
 
 ROOT_URLCONF = "choralcat.urls"
 
