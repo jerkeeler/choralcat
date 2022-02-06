@@ -34,7 +34,7 @@
                  class="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
                  hx-post="{% url 'catalog_search' %}"
                  hx-target="#search-results"
-                 hx-trigger="click delay:50ms"
+                 hx-trigger="click delay:100ms"
                  hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
                  hx-params="search, category, topics, tags, voicings"
                  autocomplete="off"

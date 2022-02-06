@@ -19,7 +19,7 @@
           {% if page_obj.has_previous %}
           href="#"
           hx-post="{% url 'catalog_search' %}"
-          hx-trigger="click, search"
+          hx-trigger="click delay:100ms"
           hx-vals='{"page": {{ page_obj.previous_page_number }}}'
           hx-target="#search-results"
           hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
@@ -53,7 +53,7 @@
              hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium"
             hx-post="{% url 'catalog_search' %}"
             hx-target="#search-results"
-            hx-trigger="click"
+            hx-trigger="click delay:100ms"
             hx-vals='{"page": {{ page_num }}}'
             hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
             hx-params="page, search, category, topics, tags, voicings"
@@ -68,7 +68,7 @@
           href="#"
           hx-post="{% url 'catalog_search' %}"
           hx-target="#search-results"
-          hx-trigger="click"
+          hx-trigger="click delay:100ms"
           hx-vals='{"page": {{ page_obj.next_page_number }}}'
           hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
           hx-params="page, search, category, topics, tags, voicings"
