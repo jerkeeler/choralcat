@@ -29,10 +29,17 @@ create programs of music it.
 9. Enjoy and start development! Try visiting [localhost:8000](http://localhost:8000) and explore the app!
    - Feel free to use `test_user` with `testpassword` (from fixtures) or create a super user with `./manage.py createsuperuser`
 
+Optional (setup pre-commit):
+1. (in your virtualenv) `pre-commit install`
+
 ### Code Formatting
 
 All Python code should be formatted with [Black](https://github.com/psf/black).
 JavaScript code is not currently automatically formatted.
+
+[pre-commit](https://pre-commit.com/) is used to automatically run Black and format
+files after committing. Please set it up (see [Setup](#setup)) so that committed
+files are all formatted in the same style.
 
 ### Adding new dependency
 
