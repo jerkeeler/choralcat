@@ -20,6 +20,8 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: make install_dev
+      - name: Run linting checks
+        run: make check
       - name: Build static files
         run: make build
       - name: Run tests

@@ -15,6 +15,9 @@ build:
 	npm run prod
 	DEBUG=True python manage.py collectstatic --noinput
 
+check:
+	black choralcat/ --check
+
 test:
 	python manage.py test
 
