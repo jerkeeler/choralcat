@@ -1,11 +1,18 @@
 import logging
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
+from glob import glob
 
+from django.conf import settings
 from celery import shared_task
 
 logger = logging.getLogger(__name__)
+DATA_DIR = os.path.join(settings.BASE_DIR, "data")
+BACKUP_DIR = os.path.join(DATA_DIR, "backups")
+BACKUP_FILENAME_DATEFORMAT = "%Y-%m-%dT%H%M"
+BACKUP_FILENAME = "db_backup_{now:{dateformat}}.sqlite3"
+BACKUP_RETENTION_DAYS = 7
 
 
 @shared_task(bind=True)
@@ -20,7 +27,7 @@ def backup_sqlite_database():
 
     logger.info("Starting new database backup")
     now = datetime.utcnow()
-    backup_name = f"db_backup_{now:%Y-%m-%dT%H%M}.sqlite3"
+    backup_name = BACKUP_FILENAME.format(now=now, dateformat=BACKUP_FILENAME_DATEFORMAT)
     con = sqlite3.connect(os.path.join("data", "db.sqlite3"))
     bck = sqlite3.connect(os.path.join("data", "backups", backup_name))
     with bck:
@@ -28,3 +35,18 @@ def backup_sqlite_database():
     bck.close()
     con.close()
     logger.info(f"Database backup complete. Database backup: {backup_name}")
+
+
+@shared_task
+def cleanup_sqlite_backups():
+    now = datetime.utcnow()
+    logger.info("Removing backups more than a week old")
+    all_backups = glob(os.path.join(BACKUP_DIR, "*.sqlite3"))
+    seven_days_ago = now - timedelta(days=BACKUP_RETENTION_DAYS)
+    for backup in all_backups:
+        basename = os.path.basename(backup)
+        db_date = datetime.strptime(basename[10:-8], BACKUP_FILENAME_DATEFORMAT)
+        if db_date < seven_days_ago:
+            logger.info(f"Removing {basename}")
+            os.remove(backup)
+    logger.info("Finished cleaning up backups")

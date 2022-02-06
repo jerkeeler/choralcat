@@ -5,3 +5,4 @@ black
 django-stubs
 fabric
 mypy
+pre-commit

@@ -1,6 +1,6 @@
 # [choralcat](https://choralcat.org)
 
-This repo contains the code that runs [choralcat.org](https://choralcat.org). 
+This repo contains the code that runs [choralcat.org](https://choralcat.org).
 Choralcat is a choral music management system. It is designed for easy
 cataloguing, searching, and sorting of choral music. A user builds out their
 library of choral music and is then provided with the tools to analyze it and
@@ -31,7 +31,7 @@ create programs of music it.
 
 ### Code Formatting
 
-All Python code should be formatted with [Black](https://github.com/psf/black). 
+All Python code should be formatted with [Black](https://github.com/psf/black).
 JavaScript code is not currently automatically formatted.
 
 ### Adding new dependency
@@ -91,4 +91,3 @@ branch push to GitHub and pushes to the `main` branch are automatically deployed
 to the site (only if tests pass). The site currently runs on a DigitalOcean droplet.
 The current flow generates static files and transfers them to the server using `scp`
 and then runs the [deploy script](./deploy.sh) on the server over ssh.
-
