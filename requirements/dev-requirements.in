@@ -4,5 +4,6 @@ assertpy
 black
 django-stubs
 fabric
+isort
 mypy
 pre-commit

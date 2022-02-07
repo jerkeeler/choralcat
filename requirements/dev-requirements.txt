@@ -48,6 +48,8 @@ identify==2.4.8
     # via pre-commit
 invoke==1.6.0
     # via fabric
+isort==5.10.1
+    # via -r requirements/dev-requirements.in
 mypy==0.931
     # via
     #   -r requirements/dev-requirements.in
