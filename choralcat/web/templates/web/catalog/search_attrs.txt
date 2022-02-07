@@ -1,0 +1,5 @@
+hx-post="{% url 'catalog_search' %}"
+hx-target="#search-results"
+hx-trigger="{{ trigger }}"
+hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings'], [name='period']"
+hx-params="search, category, topics, tags, voicings, period"

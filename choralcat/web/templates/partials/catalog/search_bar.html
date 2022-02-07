@@ -1,3 +1,4 @@
+{% load choralcat_extras %}
 <div class="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
   <div class="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
     <div class="w-full">
@@ -15,11 +16,7 @@
         <input id="search" name="search"
                class="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                placeholder="Search by title/composer/arranger" type="search"
-               hx-post="{% url 'catalog_search' %}"
-               hx-trigger="keyup changed delay:500ms, search"
-               hx-target="#search-results"
-               hx-params="search, category, topics, tags, voicings"
-               hx-include="[name='search'], [name='category'], [name='topics'], [name='tags'], [name='voicings']"
+               {% search_attrs "keyup changed delay:500ms, search" %}
                autocomplete="off"
         >
       </div>

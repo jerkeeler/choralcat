@@ -46,6 +46,7 @@ def catalog_search(request):
     tags = [c for c in request.POST.getlist("tags") if c and c != "undefined"]
     topics = [c for c in request.POST.getlist("topics") if c and c != "undefined"]
     voicings = [c for c in request.POST.getlist("voicings") if c and c != "undefined"]
+    time_periods = [c for c in request.POST.getlist("period") if c and c != "undefined"]
     logger.debug(f"Querying database for compositions related to: {term}")
     compositions = Composition.objects.all()
 
@@ -74,6 +75,10 @@ def catalog_search(request):
     if voicings:
         logger.debug(f"Filtering by voicings: {voicings}")
         compositions = compositions.filter(voicing__in=voicings)
+
+    if time_periods:
+        logger.debug(f"Filtering by time periods: {time_periods}")
+        compositions = compositions.filter(time_period__in=time_periods)
 
     paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
     page = paginator.get_page(page)
@@ -122,6 +127,14 @@ class CatalogView(LoginRequiredMixin, ListView):
                 str(v)
                 for v in Composition.objects.order_by("voicing")
                 .values_list("voicing", flat=True)
+                .distinct()
+            ]
+        )
+        context["time_periods"] = sorted(
+            [
+                str(v)
+                for v in Composition.objects.order_by("time_period")
+                .values_list("time_period", flat=True)
                 .distinct()
             ]
         )
