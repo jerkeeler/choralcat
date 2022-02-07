@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ..models import Program, Composition
+from ..models import Composition, Program
 
 
 class ProgramTestCase(TestCase):

@@ -4,8 +4,8 @@ import sqlite3
 from datetime import datetime, timedelta
 from glob import glob
 
-from django.conf import settings
 from celery import shared_task
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 DATA_DIR = os.path.join(settings.BASE_DIR, "data")

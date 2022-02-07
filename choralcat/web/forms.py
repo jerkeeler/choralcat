@@ -1,10 +1,9 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.forms import widgets
-from django.forms import ModelForm
+from django.forms import ModelForm, widgets
 from django.urls import reverse_lazy
 
-from .models import Program, Composition, Person
-from .widgets import AutocompleteStringWidget, TagWidget, MtMStringWidget
+from .models import Composition, Person, Program
+from .widgets import AutocompleteStringWidget, MtMStringWidget, TagWidget
 
 
 class CustomLoginForm(AuthenticationForm):

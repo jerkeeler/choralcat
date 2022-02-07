@@ -6,15 +6,16 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
-from django.views.generic import ListView, DetailView
-from django.shortcuts import render, get_object_or_404
+from django.views.generic import DetailView, ListView
 
 from choralcat.core.views import UserCreateView, UserUpdateView
+
 from .consts import DEFAULT_NUM_PER_PAGE
 from .forms import CompositionForm, PersonForm, ProgramForm
-from .models import Composition, Person, Program, Tag, Category, Topic, Instrument
+from .models import Category, Composition, Instrument, Person, Program, Tag, Topic
 
 logger = logging.getLogger(__name__)
 

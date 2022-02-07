@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.contrib.postgres.fields import JSONField
 from django.forms import widgets
 
-
 logger = logging.getLogger(__name__)
 
 

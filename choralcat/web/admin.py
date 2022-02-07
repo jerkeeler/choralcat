@@ -1,12 +1,12 @@
 from django.contrib import admin
 
 from .models import (
-    Person,
     Category,
-    Instrument,
-    Tag,
     Composition,
+    Instrument,
+    Person,
     Program,
+    Tag,
     Topic,
     UserProfile,
 )

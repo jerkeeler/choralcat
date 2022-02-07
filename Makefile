@@ -17,6 +17,7 @@ build:
 
 check:
 	black choralcat/ --check
+	isort choralcat/ --profile black --check
 
 test:
 	python manage.py test
