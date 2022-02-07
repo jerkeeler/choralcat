@@ -47,7 +47,7 @@
     <h2 id="filter-heading" class="sr-only">Filters</h2>
 
     <div class="relative z-10 bg-white border-b border-gray-200 pb-4">
-      <div class="max-w-7xl mx-auto px-4 flex items-center justify-between sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
         <div class="relative inline-block text-left" @click.away="sortOpen = false">
           <div>
 {#            <button type="button"#}
@@ -107,6 +107,9 @@
         <div class="hidden sm:block">
           <div class="flow-root">
             <div class="-mx-4 flex items-center divide-x divide-gray-200">
+              <a class="px-4 text-sm hover:cursor-pointer text-gray-400" href="{% url 'catalog' %}">
+                Clear All
+              </a>
               {% include "partials/catalog/filter_dialog.html" with text="Category" options=categories is_tag=True %}
               {% include "partials/catalog/filter_dialog.html" with text="Topics" options=topics is_tag=True %}
               {% include "partials/catalog/filter_dialog.html" with text="Tags" options=tags is_tag=True %}
