@@ -34,14 +34,16 @@ Optional (setup pre-commit):
 
 ### Code Formatting
 
-All Python code should be formatted with [Black](https://github.com/psf/black).
+All Python code should be formatted with [Black](https://github.com/psf/black) and [isort](https://pycqa.github.io/isort/index.html).
 JavaScript code is not currently automatically formatted.
 
 [pre-commit](https://pre-commit.com/) is used to automatically run Black and format
 files after committing. Please set it up (see [Setup](#setup)) so that committed
 files are all formatted in the same style.
 
-### Adding new dependency
+If code is not formatted, CI tests will fail and deploys will be blocked.
+
+### Adding a new dependency
 
 If it's a dev dependency add it to [requirements/dev-requirements.in](./requirements/dev-requirements.in) if it's both
 a prod and dev dependency add it to [requirements/requirements.in](./requirements/requirements.in). Then
@@ -65,17 +67,11 @@ scp staticfiles.tar ip:/apps/choralcat/
 tar -xvf staticfiles.tar staticfiles/
 ```
 
-#### Redis
-
-```bash
-# Start redis server locally
-#To restart redis after an upgrade:
-brew services restart redis
-#Or, if you don't want/need a background service you can just run:
-/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
-```
-
 #### Celery
+
+Celery is used for performing async tasks in choralcat. It currently does very
+little, but is there for added flexibility in the future. Celery is set up to use
+Redis as its backend.
 
 ```bash
 # Run celery locally
@@ -87,9 +83,21 @@ celery -A choralcat worker --loglevel=INFO
 celery -A choralcat beat -l INFO
 ```
 
+#### Redis
+
+```bash
+# Start redis server locally
+#To restart redis after an upgrade:
+brew services restart redis
+#Or, if you don't want/need a background service you can just run:
+/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
+```
+
 ### Testing
 
-test_user password is `test_password`
+test_user password is `test_password`.
+
+To run unit tests use `make test` or `./manage.py test`
 
 ## Deployment
 
