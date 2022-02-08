@@ -16,8 +16,9 @@ build:
 	DEBUG=True python manage.py collectstatic --noinput
 
 check:
-	black choralcat/ --check
+	autoflake choralcat/**/*.py --imports=django --check
 	isort choralcat/ --profile black --check
+	black choralcat/ --check
 
 test:
 	python manage.py test

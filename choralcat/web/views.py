@@ -42,13 +42,13 @@ class ChoralcatLogoutView(LogoutView):
 def catalog_search(request):
     term = request.POST.get("search")
     page = request.POST.get("page", 1)
+    page = 1 if page == "undefined" else page
     per_page = request.POST.get("per_page", DEFAULT_NUM_PER_PAGE)
     categories = [c for c in request.POST.getlist("category") if c and c != "undefined"]
     tags = [c for c in request.POST.getlist("tags") if c and c != "undefined"]
     topics = [c for c in request.POST.getlist("topics") if c and c != "undefined"]
     voicings = [c for c in request.POST.getlist("voicings") if c and c != "undefined"]
     time_periods = [c for c in request.POST.getlist("period") if c and c != "undefined"]
-    logger.debug(f"Querying database for compositions related to: {term}")
     compositions = Composition.objects.all()
 
     if term:
@@ -82,6 +82,7 @@ def catalog_search(request):
         compositions = compositions.filter(time_period__in=time_periods)
 
     paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
+    logger.debug(f"Returning page {page}")
     page = paginator.get_page(page)
     context = {"compositions": page.object_list, "page_obj": page}
     return render(
