@@ -2,7 +2,6 @@ from assertpy import assert_that, soft_assertions
 from django.test import TestCase
 
 from .. import models as m
-from .. import views as v
 from .test_base import CCTestCase
 
 
