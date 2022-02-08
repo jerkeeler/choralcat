@@ -5,19 +5,16 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: local
+  - repo: https://github.com/PyCQA/autoflake
+    rev: d43d8a770c0f9ef2f68b368670ab882f6ca6ea03
     hooks:
       - id: autoflake
-        name: Remove unused imports
-        entry: bash -c 'autoflake "$@"'
-        language: python
-        args: ["--imports=django", "--ignore-init-module-imports", "--in-place"]
-        files: \.py$
+        args: [ "--ignore-init-module-imports", "--in-place", "--remove-all-unused-imports" ]
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
       - id: isort
-        args: ["--profile", "black"]
+        args: [ "--profile", "black" ]
   - repo: https://github.com/psf/black
     rev: 22.1.0
     hooks:
