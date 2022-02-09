@@ -21,7 +21,7 @@ check:
 	black choralcat/ --check
 
 test:
-	python manage.py test
+	python manage.py test --parallel
 
 load_testdata:
 	python manage.py loaddata choralcat/web/fixtures/*
