@@ -1,17 +1,17 @@
 <div x-data="{
 options: [
   {% for opt in sorted_options %}
-    [{{ opt.value }}, '{{ opt.label }}'],
+    [{{ opt.value }}, '{{ opt.label|escapejs }}'],
   {% endfor %}
 ],
 filtered: [
   {% for opt in sorted_options %}
-    [{{ opt.value }}, '{{ opt.label }}'],
+    [{{ opt.value }}, '{{ opt.label|escapejs }}'],
   {% endfor %}
 ],
 selected: [
   {% for opt in selected %}
-  [{{ opt.value }}, '{{ opt.label }}'],
+  [{{ opt.value }}, '{{ opt.label|escapejs }}'],
   {% endfor %}
 ],
 idx: -1,

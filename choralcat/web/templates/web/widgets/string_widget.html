@@ -1,6 +1,6 @@
 <div x-data="{
-options: [{% for opt in ordered_options %}'{{ opt }}',{% endfor %}],
-filtered: [{% for opt in ordered_options %}'{{ opt }}',{% endfor %}],
+options: [{% for opt in ordered_options %}'{{ opt|escapejs }}',{% endfor %}],
+filtered: [{% for opt in ordered_options %}'{{ opt|escapejs }}',{% endfor %}],
 idx: -1,
 maxIdx: {{ ordered_options|length }},
 {{ widget.name }}: '{% firstof widget.value '' %}',

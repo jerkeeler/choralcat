@@ -2,12 +2,12 @@
 <div
     x-data="{
     options: [ {% for opt in sorted_options %}
-        [{{ forloop.counter0 }}, {{ opt.value }}, '{{ opt.label }}'],
+        [{{ forloop.counter0 }}, {{ opt.value }}, '{{ opt.label|escapejs }}'],
       {% endfor %}
       ],
     filtered: [
       {% for opt in sorted_options %}
-        [{{ forloop.counter0 }}, {{ opt.value }}, '{{ opt.label }}'],
+        [{{ forloop.counter0 }}, {{ opt.value }}, '{{ opt.label|escapejs }}'],
       {% endfor %}
       ],
     showDropdown: false,
