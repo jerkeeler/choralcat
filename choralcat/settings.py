@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_celery_beat",
     "choralcat.core.apps.ChoralcatCoreConfig",
+    "choralcat.data_migrations.apps.DataMigrationsConfig",
     "choralcat.web.apps.ChoralcatWebConfig",
 ]
 

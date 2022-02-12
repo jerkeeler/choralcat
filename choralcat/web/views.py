@@ -54,7 +54,7 @@ def catalog_search(request):
     if term:
         logger.debug(f"Searching for term: {term}")
         compositions = compositions.filter(
-            Q(title__icontains=term)
+            Q(title_unidecode__icontains=term)
             | Q(composers__first_name__icontains=term)
             | Q(composers__last_name__icontains=term)
             | Q(arrangers__first_name__icontains=term)

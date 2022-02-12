@@ -6,7 +6,7 @@ from django.db import models
 from django.shortcuts import reverse
 
 from choralcat.core.consts import VARCHAR_LENGTH
-from choralcat.core.fields import AutoSlugField
+from choralcat.core.fields import AutoSlugField, UnidecodeField
 from choralcat.core.models import UserModel
 
 logger = logging.getLogger(__name__)
@@ -84,6 +84,7 @@ class Tag(SimpleModel):
 
 class Composition(UserModel):
     title = models.CharField(max_length=VARCHAR_LENGTH)
+    title_unidecode = UnidecodeField(populated_from="title", max_length=VARCHAR_LENGTH)
     slug = AutoSlugField(populated_from="title")
     composers = models.ManyToManyField(Person, related_name="composers", blank=True)
     arrangers = models.ManyToManyField(Person, related_name="arrangers", blank=True)

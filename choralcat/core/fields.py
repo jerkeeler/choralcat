@@ -1,6 +1,8 @@
 import logging
+from typing import Optional
 
 from django.db import models
+from unidecode import unidecode
 
 from .utils import gen_slug
 
@@ -62,3 +64,30 @@ class AutoSlugField(models.SlugField):
                 setattr(model_instance, self.name, slug)
                 logger.debug(f"Generated new slug for field {self.name}: {slug}")
                 return slug
+
+
+class UnidecodeField(models.CharField):
+    description = "A field that automatically unidecodes another field upon each save"
+
+    def __init__(self, populated_from: Optional[str] = None, *args, **kwargs):
+        if populated_from is None:
+            raise ValueError("populated_from has to be provided")
+        self.populated_from = populated_from
+
+        if "null" not in kwargs:
+            kwargs["null"] = True
+
+        if "blank" not in kwargs:
+            kwargs["blank"] = True
+
+        super().__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        if self.populated_from is not None:
+            kwargs["populated_from"] = self.populated_from
+        return name, path, args, kwargs
+
+    def pre_save(self, model_instance: "UnidecodeField", add: bool) -> str:
+        attr_value = getattr(model_instance, self.populated_from)
+        return unidecode(attr_value)
