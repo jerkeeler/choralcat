@@ -93,6 +93,14 @@ brew services restart redis
 /opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
 ```
 
+
+#### Data Migrations
+
+```bash
+# Create a new data migration
+./manage.py makemigrations --empty data_migrations --name "MyNameHere"
+```
+
 ### Testing
 
 test_user password is `test_password`.

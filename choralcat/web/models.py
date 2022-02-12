@@ -21,8 +21,8 @@ class UserProfile(models.Model):
 
 class Person(UserModel):
     first_name = models.CharField(max_length=VARCHAR_LENGTH)
-    slug = AutoSlugField(populated_from="first_name")
     last_name = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
+    slug = AutoSlugField(populated_from=["first_name", "last_name"])
     birth = models.DateField(null=True, blank=True)
     death = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True)
