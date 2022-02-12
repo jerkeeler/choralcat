@@ -25,3 +25,6 @@ test:
 
 load_testdata:
 	python manage.py loaddata choralcat/web/fixtures/*
+
+data_migration:
+	python manage.py makemigrations --empty data_migrations
