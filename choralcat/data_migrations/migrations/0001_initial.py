@@ -3,12 +3,14 @@ import logging
 
 from django.db import migrations
 
+from choralcat.core.utils import timer
+
 logger = logging.getLogger(__name__)
 
 
+@timer
 def save_compositions(apps, schema_editor):
     Composition = apps.get_model("web", "Composition")
-
     logger.info(f"Re-saving {Composition.objects.count()} compositions")
     for c in Composition.objects.all():
         c.save()
@@ -17,10 +19,7 @@ def save_compositions(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = []
-
+    dependencies = [("web", "0005_composition_title_unidecode")]
     operations = [
-        migrations.RunPython(
-            save_compositions,
-        )
+        migrations.RunPython(save_compositions),
     ]
