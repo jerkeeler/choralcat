@@ -114,3 +114,11 @@ branch push to GitHub and pushes to the `main` branch are automatically deployed
 to the site (only if tests pass). The site currently runs on a DigitalOcean droplet.
 The current flow generates static files and transfers them to the server using `scp`
 and then runs the [deploy script](./deploy.sh) on the server over ssh.
+
+#### Updating host action secrets
+
+To update the SSH_KNOWN_HOSTS secret run the following command and use the provided
+output as the secret:
+```bash
+ssh-keyscan -H <host-ip>
+```
