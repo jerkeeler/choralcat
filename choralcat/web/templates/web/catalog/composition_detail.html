@@ -83,7 +83,8 @@
         <div>
           {% if composition.time_period or composition.language %}
             <p>{% if composition.time_period %}
-              {{ composition.time_period }}{% endif %}{% if composition.time_period and composition.language %},{% endif %}
+              {{ composition.time_period }}{% endif %}{% if composition.time_period and composition.language %}
+              ,{% endif %}
               {% if composition.language %}{{ composition.language }}{% endif %}
             </p>
           {% endif %}
@@ -105,16 +106,16 @@
         <div class="grid justify-items-end text-gray-600">
           <div>{% for instrument in composition.accompaniment.all %}{% create_tag instrument.value %}{% endfor %}</div>
           {% if composition.number_of_voices %}
-            <div class="mt-1">
+            <div class="inline-flex mt-1">
               <p>{{ composition.number_of_voices }} voices</p>
             </div>
           {% endif %}
           {% if composition.voicing %}
-            <div class="mt-1">
+            <div class="inline-flex mt-1">
               <p>{{ composition.voicing }}</p>
             </div>
           {% endif %}
-          <div class="mt-1 flex items-center">
+          <div class="mt-1 inline-flex items-center">
             {% if composition.duration %}
               <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
                    viewBox="0 0 24 24"
@@ -127,7 +128,7 @@
               </p>
             {% endif %}
           </div>
-          <div class="flex items-center mt-1">
+          <div class="inline-flex items-center mt-1">
             {% if composition.starting_key or composition.ending_key %}
               <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
                    viewBox="0 0 24 24"
@@ -142,26 +143,68 @@
           </div>
         </div>
       </div>
-      <div>
-        {% if composition.score_link %}
-        <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score</a></p>
-        {% endif %}
-      </div>
-      <hr class="mt-2">
-      <div class="mt-2">
-        {% if composition.notes %}
-          <div>
-            <h4 class="text-xl font-header text-gray-800">Notes</h4>
-            <p>{{ composition.notes }}</p>
+      {% if composition.score_link %}
+        <div class="mt-2">
+          <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score PDF</a></pkk>
+        </div>
+      {% endif %}
+      {% if composition.notes or composition.edition_notes %}
+        <hr class="mt-4 mb-4"/>
+        <div class="mt-2">
+          {% if composition.notes %}
+            <div>
+              <h4 class="text-xl font-header text-gray-800">Notes:</h4>
+              <p>{{ composition.notes }}</p>
+            </div>
+          {% endif %}
+          {% if composition.edition_notes %}
+            <div class="mt-2">
+              <h4 class="text-xl font-header text-gray-800">Edition Notes:</h4>
+              <p>{{ composition.edition_notes }}</p>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+      {% if composition.program_set.count %}
+        <hr class="mt-4 mb-4"/>
+        <h4 class="text-xl font-header text-gray-800">Contained in:</h4>
+        <!-- This example requires Tailwind CSS v2.0+ -->
+        <div class="flex flex-col mt-2">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Title
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Season
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Last Updated
+                    </th>
+                    <th scope="col" class="relative px-6 py-3">
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+
+                  {% for program in composition.program_set.all %}
+                    {% include "web/program/table_row.html" with show_edit=False %}
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-        {% endif %}
-        {% if composition.edition_notes %}
-          <div class="mt-2">
-            <h4 class="text-xl font-header text-gray-800">Edition Notes</h4>
-            <p>{{ composition.edition_notes }}</p>
-          </div>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

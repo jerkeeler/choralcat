@@ -32,7 +32,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
 
             {% for program in programs %}
-              {% include "web/program/table_row.html" %}
+              {% include "web/program/table_row.html" with show_edit=True %}
             {% endfor %}
 
             </tbody>
