@@ -1,34 +1,54 @@
 {% extends "web/base.html" %}
 
 {% load static %}
+{% load choralcat_extras %}
 {% block main %}
-  <!-- This example requires Tailwind CSS v2.0+ -->
-  <div class="lg:flex lg:items-center lg:justify-between" x-data="{
-      modalOpen: false,
-      open(piece) {
-        this.modalOpen = true;
-        this.piece = piece;
-      },
-      piece: '',
-    }">
-    <div class="flex-1 min-w-0">
-      <h2 class="text-3xl font-header leading-7 text-gray-900">
-        {{ composition.title }}
-      </h2>
-      <div class="mt-1 flex flex-col flex-wrap mt-0 pt-2">
-        {% if composition.composers.count > 0 %}
-          <div class="flex items-center text-gray-500">
-            <span class="font-light">Composed by: &nbsp;</span> {{ composition.composers.all|join:"; " }}
-          </div>
-        {% endif %}
-        {% if composition.arrangers.count > 0 %}
-          <div class="flex items-center text-gray-500">
-            <span class="font-light">Arranged by: &nbsp;</span> {{ composition.arrangers.all|join:"; " }}
-          </div>
-        {% endif %}
+  <div>
+    <div class="lg:flex lg:items-center lg:justify-between" x-data="{
+    modalOpen: false,
+    open(piece) {
+      this.modalOpen = true;
+      this.piece = piece;
+    },
+    piece: '',
+  }">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-3xl font-header leading-7 text-gray-900">
+          {{ composition.title }}
+        </h2>
+        <div class="mt-1 flex flex-col flex-wrap mt-0 pt-2">
+          {% if composition.composers.count > 0 %}
+            <div class="flex items-center text-gray-500">
+              <span class="font-light">Composed by: &nbsp;</span>
+              {% for composer in composition.composers.all %}
+                <a class="text-primary hover:text-primary300"
+                   href="{% url 'person_detail' composer.slug %}">{{ composer }};</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if composition.arrangers.count > 0 %}
+            <div class="flex items-center text-gray-500">
+              <span class="font-light">Arranged by: &nbsp;</span>
+              {% for arranger in composition.arrangers.all %}
+                <a class="text-primary hover:text-primary300"
+                   href="{% url 'person_detail' arranger.slug %}">{{ arranger }};</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if composition.rating %}
+            <div class="text-lg flex items-center mt-1 text-yellow-300">
+              {% for i in composition.stars %}
+                <svg class="w-5 h-5" stroke="currentColor" fill="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
       </div>
-    </div>
-    <div class="mt-5 flex lg:mt-0 lg:ml-4">
+      <div class="mt-5 flex lg:mt-0 lg:ml-4">
     <span class="hidden sm:block">
       <a href="{% url 'composition_edit' composition.slug %}"
          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -41,14 +61,12 @@
         Edit
       </a>
     </span>
-
-      <span class="sm:ml-3">
+        <span class="sm:ml-3">
       <button type="button"
               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               @click="open('{{ composition.slug }}')"
               hx-get="{% url 'catalog_modal' composition.slug %}"
-              hx-target="#modalContent"
-      >
+              hx-target="#modalContent">
         <!-- Heroicon name: solid/check -->
       <svg class="w-5 h-5 -ml-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
            xmlns="http://www.w3.org/2000/svg">
@@ -57,9 +75,93 @@
         Add
       </button>
     </span>
+      </div>
+      {% include "partials/program_modal/modal_base.html" %}
     </div>
-
-    {% include "partials/program_modal/modal_base.html" %}
+    <div class="mt-2 grid grid-flow-row text-gray-500">
+      <div class="grid grid-cols-2">
+        <div>
+          {% if composition.time_period or composition.language %}
+            <p>{% if composition.time_period %}
+              {{ composition.time_period }}{% endif %}{% if composition.time_period and composition.language %},{% endif %}
+              {% if composition.language %}{{ composition.language }}{% endif %}
+            </p>
+          {% endif %}
+          {% if composition.tags.count %}
+            <div><span class="mr-2 font-light text-gray-500">Tags:</span>
+              {% for tag in composition.tags.all %}{% create_tag tag.value %}{% endfor %}</div>
+          {% endif %}
+          {% if composition.categories.count %}
+            <div class="mt-1"><span
+                class="mr-2 font-light text-gray-500">Categories:</span>{% for category in composition.categories.all %}
+              {% create_tag category.value %}{% endfor %}</div>
+          {% endif %}
+          {% if composition.topics.all %}
+            <div class="mt-1"><span class="mr-2 font-light text-gray-500">Topics:</span>
+              {% for topic in composition.topics.all %}
+                {% create_tag topic.value %}{% endfor %}</div>
+          {% endif %}
+        </div>
+        <div class="grid justify-items-end text-gray-600">
+          <div>{% for instrument in composition.accompaniment.all %}{% create_tag instrument.value %}{% endfor %}</div>
+          {% if composition.number_of_voices %}
+            <div class="mt-1">
+              <p>{{ composition.number_of_voices }} voices</p>
+            </div>
+          {% endif %}
+          {% if composition.voicing %}
+            <div class="mt-1">
+              <p>{{ composition.voicing }}</p>
+            </div>
+          {% endif %}
+          <div class="mt-1 flex items-center">
+            {% if composition.duration %}
+              <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                   viewBox="0 0 24 24"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p>
+                {{ composition.duration_mmss }}
+              </p>
+            {% endif %}
+          </div>
+          <div class="flex items-center mt-1">
+            {% if composition.starting_key or composition.ending_key %}
+              <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                   viewBox="0 0 24 24"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+              </svg>
+              <p>
+                {{ composition.starting_key }}/{{ composition.ending_key }}
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div>
+        {% if composition.score_link %}
+        <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score</a></p>
+        {% endif %}
+      </div>
+      <hr class="mt-2">
+      <div class="mt-2">
+        {% if composition.notes %}
+          <div>
+            <h4 class="text-xl font-header text-gray-800">Notes</h4>
+            <p>{{ composition.notes }}</p>
+          </div>
+        {% endif %}
+        {% if composition.edition_notes %}
+          <div class="mt-2">
+            <h4 class="text-xl font-header text-gray-800">Edition Notes</h4>
+            <p>{{ composition.edition_notes }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
   </div>
-
 {% endblock %}
