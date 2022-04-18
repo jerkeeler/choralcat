@@ -69,11 +69,12 @@ jobs:
         with:
           push: true
           tags: jerkeeler/choralcat:app-latest,jerkeeler/choralcat:app-${{ steps.vars.outputs.sha_short }}
-      - name: Build and push nginx image
+      - name: Build and push caddy image
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: jerkeeler/choralcat:nginx-latest,jerkeeler/choralcat:nginx-${{ steps.vars.outputs.sha_short }}
+          tags: jerkeeler/choralcat:nginx-latest,jerkeeler/choralcat:caddy-${{ steps.vars.outputs.sha_short }}
+          file: ./docker-images/caddy/Dockerfile
 
   deploy:
     needs: build_image
