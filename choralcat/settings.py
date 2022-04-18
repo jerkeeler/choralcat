@@ -38,6 +38,7 @@ env = environ.Env(
     SENTRY_DSN=(str, None),
 )
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,8 +53,8 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS")
-INTERNAL_IPS = env("INTERNAL_IPS")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+INTERNAL_IPS = env.list("INTERNAL_IPS")
 
 APP_VERSION = None
 app_version_path = os.path.join(BASE_DIR, ".version")
@@ -194,8 +195,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
 # Disabling admin emails/names in favor of sentry integration
-#     ADMIN_NAMES = env("ADMIN_NAMES")
-#     ADMIN_EMAILS = env("ADMIN_EMAILS")
+#     ADMIN_NAMES = env.list("ADMIN_NAMES")
+#     ADMIN_EMAILS = env.list("ADMIN_EMAILS")
 #     ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
 
 # CELERY CONFIG
