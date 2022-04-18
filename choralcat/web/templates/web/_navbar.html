@@ -1,4 +1,5 @@
 {% load static %}
+{% load choralcat_components %}
 <!-- This example requires Tailwind CSS v2.0+ -->
 <nav class="bg-white shadow border-b-2 border-primary" x-data="{ open: false }">
   <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -17,11 +18,9 @@
 
             Menu open: "hidden", Menu closed: "block"
           -->
-          <svg x-show="!open"
-               class=" h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
+          <span x-show="!open">
+            {% hamburger_icon "h-6 w-6" %}
+          </span>
           <!--
             Icon when menu is open.
 
@@ -29,11 +28,9 @@
 
             Menu open: "block", Menu closed: "hidden"
           -->
-          <svg x-show="open"
-               class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+          <span x-show="open">
+            {% x_icon "h-6 w-6" %}
+          </span>
         </button>
       </div>
       <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
@@ -63,10 +60,10 @@
         {% if user.is_authenticated %}
           <span class="mr-2 hidden sm:block">{{ user.username }}</span>
           {% url 'logout' as logout_url %}
-          {% include 'partials/button_link.html' with location=logout_url text="Log Out" %}
+          {% button_link location=logout_url text="Log Out" %}
         {% else %}
           {% url 'login' as login_url %}
-          {% include 'partials/button_link.html' with location=login_url text="Log In" %}
+          {% button_link location=login_url text="Log In" %}
         {% endif %}
       </div>
     </div>

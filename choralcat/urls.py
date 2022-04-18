@@ -21,6 +21,8 @@ from django.views.defaults import page_not_found
 urlpatterns = [
     path("", include("choralcat.web.urls")),
     path("admin/", admin.site.urls),
+    # path('admin/defender/', include('defender.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:

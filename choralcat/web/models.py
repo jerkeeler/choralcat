@@ -13,9 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
-    )
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     timezone = models.CharField(max_length=VARCHAR_LENGTH, default=settings.TIME_ZONE)
 
 
@@ -36,13 +34,13 @@ class Person(UserModel):
 
     def __str__(self):
         if self.last_name:
-            return f"{self.last_name}, {self.first_name} "
+            return f"{self.last_name}, {self.first_name}"
         return self.first_name
 
     @property
     def name(self):
         if self.last_name:
-            return f"{self.last_name}, {self.first_name} "
+            return f"{self.last_name}, {self.first_name}"
         return self.first_name
 
     def get_absolute_url(self):
@@ -50,9 +48,7 @@ class Person(UserModel):
 
 
 class SimpleModel(UserModel):
-    value = models.CharField(
-        max_length=VARCHAR_LENGTH, blank=True, unique=True, null=True
-    )
+    value = models.CharField(max_length=VARCHAR_LENGTH, blank=True, unique=True, null=True)
 
     class Meta:
         ordering = ["value", "user"]
@@ -93,18 +89,14 @@ class Composition(UserModel):
     ending_key = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     time_period = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     language = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
-    number_of_voices = models.IntegerField(
-        validators=[MinValueValidator(1)], blank=True, null=True
-    )
+    number_of_voices = models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
     voicing = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
     accompaniment = models.ManyToManyField(Instrument, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     topics = models.ManyToManyField(Topic, blank=True)
 
-    rating = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)], blank=True, null=True
-    )
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], blank=True, null=True)
     score_link = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     notes = models.TextField(blank=True)
     edition_notes = models.TextField(blank=True)
@@ -180,9 +172,7 @@ class Program(UserModel):
     def remove(self, composition: Composition):
         logger.debug(f"Removing {composition} from program {self}")
         self.compositions.remove(composition)
-        self.ordering["compositions"] = [
-            c for c in self.ordering["compositions"] if c != composition.slug
-        ]
+        self.ordering["compositions"] = [c for c in self.ordering["compositions"] if c != composition.slug]
 
     def reorder(self, new_order: list[str]):
         logger.debug(f"Reordering program {self} to {new_order}")

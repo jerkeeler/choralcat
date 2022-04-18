@@ -1,3 +1,4 @@
+{% load choralcat_components %}
 {% load choralcat_extras %}
 <li>
   <input type="hidden" name="slug" value="{{ composition.slug }}"/>
@@ -10,7 +11,7 @@
           </p>
           <div class="ml-2 flex-shrink-0 flex">
             {% for tag in composition.topics.all %}
-              {% create_tag tag.value %}
+              {% tag tag.value %}
             {% endfor %}
           </div>
         </div>
@@ -23,12 +24,7 @@
           </div>
           {% if composition.duration %}
             <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-              <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                   viewBox="0 0 24 24"
-                   xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
+              {% clock_icon "flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" %}
               <p>
                 {{ composition.duration_mmss }}
               </p>
@@ -46,12 +42,7 @@
               {% endif %}
             </div>
             <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-              <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
-                   viewBox="0 0 24 24"
-                   xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-              </svg>
+              {% music_notes_icon "flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" %}
               {% if composition.starting_key or composition.ending_key %}
                 <p>
                   {{ composition.starting_key }}/{{ composition.ending_key }}
@@ -70,10 +61,7 @@
           <input type="hidden" value="{{ composition.slug }}" name="composition_slug">
           <button class="text-red-500 bg-red-200 rounded-md shadow px-3 py-2"
                   type="submit">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-            </svg>
+            {% minus_icon "w-6 h-6" %}
           </button>
         </form>
       </div>

@@ -1,4 +1,4 @@
-{% load choralcat_extras %}
+{% load choralcat_components %}
 <select multiple
         id="id_{{ widget_name }}"
         name="{{ widget_name }}"
@@ -9,5 +9,5 @@
   {% endfor %}
 </select>
 {% for opt in selected %}
-  {% create_closeable_tag opt.label tag_url widget_name%}
+  {% closeable_tag opt.label tag_url widget_name%}
 {% endfor %}

@@ -13,33 +13,53 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+import environ
 import sentry_sdk
 from django.core.management.utils import get_random_secret_key
-from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 
-load_dotenv()
+env = environ.Env(
+    ADMIN_NAMES=(list[str], []),
+    ADMIN_EMAILS=(list[str], []),
+    ALLOWED_HOSTS=(list[str], ["localhost"]),
+    DEBUG=(bool, False),
+    EMAIL_HOST=(str, None),
+    EMAIL_HOST_PASSWORD=(str, None),
+    EMAIL_HOST_USER=(str, None),
+    EMAIL_PORT=(str, None),
+    ERROR_LOG_LOCATION=(str, os.path.join("data", "logs", "error.log")),
+    INTERNAL_IPS=(list[str], ["127.0.0.1"]),
+    LOG_LEVEL=(str, "INFO"),
+    LOG_LOCATION=(str, os.path.join("data", "logs", "application.log")),
+    REDIS_HOST=(str, "127.0.0.1"),
+    REDIS_PORT=(str, "6379"),
+    SECRET_KEY=(str, get_random_secret_key()),
+    SENTRY_DSN=(str, None),
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+INTERNAL_IPS = env("INTERNAL_IPS")
 
 APP_VERSION = None
 app_version_path = os.path.join(BASE_DIR, ".version")
 if os.path.exists(app_version_path):
     APP_VERSION = open(app_version_path).read().strip()
 
-SENTRY_DSN = os.environ.get("SENTRY_DSN")
+SENTRY_DSN = env("SENTRY_DSN")
 if SENTRY_DSN:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
@@ -68,17 +88,21 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_celery_results",
     "django_celery_beat",
+    # "defender",
+    "debug_toolbar",
     "choralcat.core.apps.ChoralcatCoreConfig",
     "choralcat.data_migrations.apps.DataMigrationsConfig",
     "choralcat.web.apps.ChoralcatWebConfig",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # "defender.middleware.FailedLoginMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "choralcat.core.middleware.TimezoneMiddleware",
@@ -162,34 +186,29 @@ if DEBUG:
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # EMAIL CONFIG
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_PORT = os.environ.get("EMAIL_PORT")
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
 # Disabling admin emails/names in favor of sentry integration
-# if os.environ.get("ADMIN_NAMES") and os.environ.get("ADMIN_EMAILS"):
-#     ADMIN_NAMES = os.environ.get("ADMIN_NAMES").split(",")
-#     ADMIN_EMAILS = os.environ.get("ADMIN_EMAILS").split(",")
+#     ADMIN_NAMES = env("ADMIN_NAMES")
+#     ADMIN_EMAILS = env("ADMIN_EMAILS")
 #     ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
 
 # CELERY CONFIG
-REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
-REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
+REDIS_PASSWORD = env("REDIS_PASSWORD")
 
 CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
-LOG_LOCATION = os.environ.get(
-    "LOG_LOCATION", os.path.join("data", "logs", "application.log")
-)
-ERROR_LOG_LOCATION = os.environ.get(
-    "ERROR_LOG_LOCATION", os.path.join("data", "logs", "error.log")
-)
+LOG_LEVEL = env("LOG_LEVEL")
+LOG_LOCATION = env("LOG_LOCATION")
+ERROR_LOG_LOCATION = env("ERROR_LOG_LOCATION")
 
 LOGGING = {
     "version": 1,

@@ -2,7 +2,6 @@ requires:
 	pip-compile requirements/requirements.in
 	pip-compile requirements/dev-requirements.in
 
-
 install:
 	.venv/bin/pip-sync requirements/requirements.txt
 

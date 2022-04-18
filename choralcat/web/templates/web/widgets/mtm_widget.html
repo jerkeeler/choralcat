@@ -1,3 +1,4 @@
+{% load choralcat_components %}
 <div x-data="{
 options: [
   {% for opt in sorted_options %}
@@ -50,10 +51,8 @@ removeValue(opt) {
     <template x-for="opt in selected">
       <div class="flex items-center">
         <p class="text-md text-gray-800" x-text="opt[1]"></p>
-        <span class="ml-3 hover:cursor-pointer text-red-500" @click="removeValue(opt)">
-          <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-            <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"/>
-          </svg>
+        <span class="ml-2 hover:cursor-pointer text-red-500 hover:text-red-800" @click="removeValue(opt)">
+          {% x_icon "h-4 w-4" %}
         </span>
       </div>
     </template>

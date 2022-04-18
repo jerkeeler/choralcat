@@ -1,7 +1,8 @@
 {% load choralcat_extras %}
 <div
     x-data="{
-    options: [ {% for opt in sorted_options %}
+    options: [
+      {% for opt in sorted_options %}
         [{{ forloop.counter0 }}, {{ opt.value }}, '{{ opt.label|escapejs }}'],
       {% endfor %}
       ],
@@ -64,8 +65,8 @@
             shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2
             focus:ring-indigo-500"
             @click="submitThing()"
-           {# Something about the way htmx/alpine works, only the element that triggers the event can listen for that #}
-           {# event. So there's some kind of scoping going on here. #}
+        {# Something about the way htmx/alpine works, only the element that triggers the event can listen for that #}
+        {# event. So there's some kind of scoping going on here. #}
             hx-trigger="{{ widget.name }}_submit"
             hx-post="{{ widget.attrs.tag_url }}"
             hx-params="{{ widget.name }}, new_{{ widget.name }}"

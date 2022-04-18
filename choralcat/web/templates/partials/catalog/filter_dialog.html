@@ -1,3 +1,4 @@
+{% load choralcat_components %}
 {% load choralcat_extras %}
 <div class="px-4 relative inline-block text-left last:pr-0" x-data="{showFilter: false, numSelected: 0}" @click.away="showFilter = false  ">
   <button type="button"
@@ -10,12 +11,7 @@
     {#    <span#}
     {#        class="ml-1.5 rounded py-0.5 px-1.5 bg-gray-200 text-xs font-semibold text-gray-700 tabular-nums">1</span>#}
     <!-- Heroicon name: solid/chevron-down -->
-    <svg class="flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <path fill-rule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clip-rule="evenodd"/>
-    </svg>
+    {% chevron_down_icon "flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-gray-400 group-hover:text-gray-500" %}
   </button>
 
   <div x-show="showFilter"
@@ -39,7 +35,7 @@
           <label for="filter-{{ text }}-{{ forloop.counter0 }}"
                  class="ml-3 pr-6 text-sm font-medium text-gray-900 whitespace-nowrap">
             {% if is_tag %}
-              {% create_tag option %}
+              {% tag option %}
             {% else %}
               {{ option }}
             {% endif %}
