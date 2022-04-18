@@ -1,0 +1,8 @@
+.env*
+.git/
+node_modules/
+.venv/
+data/
+.idea/
+.mypy_cache/
+.vscode/

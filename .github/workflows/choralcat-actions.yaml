@@ -33,8 +33,50 @@ jobs:
         with:
           name: staticfiles
           path: staticfiles.tar
-  deploy:
+
+  build_image:
     needs: test
+    if: github.ref == 'refs/heads/main'
+    concurrency: deploy-prod
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.4
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 17.9.0
+          cache: 'npm'
+      - name: Install dependencies
+        run: make install_dev
+      - name: Build static files
+        run: make build
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      # This next parts builds and publishes the latest docker images
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Build and push app image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: jerkeeler/choralcat:app-latest,jerkeeler/choralcat:app-${{ steps.vars.outputs.sha_short }}
+      - name: Build and push nginx image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: jerkeeler/choralcat:nginx-latest,jerkeeler/choralcat:nginx-${{ steps.vars.outputs.sha_short }}
+
+  deploy:
+    needs: build_image
     if: github.ref == 'refs/heads/main'
     concurrency: deploy-prod
     runs-on: ubuntu-20.04

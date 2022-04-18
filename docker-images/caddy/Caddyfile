@@ -1,0 +1,32 @@
+(common) {
+    encode gzip
+    @http {
+        protocol http
+    }
+    redir @http https://{host}{uri}
+}
+
+(choralcat) {
+    handle_path /static/* {
+        root * /app/staticfiles
+        file_server
+    }
+
+    handle {
+        reverse_proxy localhost:8000
+    }
+}
+
+choralcat.org {
+    import common
+    import choralcat
+}
+
+www.choralcat.org {
+    redir https://choralcat.org{uri}
+}
+
+choral.keeler.dev {
+    import common
+    import choralcat
+}

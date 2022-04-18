@@ -1,0 +1,69 @@
+version: "3.7"
+
+services:
+  app:
+    image: jerkeeler/choralcat:app-latest
+    working_dir: /app
+    environment: &app-env
+      LOG_LEVEL: "${LOG_LEVEL}"
+      DEBUG: "${DEBUG}"
+      SECRET_KEY: "${SECRET_KEY}"
+      ALLOWED_HOSTS: "${ALLOWED_HOSTS}"
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
+      EMAIL_HOST: "${EMAIL_HOST}"
+      EMAIL_PORT: "${EMAIL_PORT}"
+      EMAIL_HOST_USER: "${EMAIL_HOST_USER}"
+      EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD}"
+      ADMIN_EMAILS: "${ADMIN_EMAILS}"
+      ADMIN_NAMES: "${ADMIN_NAMES}"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /app/data
+  celery-worker:
+    image: jerkeeler/choralcat:app-latest
+    command: >
+      .venv/bin/celery -A choralcat worker -n w1
+      --logfile=/var/log/celery/%n%I.log --loglevel="INFO"
+      --time-limit=300 --concurrency=1
+    working_dir: /app
+    environment: *app-env
+    volumes: &celery-volumes
+      - type: bind
+        source: ./data
+        target: /app/data
+      - type: bind
+        source: /var/log/celery
+        target: /var/log/celery
+    depends_on:
+      - app
+      - redis
+  celery-beat:
+    image: jerkeeler/choralcat:app-latest
+    command: >
+      .venv/bin/celery -A choralcat beat
+      --logfile=/var/log/celery/beat.log --loglevel="INFO"
+    working_dir: /app
+    environment: *app-env
+    volumes: *celery-volumes
+    depends_on:
+      - celery-worker
+  redis:
+    image: redis:6.2
+    restart: unless-stopped
+    volumes:
+      - redis
+  caddy:
+    image: jerkeeler/choralcat:caddy-latest
+    ports:
+       - "80:80"
+       - "443:443"
+    volumes:
+        - caddy_data:/data
+
+volumes:
+  redis:
+  caddy_data:
+    external: true

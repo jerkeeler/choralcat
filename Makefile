@@ -24,3 +24,11 @@ test:
 
 load_testdata:
 	python manage.py loaddata choralcat/web/fixtures/*
+
+docker_build:
+	docker build --tag jerkeeler/choralcat:app-latest .
+	docker build --tag jerkeeler/choralcat:caddy-latest -f docker-images/caddy/Dockerfile .
+
+docker_push:
+	docker push jerkeeler/choralcat:app-latest
+	docker push jerkeeler/choralcat:caddy-latest
