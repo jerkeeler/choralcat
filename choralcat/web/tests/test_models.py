@@ -10,12 +10,8 @@ class ProgramTestCase(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = User.objects.get(pk=2)
-        cls.composition1 = Composition.objects.create(
-            title="Composition Example", user=cls.user, slug="comp-1"
-        )
-        cls.composition2 = Composition.objects.create(
-            title="Composition2 Example", user=cls.user, slug="comp-2"
-        )
+        cls.composition1 = Composition.objects.create(title="Composition Example", user=cls.user, slug="comp-1")
+        cls.composition2 = Composition.objects.create(title="Composition2 Example", user=cls.user, slug="comp-2")
         cls.program = Program.objects.create(title="Program Example", user=cls.user)
         cls.program.add(cls.composition1)
 

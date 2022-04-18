@@ -51,9 +51,7 @@ class AutoSlugField(models.SlugField):
         if self.populated_from is not None and type(self.populated_from) is str:
             attr_value = getattr(model_instance, self.populated_from)
         elif self.populated_from is not None and type(self.populated_from) is list:
-            attr_value = " ".join(
-                getattr(model_instance, f) for f in self.populated_from
-            )
+            attr_value = " ".join(getattr(model_instance, f) for f in self.populated_from)
         else:
             attr_value = ""
 

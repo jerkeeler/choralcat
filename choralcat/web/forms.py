@@ -24,8 +24,7 @@ class CustomLoginForm(AuthenticationForm):
 
 
 text_input_classes = (
-    "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm "
-    "border-gray-300 rounded-md"
+    "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm " "border-gray-300 rounded-md"
 )
 
 
@@ -51,9 +50,7 @@ class ProgramForm(ModelForm):
         }
 
 
-checkbox_input_classes = (
-    "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-)
+checkbox_input_classes = "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
 
 
 class PersonForm(ModelForm):
@@ -77,9 +74,7 @@ class PersonForm(ModelForm):
             "birth": widgets.DateInput(attrs={"class": text_input_classes}),
             "death": widgets.DateInput(attrs={"class": text_input_classes}),
             "poc": widgets.CheckboxInput(attrs={"class": checkbox_input_classes}),
-            "non_male_identifying": widgets.CheckboxInput(
-                attrs={"class": checkbox_input_classes}
-            ),
+            "non_male_identifying": widgets.CheckboxInput(attrs={"class": checkbox_input_classes}),
             "nationality": AutocompleteStringWidget(
                 model=Person, field="nationality", attrs={"placeholder": "georgian"}
             ),
@@ -114,45 +109,25 @@ class CompositionForm(ModelForm):
         ]
 
         widgets = {
-            "title": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "Title"}
-            ),
-            "starting_key": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "C"}
-            ),
-            "ending_key": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "Cm"}
-            ),
-            "voicing": AutocompleteStringWidget(
-                model=Composition, field="voicing", attrs={"placeholder": "satb"}
-            ),
-            "duration": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "03:00"}
-            ),
-            "number_of_voices": widgets.NumberInput(
-                attrs={"class": text_input_classes, "placeholder": 4}
-            ),
+            "title": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "Title"}),
+            "starting_key": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "C"}),
+            "ending_key": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "Cm"}),
+            "voicing": AutocompleteStringWidget(model=Composition, field="voicing", attrs={"placeholder": "satb"}),
+            "duration": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "03:00"}),
+            "number_of_voices": widgets.NumberInput(attrs={"class": text_input_classes, "placeholder": 4}),
             "time_period": AutocompleteStringWidget(
                 model=Composition, field="time_period", attrs={"placeholder": "Modern"}
             ),
-            "language": AutocompleteStringWidget(
-                model=Composition, field="language", attrs={"placeholder": "Klingon"}
-            ),
-            "rating": widgets.NumberInput(
-                attrs={"class": text_input_classes, "placeholder": "1-5"}
-            ),
-            "score_link": widgets.TextInput(
-                attrs={"class": text_input_classes, "placeholder": "keeler.dev"}
-            ),
+            "language": AutocompleteStringWidget(model=Composition, field="language", attrs={"placeholder": "Klingon"}),
+            "rating": widgets.NumberInput(attrs={"class": text_input_classes, "placeholder": "1-5"}),
+            "score_link": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "keeler.dev"}),
             "notes": widgets.Textarea(
                 attrs={
                     "class": text_input_classes,
                     "placeholder": "Jeremy could've written this one better, tbh",
                 }
             ),
-            "edition_notes": widgets.Textarea(
-                attrs={"class": text_input_classes, "placeholder": "Arabian Nights"}
-            ),
+            "edition_notes": widgets.Textarea(attrs={"class": text_input_classes, "placeholder": "Arabian Nights"}),
             "composers": MtMStringWidget(attrs={"placeholder": "Search artists..."}),
             "arrangers": MtMStringWidget(attrs={"placeholder": "Search artists..."}),
             "categories": TagWidget(

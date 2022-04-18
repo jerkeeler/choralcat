@@ -43,13 +43,7 @@ class AutocompleteStringWidget(TextInput):
     def get_context(self, name: str, value: Any, attrs):
         context = super().get_context(name, value, attrs)
         ordered_opts = [
-            o
-            for o in sorted(
-                self.model.objects.order_by()
-                .values_list(self.field, flat=True)
-                .distinct()
-            )
-            if o
+            o for o in sorted(self.model.objects.order_by().values_list(self.field, flat=True).distinct()) if o
         ]
         context["ordered_options"] = ordered_opts
         return context

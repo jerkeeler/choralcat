@@ -125,19 +125,12 @@ class CatalogView(LoginRequiredMixin, ListView):
         context["tags"] = sorted([str(t) for t in Tag.objects.distinct()])
         context["categories"] = sorted([str(c) for c in Category.objects.distinct()])
         context["voicings"] = sorted(
-            [
-                str(v)
-                for v in Composition.objects.order_by("voicing")
-                .values_list("voicing", flat=True)
-                .distinct()
-            ]
+            [str(v) for v in Composition.objects.order_by("voicing").values_list("voicing", flat=True).distinct()]
         )
         context["time_periods"] = sorted(
             [
                 str(v)
-                for v in Composition.objects.order_by("time_period")
-                .values_list("time_period", flat=True)
-                .distinct()
+                for v in Composition.objects.order_by("time_period").values_list("time_period", flat=True).distinct()
             ]
         )
         return context
@@ -164,17 +157,13 @@ class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
 @login_required
 @require_POST
 def category_add(request):
-    return _simple_add_view(
-        request, Category, "categories", reverse_lazy("category_add")
-    )
+    return _simple_add_view(request, Category, "categories", reverse_lazy("category_add"))
 
 
 @login_required
 @require_POST
 def instrument_add(request):
-    return _simple_add_view(
-        request, Instrument, "accompaniment", reverse_lazy("instrument_add")
-    )
+    return _simple_add_view(request, Instrument, "accompaniment", reverse_lazy("instrument_add"))
 
 
 @login_required

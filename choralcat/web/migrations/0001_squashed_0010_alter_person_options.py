@@ -44,15 +44,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "value",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "user",
@@ -86,9 +82,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 ("first_name", models.CharField(max_length=256)),
                 ("last_name", models.CharField(blank=True, max_length=256)),
@@ -135,15 +129,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "value",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "user",
@@ -177,9 +167,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 ("value", models.CharField(blank=True, max_length=256, null=True)),
                 (
@@ -213,15 +201,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "value",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 (
                     "user",
@@ -255,9 +239,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 ("title", models.CharField(max_length=256)),
                 ("duration", models.DurationField(blank=True, null=True)),
@@ -293,9 +275,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "arrangers",
-                    models.ManyToManyField(
-                        blank=True, related_name="arrangers", to="web.Person"
-                    ),
+                    models.ManyToManyField(blank=True, related_name="arrangers", to="web.Person"),
                 ),
                 (
                     "categories",
@@ -303,9 +283,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "composers",
-                    models.ManyToManyField(
-                        blank=True, related_name="composers", to="web.Person"
-                    ),
+                    models.ManyToManyField(blank=True, related_name="composers", to="web.Person"),
                 ),
                 (
                     "user",
@@ -316,9 +294,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "slug",
-                    choralcat.core.fields.AutoSlugField(
-                        blank=True, null=True, populated_from="title", unique=True
-                    ),
+                    choralcat.core.fields.AutoSlugField(blank=True, null=True, populated_from="title", unique=True),
                 ),
                 ("tags", models.ManyToManyField(blank=True, to="web.Tag")),
                 ("voicing", models.CharField(blank=True, max_length=256)),
@@ -350,9 +326,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token",
-                    models.CharField(
-                        blank=True, max_length=256, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=256, null=True, unique=True),
                 ),
                 ("title", models.CharField(max_length=256)),
                 ("ordering", models.JSONField(blank=True, default=dict)),
@@ -370,9 +344,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "slug",
-                    choralcat.core.fields.AutoSlugField(
-                        blank=True, null=True, populated_from="title", unique=True
-                    ),
+                    choralcat.core.fields.AutoSlugField(blank=True, null=True, populated_from="title", unique=True),
                 ),
                 (
                     "topics",
