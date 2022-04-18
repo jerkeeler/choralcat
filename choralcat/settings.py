@@ -33,6 +33,7 @@ env = environ.Env(
     LOG_LOCATION=(str, os.path.join("data", "logs", "application.log")),
     REDIS_HOST=(str, "127.0.0.1"),
     REDIS_PORT=(str, "6379"),
+    REDIS_PASSWORD=(str, "notarealpassword"),
     SECRET_KEY=(str, get_random_secret_key()),
     SENTRY_DSN=(str, None),
 )
