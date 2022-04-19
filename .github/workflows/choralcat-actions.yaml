@@ -68,7 +68,7 @@ jobs:
         with:
           push: true
           context: ./
-          tags: jerkeeler/choralcat:nginx-latest,jerkeeler/choralcat:caddy-${{ steps.vars.outputs.sha_short }}
+          tags: jerkeeler/choralcat:caddy-latest,jerkeeler/choralcat:caddy-${{ steps.vars.outputs.sha_short }}
           file: ./docker-images/caddy/Dockerfile
 
   deploy:
