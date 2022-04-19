@@ -47,7 +47,7 @@ jobs:
         with:
           name: staticfiles
       - name: Unbundle static files
-        run: tar -xvf staticfiles.tar staticfiles/
+        run: tar -xvf staticfiles.tar ./staticfiles/
       - name: Set short git sha
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
