@@ -38,24 +38,17 @@ jobs:
   build_image:
     needs: test
     if: github.ref == 'refs/heads/main'
+    concurrency: deploy-prod
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
+      - name: Download static files
+        uses: actions/download-artifact@v2
         with:
-          python-version: 3.10.4
-          cache: pip
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 17.9.0
-          cache: npm
-      - name: Install dependencies
-        run: make install_dev
-      - name: Build static files
-        run: make build
+          name: staticfiles
+      - name: Unbundle static files
+        run: tar -xvf staticfiles.tar staticfiles/
       - name: Set short git sha
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -69,14 +62,16 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
+          context: ./
+          file: ./Dockerfile
           tags: jerkeeler/choralcat:app-latest,jerkeeler/choralcat:app-${{ steps.vars.outputs.sha_short }}
       - name: Build and push caddy image
         uses: docker/build-push-action@v2
         with:
           push: true
           context: ./
-          tags: jerkeeler/choralcat:caddy-latest,jerkeeler/choralcat:caddy-${{ steps.vars.outputs.sha_short }}
           file: ./docker-images/caddy/Dockerfile
+          tags: jerkeeler/choralcat:caddy-latest,jerkeeler/choralcat:caddy-${{ steps.vars.outputs.sha_short }}
 
   deploy:
     needs: build_image
