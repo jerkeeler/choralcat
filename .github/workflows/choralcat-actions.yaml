@@ -52,6 +52,8 @@ jobs:
       - name: Set short git sha
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      - name: Write version file
+        run: echo "${{ steps.vars.outputs.sha_short }}" > .version
       # This next parts builds and publishes the latest docker images
       - name: Log in to Docker Hub
         uses: docker/login-action@v1

@@ -59,8 +59,6 @@ services:
     restart: unless-stopped
     volumes:
       - redis
-    networks:
-      - celery
   caddy:
     image: "jerkeeler/choralcat:caddy-${VERSION}"
     restart: unless-stopped
