@@ -3,10 +3,9 @@ version: "3.7"
 services:
   app:
     image: "jerkeeler/choralcat:app-${VERSION}"
+    restart: unless-stopped
     command: .venv/bin/gunicorn choralcat.wsgi -w=4 --bind=0.0.0.0:8000
     working_dir: /app
-    ports:
-      - "8000:8000"
     environment: &app-env
       LOG_LEVEL: "${LOG_LEVEL}"
       DEBUG: "${DEBUG}"
@@ -27,6 +26,7 @@ services:
         target: /app/data
   celery-worker:
     image: "jerkeeler/choralcat:app-${VERSION}"
+    restart: unless-stopped
     command: >
       .venv/bin/celery -A choralcat worker -n w1
       --logfile=/var/log/celery/%n%I.log --loglevel="INFO"
@@ -45,6 +45,7 @@ services:
       - redis
   celery-beat:
     image: "jerkeeler/choralcat:app-${VERSION}"
+    restart: unless-stopped
     command: >
       .venv/bin/celery -A choralcat beat
       --logfile=/var/log/celery/beat.log --loglevel="INFO"
@@ -62,6 +63,7 @@ services:
       - celery
   caddy:
     image: "jerkeeler/choralcat:caddy-${VERSION}"
+    restart: unless-stopped
     ports:
        - "80:80"
        - "443:443"
