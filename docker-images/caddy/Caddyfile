@@ -7,10 +7,11 @@
 }
 
 (choralcat) {
+    # 31 days
+    header /static/* Cache-Control max-age=2678400
+
     handle_path /static/* {
         root * /app/staticfiles
-        # 31 days
-        header /static/* Cache-Control max-age=2678400
         file_server
     }
 
