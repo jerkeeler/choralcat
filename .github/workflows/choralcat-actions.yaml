@@ -43,20 +43,12 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: Setup python
-        uses: actions/setup-python@v2
+      - name: Download static files
+        uses: actions/download-artifact@v2
         with:
-          python-version: 3.10.4
-          cache: pip
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 17.9.0
-          cache: npm
-      - name: Install dependencies
-        run: make install_dev
-      - name: Build static files
-        run: make build
+          name: staticfiles
+      - name: Unbundle static files
+        run: tar -xvf staticfiles.tar staticfiles/
       - name: Set outputs
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
