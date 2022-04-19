@@ -52,6 +52,8 @@ jobs:
         with:
           node-version: 17.9.0
           cache: npm
+      - name: Install dependencies
+        run: make install_dev
       - name: Build static files
         run: make build
       - name: Set short git sha
