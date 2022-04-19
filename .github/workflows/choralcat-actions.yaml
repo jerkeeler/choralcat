@@ -38,7 +38,6 @@ jobs:
   build_image:
     needs: test
     if: github.ref == 'refs/heads/main'
-    concurrency: deploy-prod
     runs-on: ubuntu-20.04
     steps:
       - name: Check out repository code
@@ -49,7 +48,7 @@ jobs:
           name: staticfiles
       - name: Unbundle static files
         run: tar -xvf staticfiles.tar staticfiles/
-      - name: Set outputs
+      - name: Set short git sha
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       # This next parts builds and publishes the latest docker images
@@ -78,6 +77,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - name: Set short git sha
+        id: vars
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -98,7 +100,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: /apps/choralcat/deploy.sh ${{ github.sha }}
+          script: /apps/choralcat/deploy.sh ${{ steps.vars.outputs.sha_short }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
@@ -107,5 +109,5 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          version: ${{ github.sha }}
+          version: ${{ steps.vars.outputs.sha_short }}
       - run: echo '🥳 Deploy complete!'

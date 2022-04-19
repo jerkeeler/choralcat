@@ -9,11 +9,15 @@
 (choralcat) {
     handle_path /static/* {
         root * /app/staticfiles
+        # 31 days
+        header /static/* Cache-Control max-age=2678400
         file_server
     }
 
     handle {
-        reverse_proxy localhost:8000
+        reverse_proxy localhost:8000 {
+            header_up Host {host}
+        }
     }
 }
 

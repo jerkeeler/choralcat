@@ -2,7 +2,8 @@ version: "3.7"
 
 services:
   app:
-    image: jerkeeler/choralcat:app-latest
+    image: "jerkeeler/choralcat:app-${VERSION}"
+    command:
     working_dir: /app
     environment: &app-env
       LOG_LEVEL: "${LOG_LEVEL}"
@@ -23,7 +24,7 @@ services:
         source: ./data
         target: /app/data
   celery-worker:
-    image: jerkeeler/choralcat:app-latest
+    image: "jerkeeler/choralcat:app-${VERSION}"
     command: >
       .venv/bin/celery -A choralcat worker -n w1
       --logfile=/var/log/celery/%n%I.log --loglevel="INFO"
@@ -41,7 +42,7 @@ services:
       - app
       - redis
   celery-beat:
-    image: jerkeeler/choralcat:app-latest
+    image: "jerkeeler/choralcat:app-${VERSION}"
     command: >
       .venv/bin/celery -A choralcat beat
       --logfile=/var/log/celery/beat.log --loglevel="INFO"
@@ -56,7 +57,7 @@ services:
     volumes:
       - redis
   caddy:
-    image: jerkeeler/choralcat:caddy-latest
+    image: "jerkeeler/choralcat:caddy-${VERSION}"
     ports:
        - "80:80"
        - "443:443"
