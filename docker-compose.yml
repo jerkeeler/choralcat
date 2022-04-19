@@ -3,8 +3,10 @@ version: "3.7"
 services:
   app:
     image: "jerkeeler/choralcat:app-${VERSION}"
-    command:
+    command: .venv/bin/gunicorn choralcat.wsgi -w=4 --bind=0.0.0.0:8000
     working_dir: /app
+    ports:
+      - "8000:8000"
     environment: &app-env
       LOG_LEVEL: "${LOG_LEVEL}"
       DEBUG: "${DEBUG}"
