@@ -22,6 +22,7 @@ env = environ.Env(
     ADMIN_NAMES=(list[str], []),
     ADMIN_EMAILS=(list[str], []),
     ALLOWED_HOSTS=(list[str], ["localhost"]),
+    CSRF_TRUSTED_ORIGINS=(list[str], []),
     DEBUG=(bool, False),
     EMAIL_HOST=(str, None),
     EMAIL_HOST_PASSWORD=(str, None),
@@ -54,6 +55,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 INTERNAL_IPS = env.list("INTERNAL_IPS")
 
 APP_VERSION = None
