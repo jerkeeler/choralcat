@@ -27,6 +27,7 @@ docker-compose run app .venv/bin/python manage.py migrate
 echo "Starting up services on version ${VERSION}"
 docker-compose up -d
 
+#
 # Write new version
 echo "${VERSION}" > .version
 
