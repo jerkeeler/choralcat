@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Set version variable
+oldversion=$(cat .version)
+export VERSION=$1
+
 cd /apps/choralcat
 # Pull latest code
 echo "Pulling latest code from master..."
@@ -6,18 +10,21 @@ git fetch
 echo "Checking out commit $1..."
 git checkout $1
 echo "$1" > .version
-# Install new dependencies and migrate database
-echo "Installing python dependencies..."
-make install
+# Pulling latest docker images
+echo "Pulling down latest docker images for version ${VERSION}..."
+docker pull jerkeeler/choralcat:app-$1
+docker pull jerkeeler/choralcat:caddy-$1
+
+# Shutting down current services
+echo "Shutting down old docker images on version ${oldversion}"
+VERSION="${oldversion}" docker-compose down
+
+# Migrating database
 echo "Migrating the database..."
-.venv/bin/python manage.py migrate
-# Untar staticfiles and delete tarball
-echo "Unbundling static files..."
-tar -xvf staticfiles.tar staticfiles/
-rm staticfiles.tar
-# Restart gunicorn
-echo "Restarting services..."
-sudo systemctl restart gunicorn.service
-sudo systemctl restart celery.service
-sudo systemctl restart celerybeat.service
+docker-compose run app .venv/bin/python manage.py migrate
+
+# Restart the services
+echo "Starting up services on version ${VERSION}"
+docker-compose up -d
+
 echo "Deploy complete!"

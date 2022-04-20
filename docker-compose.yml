@@ -29,7 +29,7 @@ services:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
     command: >
-      .venv/bin/celery -A choralcat worker -n w1
+      .venv/bin/celery -A choralcat worker -n w1@%h
       --logfile=/var/log/celery/%n%I.log --loglevel="INFO"
       --time-limit=300 --concurrency=1
     working_dir: /app
