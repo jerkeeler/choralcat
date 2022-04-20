@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Set version variable
-oldversion=$(cat .version)
-export VERSION=$1
-
 cd /apps/choralcat
+
+# Set version variables
+export VERSION=$1
+oldversion=$(cat .version)
+
 # Pull latest code
 echo "Pulling latest code from master..."
 git fetch
@@ -17,7 +18,7 @@ docker pull jerkeeler/choralcat:caddy-$VERSION
 
 # Shutting down current services
 echo "Shutting down old docker images on version ${oldversion}"
-VERSION="${oldversion}" docker-compose down
+docker-compose down
 
 # Migrating database
 echo "Migrating the database..."
