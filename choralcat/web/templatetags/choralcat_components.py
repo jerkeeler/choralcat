@@ -64,3 +64,8 @@ for icon in glob(icon_glob):
 @register.inclusion_tag("web/components/buttons/button_link.html")
 def button_link(location: str, text: str):
     return {"location": location, "text": text}
+
+
+@register.inclusion_tag("web/components/buttons/button.html")
+def button(type: str, text: str):
+    return {"type": type, "text": text}
