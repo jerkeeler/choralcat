@@ -90,6 +90,6 @@ class UnidecodeField(models.CharField):
             kwargs["populated_from"] = self.populated_from
         return name, path, args, kwargs
 
-    def pre_save(self, model_instance: "UnidecodeField", add: bool) -> str:
+    def pre_save(self, model_instance: models.Model, add: bool) -> str:
         attr_value = getattr(model_instance, self.populated_from)
         return unidecode(attr_value)

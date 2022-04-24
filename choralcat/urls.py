@@ -13,12 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from typing import Union
+
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import URLPattern, URLResolver, include, path
 from django.views.defaults import page_not_found
 
-urlpatterns = [
+URL = Union[URLPattern, URLResolver]
+URLList = list[URL]
+
+urlpatterns: URLList = [
     path("", include("choralcat.web.urls")),
     path("admin/", admin.site.urls),
     # path('admin/defender/', include('defender.urls')),

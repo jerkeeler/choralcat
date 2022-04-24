@@ -18,6 +18,10 @@ check:
 	autoflake choralcat/ -c -r --ignore-init-module-imports --remove-all-unused-imports
 	isort choralcat/ --profile black --check
 	black choralcat/ --check --line-length 120
+	mypy choralcat/
+
+mypy:
+	mypy choralcat/
 
 test:
 	python manage.py test --parallel

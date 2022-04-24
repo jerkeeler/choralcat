@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.shortcuts import reverse
+from django.urls import reverse
 
 from choralcat.core.consts import VARCHAR_LENGTH
 from choralcat.core.fields import AutoSlugField, UnidecodeField
@@ -32,18 +32,18 @@ class Person(UserModel):
         ordering = ["last_name", "first_name"]
         verbose_name_plural = "People"
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.last_name:
             return f"{self.last_name}, {self.first_name}"
         return self.first_name
 
     @property
-    def name(self):
+    def name(self) -> str:
         if self.last_name:
             return f"{self.last_name}, {self.first_name}"
         return self.first_name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("person_detail", kwargs={"slug": self.slug})
 
 
@@ -54,8 +54,8 @@ class SimpleModel(UserModel):
         ordering = ["value", "user"]
         abstract = True
 
-    def __str__(self):
-        return self.value
+    def __str__(self) -> str:
+        return self.value or ""
 
 
 class Category(SimpleModel):
@@ -104,7 +104,7 @@ class Composition(UserModel):
     class Meta:
         ordering = ["title"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     @property

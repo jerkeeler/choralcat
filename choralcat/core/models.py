@@ -30,7 +30,7 @@ class TokenModel(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.token:
             poss_token = gen_token()
             while len(type(self).objects.filter(token=poss_token)) > 0:

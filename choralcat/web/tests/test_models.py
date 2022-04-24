@@ -6,6 +6,10 @@ from ..models import Composition, Program
 
 class ProgramTestCase(TestCase):
     fixtures = ["User"]
+    user: User
+    composition1: Composition
+    composition2: Composition
+    program: Program
 
     @classmethod
     def setUpTestData(cls) -> None:
