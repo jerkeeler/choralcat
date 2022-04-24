@@ -1,1 +1,2 @@
 DEFAULT_NUM_PER_PAGE = 25
+DEFAULT_TIME_ZONE = "America/Los_Angeles"

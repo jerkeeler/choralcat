@@ -161,7 +161,7 @@ class Program(UserModel):
         return [slug_to_comp[slug] for slug in ordering]
 
     def add(self, composition: Composition):
-        logger.debug(f"Adding {composition} to program {self}")
+        logger.info(f"Adding {composition} to program {self}")
         self.compositions.add(composition)
         if "compositions" not in self.ordering:
             logger.warning("Composition ordering was uninstantiated")
@@ -170,10 +170,10 @@ class Program(UserModel):
             self.ordering["compositions"].append(composition.slug)
 
     def remove(self, composition: Composition):
-        logger.debug(f"Removing {composition} from program {self}")
+        logger.info(f"Removing {composition} from program {self}")
         self.compositions.remove(composition)
         self.ordering["compositions"] = [c for c in self.ordering["compositions"] if c != composition.slug]
 
     def reorder(self, new_order: list[str]):
-        logger.debug(f"Reordering program {self} to {new_order}")
+        logger.info(f"Reordering program {self} to {new_order}")
         self.ordering["compositions"] = new_order

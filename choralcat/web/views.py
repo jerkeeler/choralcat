@@ -52,7 +52,7 @@ def catalog_search(request):
     compositions = Composition.objects.all()
 
     if term:
-        logger.debug(f"Searching for term: {term}")
+        logger.info(f"Searching for term: {term}")
         compositions = compositions.filter(
             Q(title_unidecode__icontains=term)
             | Q(composers__first_name__icontains=term)
@@ -62,23 +62,23 @@ def catalog_search(request):
         )
 
     if categories:
-        logger.debug(f"Filtering by categories: {categories}")
+        logger.info(f"Filtering by categories: {categories}")
         compositions = compositions.filter(categories__value__in=categories)
 
     if tags:
-        logger.debug(f"Filtering by tags: {tags}")
+        logger.info(f"Filtering by tags: {tags}")
         compositions = compositions.filter(tags__value__in=tags)
 
     if topics:
-        logger.debug(f"Filtering by topics: {topics}")
+        logger.info(f"Filtering by topics: {topics}")
         compositions = compositions.filter(topics__value__in=topics)
 
     if voicings:
-        logger.debug(f"Filtering by voicings: {voicings}")
+        logger.info(f"Filtering by voicings: {voicings}")
         compositions = compositions.filter(voicing__in=voicings)
 
     if time_periods:
-        logger.debug(f"Filtering by time periods: {time_periods}")
+        logger.info(f"Filtering by time periods: {time_periods}")
         compositions = compositions.filter(time_period__in=time_periods)
 
     paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
