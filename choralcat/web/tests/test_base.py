@@ -9,7 +9,6 @@ default_fixtures = [
     "Category",
     "Person",
     "Instrument",
-    "UserProfile",
     "Topic",
 ]
 
