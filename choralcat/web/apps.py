@@ -6,4 +6,4 @@ class ChoralcatWebConfig(AppConfig):
     name = "choralcat.web"
 
     def ready(self) -> None:
-        pass
+        from . import signals  # noqa: F401
