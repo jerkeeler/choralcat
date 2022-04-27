@@ -35,3 +35,7 @@ choral.keeler.dev {
     import common
     import choralcat
 }
+
+:56789 {
+    metrics /metrics
+}

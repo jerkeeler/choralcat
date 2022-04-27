@@ -59,7 +59,7 @@ services:
     ports:
        - "80:80"
        - "443:443"
-       - "2019:2019"  # Enables Caddy api for metrics collection
+       - "56789:56789"  # Enables Caddy api for metrics collection
     volumes:
         - caddy_data:/data
 
