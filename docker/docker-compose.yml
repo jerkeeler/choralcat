@@ -5,7 +5,7 @@ services:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
     command: ../venv/bin/gunicorn choralcat.wsgi -w=4 --bind=0.0.0.0:8000
-    working_dir: /home/web/app
+    working_dir: /app/code
     environment: &app-env
       LOG_LEVEL: "${LOG_LEVEL}"
       DEBUG: "${DEBUG}"
@@ -22,18 +22,18 @@ services:
       ADMIN_EMAILS: "${ADMIN_EMAILS}"
       ADMIN_NAMES: "${ADMIN_NAMES}"
     volumes:
-      - ./data:/home/web/app/data
+      - ./data:/app/code/data
   celery-worker:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
     command: >
       ../venv/bin/celery -A choralcat worker -n w1@%h
-      --logfile=/home/web/app/data/logs/celery/%n%I.log --loglevel="INFO"
+      --logfile=/app/code/data/logs/celery/%n%I.log --loglevel="INFO"
       --time-limit=300 --concurrency=1
-    working_dir: /home/web/app
+    working_dir: /app/code
     environment: *app-env
     volumes: &celery-volumes
-      - ./data:/home/web/app/data
+      - ./data:/app/code/data
     depends_on:
       - app
       - redis
@@ -42,8 +42,8 @@ services:
     restart: unless-stopped
     command: >
       ../venv/bin/celery -A choralcat beat
-      --logfile=/home/web/app/data/logs/beat.log --loglevel="INFO"
-    working_dir: /home/web/app
+      --logfile=/app/code/data/logs/beat.log --loglevel="INFO"
+    working_dir: /app/code
     environment: *app-env
     volumes: *celery-volumes
     depends_on:
