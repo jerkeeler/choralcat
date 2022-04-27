@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
     command: >
       ../venv/bin/celery -A choralcat beat
-      --logfile=/app/code/data/logs/beat.log --loglevel="INFO"
+      --logfile=/app/code/data/logs/celery/beat.log --loglevel="INFO"
     working_dir: /app/code
     environment: *app-env
     volumes: *celery-volumes
