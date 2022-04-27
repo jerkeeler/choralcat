@@ -18,17 +18,16 @@ docker pull jerkeeler/choralcat:caddy-$VERSION
 
 # Shutting down current services
 echo "Shutting down old docker images on version ${oldversion}"
-docker-compose down
+make dock_down
 
 # Migrating database
 echo "Migrating the database..."
-docker-compose run app .venv/bin/python manage.py migrate
+make dock_migrate
 
 # Restart the services
 echo "Starting up services on version ${VERSION}"
-docker-compose up -d
+make dock_up
 
-#
 # Write new version
 echo "${VERSION}" > .version
 

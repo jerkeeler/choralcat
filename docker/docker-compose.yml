@@ -4,8 +4,8 @@ services:
   app:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
-    command: .venv/bin/gunicorn choralcat.wsgi -w=4 --bind=0.0.0.0:8000
-    working_dir: /app
+    command: ../venv/bin/gunicorn choralcat.wsgi -w=4 --bind=0.0.0.0:8000
+    working_dir: /home/web/app
     environment: &app-env
       LOG_LEVEL: "${LOG_LEVEL}"
       DEBUG: "${DEBUG}"
@@ -22,25 +22,18 @@ services:
       ADMIN_EMAILS: "${ADMIN_EMAILS}"
       ADMIN_NAMES: "${ADMIN_NAMES}"
     volumes:
-      - type: bind
-        source: ./data
-        target: /app/data
+      - ./data:/home/web/app/data
   celery-worker:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
     command: >
-      .venv/bin/celery -A choralcat worker -n w1@%h
-      --logfile=/var/log/celery/%n%I.log --loglevel="INFO"
+      ../venv/bin/celery -A choralcat worker -n w1@%h
+      --logfile=/home/web/app/data/logs/celery/%n%I.log --loglevel="INFO"
       --time-limit=300 --concurrency=1
-    working_dir: /app
+    working_dir: /home/web/app
     environment: *app-env
     volumes: &celery-volumes
-      - type: bind
-        source: ./data
-        target: /app/data
-      - type: bind
-        source: /var/log/celery
-        target: /var/log/celery
+      - ./data:/home/web/app/data
     depends_on:
       - app
       - redis
@@ -48,9 +41,9 @@ services:
     image: "jerkeeler/choralcat:app-${VERSION}"
     restart: unless-stopped
     command: >
-      .venv/bin/celery -A choralcat beat
-      --logfile=/var/log/celery/beat.log --loglevel="INFO"
-    working_dir: /app
+      ../venv/bin/celery -A choralcat beat
+      --logfile=/home/web/app/data/logs/beat.log --loglevel="INFO"
+    working_dir: /home/web/app
     environment: *app-env
     volumes: *celery-volumes
     depends_on:
@@ -59,13 +52,14 @@ services:
     image: redis:6.2
     restart: unless-stopped
     volumes:
-      - redis
+      - redis:/data
   caddy:
     image: "jerkeeler/choralcat:caddy-${VERSION}"
     restart: unless-stopped
     ports:
        - "80:80"
        - "443:443"
+       - "2019:2019"  # Enables Caddy api for metrics collection
     volumes:
         - caddy_data:/data
 

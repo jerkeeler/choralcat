@@ -30,9 +30,14 @@ load_testdata:
 	python manage.py loaddata choralcat/web/fixtures/*
 
 docker_build:
-	docker build --tag jerkeeler/choralcat:app-latest .
-	docker build --tag jerkeeler/choralcat:caddy-latest -f docker-images/caddy/Dockerfile .
+	docker build . --tag jerkeeler/choralcat:app-dev -f docker/app/Dockerfile --target dev
+	docker build . --tag jerkeeler/choralcat:caddy-dev -f docker/caddy/Dockerfile
 
-docker_push:
-	docker push jerkeeler/choralcat:app-latest
-	docker push jerkeeler/choralcat:caddy-latest
+dock_down:
+	docker-compose -f docker/docker-compose.yml --project-directory . down
+
+dock_up:
+	docker-compose -f docker/docker-compose.yml --project-directory . up -d
+
+dock_migrate:
+	docker-compose -f docker/docker-compose.yml --project-directory . run app ../venv/bin/python manage.py migrate
