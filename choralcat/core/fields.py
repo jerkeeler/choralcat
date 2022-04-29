@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from django.db import models
+from django.db.models.manager import BaseManager
 from unidecode import unidecode
 
 from .utils import gen_slug
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class AutoSlugField(models.SlugField):
     description = "A field that autogenerates a unique slug based on another field"
+    manager: BaseManager[models.Model]
 
     def __init__(self, populated_from=None, *args, **kwargs):
         if populated_from is None:
@@ -71,7 +73,7 @@ class AutoSlugField(models.SlugField):
 class UnidecodeField(models.CharField):
     description = "A field that automatically unidecodes another field upon each save"
 
-    def __init__(self, populated_from: Optional[str] = None, *args, **kwargs):
+    def __init__(self, populated_from: Optional[str] = None, *args, **kwargs) -> None:
         if populated_from is None:
             raise ValueError("populated_from has to be provided")
         self.populated_from = populated_from

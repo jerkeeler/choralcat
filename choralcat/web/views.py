@@ -188,8 +188,8 @@ def _simple_add_view(request, model, relationship_name, tag_url):
     current_values = []
     if selected_values:
         pks = [int(c) for c in selected_values]
-        current_values = {c.pk: c for c in model.objects.filter(pk__in=pks)}
-        current_values = [current_values[pk] for pk in pks]
+        current_values_dict = {c.pk: c for c in model.objects.filter(pk__in=pks)}
+        current_values = [current_values_dict[pk] for pk in pks]
 
     if new_value:
         try:

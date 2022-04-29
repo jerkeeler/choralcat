@@ -116,7 +116,7 @@ class Composition(UserModel):
 
     @property
     def stars(self):
-        return range(self.rating)
+        return range(self.rating or 0)
 
     def get_absolute_url(self):
         return reverse("composition_detail", kwargs={"slug": self.slug})
