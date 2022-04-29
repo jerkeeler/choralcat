@@ -6,3 +6,4 @@ data/
 .idea/
 .mypy_cache/
 .vscode/
+static

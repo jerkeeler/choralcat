@@ -104,7 +104,10 @@ pytest==7.1.2
     # via
     #   -r requirements/dev-requirements.in
     #   pytest-django
+    #   pytest-mock
 pytest-django==4.5.2
+    # via -r requirements/dev-requirements.in
+pytest-mock==3.7.0
     # via -r requirements/dev-requirements.in
 pyyaml==6.0
     # via pre-commit
