@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Optional, Union
 
 from django.db import models
 from django.db.models.manager import BaseManager
@@ -14,7 +14,7 @@ class AutoSlugField(models.SlugField):
     description = "A field that autogenerates a unique slug based on another field"
     manager: BaseManager[models.Model]
 
-    def __init__(self, populated_from=None, *args, **kwargs):
+    def __init__(self, populated_from: Optional[Union[str, list[str]]] = None, *args: Any, **kwargs: Any) -> None:
         if populated_from is None:
             raise ValueError("populated_from has to be provided")
         self.populated_from = populated_from
@@ -33,13 +33,13 @@ class AutoSlugField(models.SlugField):
 
         super().__init__(*args, **kwargs)
 
-    def deconstruct(self):
+    def deconstruct(self) -> tuple[str, str, Any, Any]:
         name, path, args, kwargs = super().deconstruct()
         if self.populated_from is not None:
             kwargs["populated_from"] = self.populated_from
         return name, path, args, kwargs
 
-    def pre_save(self, model_instance, add):
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
         value = self.value_from_object(model_instance)
 
         if value:
@@ -73,7 +73,7 @@ class AutoSlugField(models.SlugField):
 class UnidecodeField(models.CharField):
     description = "A field that automatically unidecodes another field upon each save"
 
-    def __init__(self, populated_from: Optional[str] = None, *args, **kwargs) -> None:
+    def __init__(self, populated_from: Optional[str] = None, *args: Any, **kwargs: Any) -> None:
         if populated_from is None:
             raise ValueError("populated_from has to be provided")
         self.populated_from = populated_from
@@ -86,7 +86,7 @@ class UnidecodeField(models.CharField):
 
         super().__init__(*args, **kwargs)
 
-    def deconstruct(self):
+    def deconstruct(self) -> tuple[str, str, Any, Any]:
         name, path, args, kwargs = super().deconstruct()
         if self.populated_from is not None:
             kwargs["populated_from"] = self.populated_from

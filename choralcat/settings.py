@@ -35,7 +35,7 @@ env = environ.Env(
     REDIS_HOST=(str, "127.0.0.1"),
     REDIS_PORT=(str, "6379"),
     REDIS_PASSWORD=(str, "notarealpassword"),
-    SECRET_KEY=(str, get_random_secret_key()),
+    SECRET_KEY=(str, get_random_secret_key()),  # type: ignore
     SENTRY_DSN=(str, None),
 )
 

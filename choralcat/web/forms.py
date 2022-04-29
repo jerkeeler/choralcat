@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import ModelForm, widgets
 from django.urls import reverse_lazy
@@ -7,7 +9,7 @@ from .widgets import AutocompleteStringWidget, MtMStringWidget, TagWidget
 
 
 class CustomLoginForm(AuthenticationForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.fields["username"].widget.attrs.update(
             {

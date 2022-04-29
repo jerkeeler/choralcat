@@ -1,4 +1,6 @@
 import logging
+from datetime import timedelta
+from typing import cast
 
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -108,17 +110,17 @@ class Composition(UserModel):
         return self.title
 
     @property
-    def duration_mmss(self):
+    def duration_mmss(self) -> str:
         if not self.duration:
             return ""
         sec = self.duration.total_seconds()
         return f"{int(sec / 60):02d}:{int(sec % 60):02d}"
 
     @property
-    def stars(self):
+    def stars(self) -> range:
         return range(self.rating or 0)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("composition_detail", kwargs={"slug": self.slug})
 
 
@@ -133,18 +135,18 @@ class Program(UserModel):
     class Meta:
         ordering = ["season", "title"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("program_detail", kwargs={"slug": self.slug})
 
     @property
-    def duration(self):
-        return self.compositions.aggregate(models.Sum("duration"))["duration__sum"]
+    def duration(self) -> timedelta:
+        return cast(timedelta, self.compositions.aggregate(models.Sum("duration"))["duration__sum"])
 
     @property
-    def compositions_ordered(self):
+    def compositions_ordered(self) -> list[Composition]:
         if self.ordering.get("compositions") is None:
             logger.warning(f"No composition ordering was found for {self}")
 
@@ -160,7 +162,7 @@ class Program(UserModel):
             self.save()
         return [slug_to_comp[slug] for slug in ordering]
 
-    def add(self, composition: Composition):
+    def add(self, composition: Composition) -> None:
         logger.info(f"Adding {composition} to program {self}")
         self.compositions.add(composition)
         if "compositions" not in self.ordering:
@@ -169,11 +171,11 @@ class Program(UserModel):
         else:
             self.ordering["compositions"].append(composition.slug)
 
-    def remove(self, composition: Composition):
+    def remove(self, composition: Composition) -> None:
         logger.info(f"Removing {composition} from program {self}")
         self.compositions.remove(composition)
         self.ordering["compositions"] = [c for c in self.ordering["compositions"] if c != composition.slug]
 
-    def reorder(self, new_order: list[str]):
+    def reorder(self, new_order: list[str]) -> None:
         logger.info(f"Reordering program {self} to {new_order}")
         self.ordering["compositions"] = new_order

@@ -2,7 +2,7 @@ import logging
 import random
 import time
 from functools import wraps
-from typing import Callable
+from typing import Any, Callable
 
 from django.utils.text import slugify
 
@@ -29,7 +29,7 @@ def timer(func: Callable) -> Callable:
     logger = logging.getLogger(f"{func.__module__}.{func.__name__}")
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.time()
         response = func(*args, **kwargs)
         length = time.time() - start

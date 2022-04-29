@@ -27,19 +27,19 @@ def _get_color(input_str: str) -> tuple[str, str]:
 
 
 @register.inclusion_tag("web/components/tag.html")
-def tag(tag: str):
+def tag(tag: str) -> dict[str, str]:
     return _get_tag_info(tag)
 
 
 @register.inclusion_tag("web/components/tag_with_remove.html")
-def closeable_tag(tag: str, tag_url: str, widget_name: str):
+def closeable_tag(tag: str, tag_url: str, widget_name: str) -> dict[str, str]:
     tag_info = _get_tag_info(tag)
     tag_info["tag_url"] = tag_url
     tag_info["widget_name"] = widget_name
     return tag_info
 
 
-def _get_tag_info(tag: str):
+def _get_tag_info(tag: str) -> dict[str, str]:
     color = _get_color(tag)
     return {
         "tag": tag,
@@ -48,9 +48,9 @@ def _get_tag_info(tag: str):
     }
 
 
-def _create_icon_component(name: str):
+def _create_icon_component(name: str) -> None:
     @register.inclusion_tag(f"web/components/icons/{name}.html", name=f"{name}_icon")
-    def _icon(classes: str = ""):
+    def _icon(classes: str = "") -> dict[str, str]:
         return {"classes": classes}
 
 
@@ -62,10 +62,10 @@ for icon in glob(icon_glob):
 
 
 @register.inclusion_tag("web/components/buttons/button_link.html")
-def button_link(location: str, text: str):
+def button_link(location: str, text: str) -> dict[str, str]:
     return {"location": location, "text": text}
 
 
 @register.inclusion_tag("web/components/buttons/button.html")
-def button(type: str, text: str):
+def button(type: str, text: str) -> dict[str, str]:
     return {"type": type, "text": text}

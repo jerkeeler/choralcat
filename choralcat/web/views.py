@@ -1,4 +1,5 @@
 import logging
+from typing import Any, Type, TypeVar
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,6 +7,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
+from django.http import HttpRequest, HttpResponse
+from django.http.response import HttpResponseBase
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
@@ -15,23 +18,34 @@ from choralcat.core.views import UserCreateView, UserUpdateView
 
 from .consts import DEFAULT_NUM_PER_PAGE
 from .forms import CompositionForm, PersonForm, ProgramForm
-from .models import Category, Composition, Instrument, Person, Program, Tag, Topic
+from .models import (
+    Category,
+    Composition,
+    Instrument,
+    Person,
+    Program,
+    SimpleModel,
+    Tag,
+    Topic,
+)
 
 logger = logging.getLogger(__name__)
 
+T = TypeVar("T", bound=SimpleModel)
 
-def index_view(request):
+
+def index_view(request: HttpRequest) -> HttpResponse:
     return render(request, template_name="web/index.html")
 
 
 class ChoralcatLoginView(LoginView):
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         logger.info(f"User {self.request.POST['username']} has logged in")
         return super().get_success_url()
 
 
 class ChoralcatLogoutView(LogoutView):
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponseBase:
         if self.request.user and self.request.user.is_authenticated:
             logger.info(f"User {self.request.user} has logged out")
         return super().dispatch(request, *args, **kwargs)
@@ -39,10 +53,10 @@ class ChoralcatLogoutView(LogoutView):
 
 @login_required
 @require_POST
-def catalog_search(request):
+def catalog_search(request: HttpRequest) -> HttpResponse:
     term = request.POST.get("search")
-    page = request.POST.get("page", 1)
-    page = 1 if page == "undefined" else page
+    raw_page = request.POST.get("page", 1)
+    page: int = 1 if raw_page == "undefined" else int(raw_page)
     per_page = request.POST.get("per_page", DEFAULT_NUM_PER_PAGE)
     categories = [c for c in request.POST.getlist("category") if c and c != "undefined"]
     tags = [c for c in request.POST.getlist("tags") if c and c != "undefined"]
@@ -83,8 +97,8 @@ def catalog_search(request):
 
     paginator = Paginator(compositions, per_page, allow_empty_first_page=True)
     logger.debug(f"Returning page {page}")
-    page = paginator.get_page(page)
-    context = {"compositions": page.object_list, "page_obj": page}
+    page_obj = paginator.get_page(page)
+    context = {"compositions": page_obj.object_list, "page_obj": page_obj}
     return render(
         request,
         template_name="partials/catalog/table_with_pagination.html",
@@ -94,11 +108,11 @@ def catalog_search(request):
 
 @login_required
 @require_GET
-def catalog_modal(request, slug):
+def catalog_modal(request: HttpRequest, slug: str) -> HttpResponse:
     return _render_catalog_modal(request, slug)
 
 
-def _render_catalog_modal(request, slug):
+def _render_catalog_modal(request: HttpRequest, slug: str) -> HttpResponse:
     composition = get_object_or_404(Composition, slug=slug)
     in_programs = composition.program_set.values_list("slug", flat=True)
     context = {
@@ -119,7 +133,7 @@ class CatalogView(LoginRequiredMixin, ListView):
     template_name = "web/catalog/catalog.html"
     paginate_by = DEFAULT_NUM_PER_PAGE
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> dict:
         context = super().get_context_data(**kwargs)
         context["topics"] = sorted([str(t) for t in Topic.objects.distinct()])
         context["tags"] = sorted([str(t) for t in Tag.objects.distinct()])
@@ -156,30 +170,30 @@ class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
 
 @login_required
 @require_POST
-def category_add(request):
+def category_add(request: HttpRequest) -> HttpResponse:
     return _simple_add_view(request, Category, "categories", reverse_lazy("category_add"))
 
 
 @login_required
 @require_POST
-def instrument_add(request):
+def instrument_add(request: HttpRequest) -> HttpResponse:
     return _simple_add_view(request, Instrument, "accompaniment", reverse_lazy("instrument_add"))
 
 
 @login_required
 @require_POST
-def topic_add(request):
+def topic_add(request: HttpRequest) -> HttpResponse:
     return _simple_add_view(request, Topic, "topics", reverse_lazy("topic_add"))
 
 
 @login_required
 @require_POST
-def tag_add(request):
+def tag_add(request: HttpRequest) -> HttpResponse:
     return _simple_add_view(request, Tag, "tags", reverse_lazy("tag_add"))
 
 
 @transaction.atomic
-def _simple_add_view(request, model, relationship_name, tag_url):
+def _simple_add_view(request: HttpRequest, model: Type[T], relationship_name: str, tag_url: str) -> HttpResponse:
     selected_values = request.POST.getlist(relationship_name)
     new_value = request.POST.get(f"new_{relationship_name}")
     removed_value = request.POST.get("remove")
@@ -203,8 +217,8 @@ def _simple_add_view(request, model, relationship_name, tag_url):
 
     if removed_value:
         logger.debug(f"Removing {removed_value}")
-        removed_value = get_object_or_404(model, value=removed_value)
-        current_values = [c for c in current_values if c != removed_value]
+        removed_value_obj = get_object_or_404(model, value=removed_value)
+        current_values = [c for c in current_values if c != removed_value_obj]
 
     context = {
         "widget_name": relationship_name,
@@ -235,7 +249,7 @@ class ProgramCreateView(LoginRequiredMixin, UserCreateView):
     form_class = ProgramForm
     template_name = "web/program/program_create.html"
 
-    def form_valid(self, form):
+    def form_valid(self, form: Any) -> HttpResponse:
         form.instance.ordering = {"compositions": []}
         return super().form_valid(form)
 
@@ -248,7 +262,7 @@ class ProgramUpdateView(LoginRequiredMixin, UserUpdateView):
 
 @login_required
 @require_POST
-def program_add(request, slug):
+def program_add(request: HttpRequest, slug: str) -> HttpResponse:
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
@@ -259,7 +273,7 @@ def program_add(request, slug):
 
 @login_required
 @require_POST
-def program_remove(request, slug):
+def program_remove(request: HttpRequest, slug: str) -> HttpResponse:
     composition_slug = request.POST["composition_slug"]
     composition = get_object_or_404(Composition, slug=composition_slug)
     program = get_object_or_404(Program, slug=slug)
@@ -268,7 +282,7 @@ def program_remove(request, slug):
     return _render_program(request, program)
 
 
-def _render_program(request, program):
+def _render_program(request: HttpRequest, program: Program) -> HttpResponse:
     context = {"program": program}
     return render(
         request,
@@ -279,7 +293,7 @@ def _render_program(request, program):
 
 @login_required
 @require_POST
-def program_reorder(request, slug):
+def program_reorder(request: HttpRequest, slug: str) -> HttpResponse:
     new_ordering = request.POST.getlist("slug")
     program = get_object_or_404(Program, slug=slug)
     program.reorder(new_ordering)
@@ -287,7 +301,7 @@ def program_reorder(request, slug):
     return _render_program_catalog(request, program)
 
 
-def _render_program_catalog(request, program):
+def _render_program_catalog(request: HttpRequest, program: Program) -> HttpResponse:
     context = {"program": program}
     return render(
         request,

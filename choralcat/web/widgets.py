@@ -1,5 +1,5 @@
 from operator import itemgetter
-from typing import Any, Type
+from typing import Any, Optional, Type
 
 from django.db import models
 from django.forms.widgets import SelectMultiple, TextInput
@@ -8,7 +8,7 @@ from django.forms.widgets import SelectMultiple, TextInput
 class TagWidget(SelectMultiple):
     template_name = "web/widgets/tag_widget.html"
 
-    def get_context(self, name: str, value: Any, attrs):
+    def get_context(self, name: str, value: str, attrs: Optional[dict[str, Any]]) -> dict[str, Any]:
         context = super().get_context(name, value, attrs)
         context["widget_name"] = context["widget"]["name"]
         context["selected"] = [
@@ -35,12 +35,12 @@ class TagWidget(SelectMultiple):
 class AutocompleteStringWidget(TextInput):
     template_name = "web/widgets/string_widget.html"
 
-    def __init__(self, model: Type[models.Model], field: str, attrs=None):
+    def __init__(self, model: Type[models.Model], field: str, attrs: Optional[dict[str, Any]] = None) -> None:
         super().__init__(attrs)
         self.model = model
         self.field = field
 
-    def get_context(self, name: str, value: Any, attrs):
+    def get_context(self, name: str, value: Any, attrs: Optional[dict[str, Any]]) -> dict[str, Any]:
         context = super().get_context(name, value, attrs)
         ordered_opts = [
             o for o in sorted(self.model.objects.order_by().values_list(self.field, flat=True).distinct()) if o
