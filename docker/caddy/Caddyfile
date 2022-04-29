@@ -7,6 +7,11 @@
 }
 
 (choralcat) {
+    log {
+        format json
+        output file /var/log/caddy/access.log
+    }
+
     # 31 days
     header /static/* Cache-Control max-age=2678400
 

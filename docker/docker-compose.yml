@@ -62,6 +62,7 @@ services:
        - "56789:56789"  # Enables Caddy api for metrics collection
     volumes:
         - caddy_data:/data
+        - /var/log/caddy:/var/log/caddy
 
 volumes:
   redis:
