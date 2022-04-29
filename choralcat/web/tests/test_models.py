@@ -1,49 +1,64 @@
+import pytest
+from assertpy import assert_that
 from django.contrib.auth.models import User
-from django.test import TestCase
 
 from ..models import Composition, Program
 
 
-class ProgramTestCase(TestCase):
-    fixtures = ["User"]
-    user: User
-    composition1: Composition
-    composition2: Composition
-    program: Program
+@pytest.fixture
+@pytest.mark.django_db
+def composition1(user: User) -> Composition:
+    return Composition.objects.create(title="Composition Example", user=user, slug="comp-1")
 
-    @classmethod
-    def setUpTestData(cls) -> None:
-        cls.user = User.objects.get(pk=2)
-        cls.composition1 = Composition.objects.create(title="Composition Example", user=cls.user, slug="comp-1")
-        cls.composition2 = Composition.objects.create(title="Composition2 Example", user=cls.user, slug="comp-2")
-        cls.program = Program.objects.create(title="Program Example", user=cls.user)
-        cls.program.add(cls.composition1)
 
-    def test_add_composition(self):
-        self.assertEqual(1, self.program.compositions.count())
-        self.program.add(self.composition2)
-        self.assertEqual(2, self.program.compositions.count())
-        self.assertEqual(["comp-1", "comp-2"], self.program.ordering["compositions"])
+@pytest.fixture
+@pytest.mark.django_db
+def composition2(user: User) -> Composition:
+    return Composition.objects.create(title="Composition2 Example", user=user, slug="comp-2")
 
-    def test_remove_composition(self):
-        self.assertEqual(1, self.program.compositions.count())
-        self.program.remove(self.composition1)
-        self.assertEqual(0, self.program.compositions.count())
-        self.assertEqual([], self.program.ordering["compositions"])
 
-    def test_reorder_compositions(self):
-        self.program.add(self.composition2)
-        self.assertEqual(["comp-1", "comp-2"], self.program.ordering["compositions"])
-        self.program.reorder(["comp-2", "comp-1"])
-        self.assertEqual(["comp-2", "comp-1"], self.program.ordering["compositions"])
+@pytest.fixture
+@pytest.mark.django_db
+def program(user: User, composition1) -> Program:
+    program = Program.objects.create(title="Program Example", user=user)
+    program.add(composition1)
+    return program
 
-    def test_compositions_ordered_fail_gracefully(self):
-        self.program.ordering = {}
-        self.assertEqual(1, len(self.program.compositions_ordered))
-        self.assertEqual(["comp-1"], self.program.ordering["compositions"])
 
-    def test_compositions_ordered_fail_gracefully_missing_key(self):
-        self.program.add(self.composition2)
-        self.program.ordering = {"compositions": ["comp-2"]}
-        self.assertEqual(2, len(self.program.compositions_ordered))
-        self.assertEqual(["comp-1", "comp-2"], self.program.ordering["compositions"])
+@pytest.mark.django_db
+def test_add_composition(program: Program, composition2: Composition) -> None:
+    assert_that(program.compositions.count()).is_equal_to(1)
+    program.add(composition2)
+    assert_that(program.compositions.count()).is_equal_to(2)
+    assert_that(program.ordering["compositions"]).is_equal_to(["comp-1", "comp-2"])
+
+
+@pytest.mark.django_db
+def test_remove_composition(program: Program, composition1: Composition) -> None:
+    assert_that(program.compositions.count()).is_equal_to(1)
+    program.remove(composition1)
+    assert_that(program.compositions.count()).is_equal_to(0)
+    assert_that(program.ordering["compositions"]).is_equal_to([])
+
+
+@pytest.mark.django_db
+def test_reorder_compositions(program: Program, composition2: Composition) -> None:
+    program.add(composition2)
+    assert_that(program.ordering["compositions"]).is_equal_to(["comp-1", "comp-2"])
+    program.reorder(["comp-2", "comp-1"])
+    assert_that(program.ordering["compositions"]).is_equal_to(["comp-2", "comp-1"])
+
+
+@pytest.mark.django_db
+def test_compositions_ordered_fail_gracefully(program: Program) -> None:
+    program.ordering = {}
+    assert_that(program.compositions_ordered).is_length(1)
+    assert_that(program.ordering["compositions"]).is_equal_to(["comp-1"])
+
+
+@pytest.mark.django_db
+def test_compositions_ordered_fail_gracefully_missing_key(program: Program, composition2: Composition) -> None:
+    program.add(composition2)
+    program.ordering = {"compositions": ["comp-2"]}
+    assert_that(program.compositions_ordered).is_length(2)
+    assert_that(program.ordering["compositions"]).is_equal_to(["comp-1", "comp-2"])

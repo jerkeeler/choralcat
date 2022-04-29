@@ -8,3 +8,5 @@ fabric
 isort
 mypy
 pre-commit
+pytest
+pytest-django

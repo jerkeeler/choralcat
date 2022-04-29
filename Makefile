@@ -24,7 +24,7 @@ mypy:
 	mypy choralcat/
 
 test:
-	python manage.py test --parallel
+	pytest
 
 load_testdata:
 	python manage.py loaddata choralcat/web/fixtures/*
