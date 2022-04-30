@@ -15,7 +15,7 @@ all_fixtures_glob = os.path.join(settings.BASE_DIR, "choralcat", "web", "fixture
 def django_db_setup(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         Organization.objects.create(name="Chanticleer")
-        User.objects.create(username="test_user", password=make_password("testpassword"), id=1)
+        User.objects.create(pk=1, username="test_user", password=make_password("testpassword"))
 
 
 @pytest.fixture

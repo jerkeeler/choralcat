@@ -18,7 +18,7 @@ def composition2(org: Organization) -> Composition:
 
 @pytest.fixture
 @pytest.mark.django_db
-def program(org: Organization, composition1) -> Program:
+def program(org: Organization, composition1: Composition) -> Program:
     program = Program.objects.create(title="Program Example", organization=org)
     program.add(composition1)
     return program

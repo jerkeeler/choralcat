@@ -47,10 +47,10 @@ def test_all_get_views_render(all_fixtures, logged_in_client: Client):
 
 
 @pytest.mark.django_db
-def test_views_require_authentication(client: Client):
+def test_views_require_authentication(logged_out_client: Client):
     with soft_assertions():
         for url in urls[1:]:
-            res = client.get(url, follow=True)
+            res = logged_out_client.get(url, follow=True)
             assert_that(res.status_code).is_equal_to(200)
             assert_that(res.redirect_chain[0][1]).is_equal_to(302)
             assert_that(res.redirect_chain[-1][0]).starts_with("/login/")
