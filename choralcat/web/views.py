@@ -6,13 +6,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Model, Q, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBase
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import DetailView, ListView
+from django.views.generic.base import TemplateResponseMixin, View
 
 from choralcat.core.views import UserCreateView, UserUpdateView
 
@@ -28,6 +29,8 @@ from .models import (
     Tag,
     Topic,
 )
+from .query import get_object_or_404, org_filter
+from .types import CCHttpRequest
 
 logger = logging.getLogger(__name__)
 
@@ -51,9 +54,41 @@ class ChoralcatLogoutView(LogoutView):
         return super().dispatch(request, *args, **kwargs)
 
 
+class OrgCreateView(UserCreateView):
+    request: CCHttpRequest
+
+    def form_valid(self, form: Any) -> HttpResponse:
+        logger.info(
+            f"{form.instance.__class__.__name__} {form.instance} created by "
+            f"{self.request.user} for org {self.request.org}"
+        )
+        form.instance.organization = self.request.org
+        return super().form_valid(form)
+
+
+class OrgUpdateView(UserUpdateView):
+    request: CCHttpRequest
+
+    def form_valid(self, form: Any) -> HttpResponse:
+        logger.info(
+            f"{form.instance.__class__.__name__} {form.instance} updated by "
+            f"{self.request.user} for org {self.request.org}"
+        )
+        form.instance.organization = self.request.org
+        return super().form_valid(form)
+
+
+class OrgFilterMixin(TemplateResponseMixin, View):
+    model: Type[Model]
+    request: CCHttpRequest
+
+    def get_queryset(self) -> QuerySet[Model]:
+        return org_filter(self.model, self.request)
+
+
 @login_required
 @require_POST
-def catalog_search(request: HttpRequest) -> HttpResponse:
+def catalog_search(request: CCHttpRequest) -> HttpResponse:
     term = request.POST.get("search")
     raw_page = request.POST.get("page", 1)
     page: int = 1 if raw_page == "undefined" else int(raw_page)
@@ -63,7 +98,7 @@ def catalog_search(request: HttpRequest) -> HttpResponse:
     topics = [c for c in request.POST.getlist("topics") if c and c != "undefined"]
     voicings = [c for c in request.POST.getlist("voicings") if c and c != "undefined"]
     time_periods = [c for c in request.POST.getlist("period") if c and c != "undefined"]
-    compositions = Composition.objects.all()
+    compositions = org_filter(Composition, request)
 
     if term:
         logger.info(f"Searching for term: {term}")
@@ -108,15 +143,15 @@ def catalog_search(request: HttpRequest) -> HttpResponse:
 
 @login_required
 @require_GET
-def catalog_modal(request: HttpRequest, slug: str) -> HttpResponse:
+def catalog_modal(request: CCHttpRequest, slug: str) -> HttpResponse:
     return _render_catalog_modal(request, slug)
 
 
-def _render_catalog_modal(request: HttpRequest, slug: str) -> HttpResponse:
-    composition = get_object_or_404(Composition, slug=slug)
+def _render_catalog_modal(request: CCHttpRequest, slug: str) -> HttpResponse:
+    composition = get_object_or_404(Composition, request, slug=slug)
     in_programs = composition.program_set.values_list("slug", flat=True)
     context = {
-        "programs": Program.objects.all(),
+        "programs": org_filter(Program, request),
         "composition": composition,
         "in_programs": in_programs,
     }
@@ -127,7 +162,7 @@ def _render_catalog_modal(request: HttpRequest, slug: str) -> HttpResponse:
     )
 
 
-class CatalogView(LoginRequiredMixin, ListView):
+class CatalogView(LoginRequiredMixin, OrgFilterMixin, ListView):
     model = Composition
     context_object_name = "compositions"
     template_name = "web/catalog/catalog.html"
@@ -135,34 +170,43 @@ class CatalogView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict:
         context = super().get_context_data(**kwargs)
-        context["topics"] = sorted([str(t) for t in Topic.objects.distinct()])
-        context["tags"] = sorted([str(t) for t in Tag.objects.distinct()])
-        context["categories"] = sorted([str(c) for c in Category.objects.distinct()])
+        context["topics"] = sorted([str(t) for t in org_filter(Topic, self.request).distinct()])
+        context["tags"] = sorted([str(t) for t in org_filter(Tag, self.request).distinct()])
+        context["categories"] = sorted([str(c) for c in org_filter(Category, self.request).distinct()])
         context["voicings"] = sorted(
-            [str(v) for v in Composition.objects.order_by("voicing").values_list("voicing", flat=True).distinct()]
+            [
+                str(v)
+                for v in org_filter(Composition, self.request)
+                .order_by("voicing")
+                .values_list("voicing", flat=True)
+                .distinct()
+            ]
         )
         context["time_periods"] = sorted(
             [
                 str(v)
-                for v in Composition.objects.order_by("time_period").values_list("time_period", flat=True).distinct()
+                for v in org_filter(Composition, self.request)
+                .order_by("time_period")
+                .values_list("time_period", flat=True)
+                .distinct()
             ]
         )
         return context
 
 
-class CompositionDetailView(LoginRequiredMixin, DetailView):
+class CompositionDetailView(LoginRequiredMixin, OrgFilterMixin, DetailView):
     model = Composition
     context_object_name = "composition"
     template_name = "web/catalog/composition_detail.html"
 
 
-class CompositionCreateView(LoginRequiredMixin, UserCreateView):
+class CompositionCreateView(LoginRequiredMixin, OrgFilterMixin, OrgCreateView):
     model = Composition
     form_class = CompositionForm
     template_name = "web/catalog/composition_create.html"
 
 
-class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
+class CompositionUpdateView(LoginRequiredMixin, OrgFilterMixin, OrgUpdateView):
     model = Composition
     form_class = CompositionForm
     template_name = "web/catalog/composition_edit.html"
@@ -170,30 +214,30 @@ class CompositionUpdateView(LoginRequiredMixin, UserUpdateView):
 
 @login_required
 @require_POST
-def category_add(request: HttpRequest) -> HttpResponse:
+def category_add(request: CCHttpRequest) -> HttpResponse:
     return _simple_add_view(request, Category, "categories", reverse_lazy("category_add"))
 
 
 @login_required
 @require_POST
-def instrument_add(request: HttpRequest) -> HttpResponse:
+def instrument_add(request: CCHttpRequest) -> HttpResponse:
     return _simple_add_view(request, Instrument, "accompaniment", reverse_lazy("instrument_add"))
 
 
 @login_required
 @require_POST
-def topic_add(request: HttpRequest) -> HttpResponse:
+def topic_add(request: CCHttpRequest) -> HttpResponse:
     return _simple_add_view(request, Topic, "topics", reverse_lazy("topic_add"))
 
 
 @login_required
 @require_POST
-def tag_add(request: HttpRequest) -> HttpResponse:
+def tag_add(request: CCHttpRequest) -> HttpResponse:
     return _simple_add_view(request, Tag, "tags", reverse_lazy("tag_add"))
 
 
 @transaction.atomic
-def _simple_add_view(request: HttpRequest, model: Type[T], relationship_name: str, tag_url: str) -> HttpResponse:
+def _simple_add_view(request: CCHttpRequest, model: Type[T], relationship_name: str, tag_url: str) -> HttpResponse:
     selected_values = request.POST.getlist(relationship_name)
     new_value = request.POST.get(f"new_{relationship_name}")
     removed_value = request.POST.get("remove")
@@ -202,27 +246,27 @@ def _simple_add_view(request: HttpRequest, model: Type[T], relationship_name: st
     current_values = []
     if selected_values:
         pks = [int(c) for c in selected_values]
-        current_values_dict = {c.pk: c for c in model.objects.filter(pk__in=pks)}
+        current_values_dict = {c.pk: c for c in org_filter(model, request).filter(pk__in=pks)}
         current_values = [current_values_dict[pk] for pk in pks]
 
     if new_value:
         try:
-            new_object = model.objects.get(value=new_value)
+            new_object = org_filter(model, request).get(value=new_value)
             logger.debug(f"Found value {new_value}")
         except model.DoesNotExist:
-            new_object = model.objects.create(value=new_value, user=request.user)
+            new_object = model.objects.create(value=new_value, organization=request.org)
             logger.info(f"{request.user} created new {model.__name__} {new_value}")
         if new_object not in current_values:
             current_values.append(new_object)
 
     if removed_value:
         logger.debug(f"Removing {removed_value}")
-        removed_value_obj = get_object_or_404(model, value=removed_value)
+        removed_value_obj = get_object_or_404(model, request, value=removed_value)
         current_values = [c for c in current_values if c != removed_value_obj]
 
     context = {
         "widget_name": relationship_name,
-        "selected": [{"label": c.value, "value": c.id} for c in current_values],
+        "selected": [{"label": c.value, "value": c.pk} for c in current_values],
         "tag_url": tag_url,
     }
     return render(
@@ -232,19 +276,19 @@ def _simple_add_view(request: HttpRequest, model: Type[T], relationship_name: st
     )
 
 
-class ProgramListView(LoginRequiredMixin, ListView):
+class ProgramListView(LoginRequiredMixin, OrgFilterMixin, ListView):
     model = Program
     template_name = "web/program/programs.html"
     context_object_name = "programs"
 
 
-class ProgramDetailView(LoginRequiredMixin, DetailView):
+class ProgramDetailView(LoginRequiredMixin, OrgFilterMixin, DetailView):
     model = Program
     template_name = "web/program/program_detail.html"
     context_object_name = "program"
 
 
-class ProgramCreateView(LoginRequiredMixin, UserCreateView):
+class ProgramCreateView(LoginRequiredMixin, OrgFilterMixin, OrgCreateView):
     model = Program
     form_class = ProgramForm
     template_name = "web/program/program_create.html"
@@ -254,7 +298,7 @@ class ProgramCreateView(LoginRequiredMixin, UserCreateView):
         return super().form_valid(form)
 
 
-class ProgramUpdateView(LoginRequiredMixin, UserUpdateView):
+class ProgramUpdateView(LoginRequiredMixin, OrgFilterMixin, OrgUpdateView):
     model = Program
     form_class = ProgramForm
     template_name = "web/program/program_edit.html"
@@ -262,10 +306,10 @@ class ProgramUpdateView(LoginRequiredMixin, UserUpdateView):
 
 @login_required
 @require_POST
-def program_add(request: HttpRequest, slug: str) -> HttpResponse:
+def program_add(request: CCHttpRequest, slug: str) -> HttpResponse:
     composition_slug = request.POST["composition_slug"]
-    composition = get_object_or_404(Composition, slug=composition_slug)
-    program = get_object_or_404(Program, slug=slug)
+    composition = get_object_or_404(Composition, request, slug=composition_slug)
+    program = get_object_or_404(Program, request, slug=slug)
     program.add(composition)
     program.save()
     return _render_catalog_modal(request, composition_slug)
@@ -273,10 +317,10 @@ def program_add(request: HttpRequest, slug: str) -> HttpResponse:
 
 @login_required
 @require_POST
-def program_remove(request: HttpRequest, slug: str) -> HttpResponse:
+def program_remove(request: CCHttpRequest, slug: str) -> HttpResponse:
     composition_slug = request.POST["composition_slug"]
-    composition = get_object_or_404(Composition, slug=composition_slug)
-    program = get_object_or_404(Program, slug=slug)
+    composition = get_object_or_404(Composition, request, slug=composition_slug)
+    program = get_object_or_404(Program, request, slug=slug)
     program.remove(composition)
     program.save()
     return _render_program(request, program)
@@ -293,9 +337,9 @@ def _render_program(request: HttpRequest, program: Program) -> HttpResponse:
 
 @login_required
 @require_POST
-def program_reorder(request: HttpRequest, slug: str) -> HttpResponse:
+def program_reorder(request: CCHttpRequest, slug: str) -> HttpResponse:
     new_ordering = request.POST.getlist("slug")
-    program = get_object_or_404(Program, slug=slug)
+    program = get_object_or_404(Program, request, slug=slug)
     program.reorder(new_ordering)
     program.save()
     return _render_program_catalog(request, program)
@@ -310,25 +354,25 @@ def _render_program_catalog(request: HttpRequest, program: Program) -> HttpRespo
     )
 
 
-class PersonListView(LoginRequiredMixin, ListView):
+class PersonListView(LoginRequiredMixin, OrgFilterMixin, ListView):
     model = Person
     template_name = "web/people/persons.html"
     context_object_name = "persons"
 
 
-class PersonDetailView(LoginRequiredMixin, DetailView):
+class PersonDetailView(LoginRequiredMixin, OrgFilterMixin, DetailView):
     model = Person
     template_name = "web/people/person_detail.html"
     context_object_name = "person"
 
 
-class PersonCreateView(LoginRequiredMixin, UserCreateView):
+class PersonCreateView(LoginRequiredMixin, OrgFilterMixin, OrgCreateView):
     model = Person
     form_class = PersonForm
     template_name = "web/people/person_create.html"
 
 
-class PersonUpdateView(LoginRequiredMixin, UserUpdateView):
+class PersonUpdateView(LoginRequiredMixin, OrgFilterMixin, OrgUpdateView):
     model = Person
     form_class = PersonForm
     template_name = "web/people/person_edit.html"

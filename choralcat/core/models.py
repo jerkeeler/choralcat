@@ -41,7 +41,7 @@ class TokenModel(models.Model):
         super(TokenModel, self).save(*args, **kwargs)
 
 
-class UserModel(TokenModel):
+class CreatedUpdatedModel(TokenModel):
     created_by = models.ForeignKey(
         "auth.User",
         on_delete=models.SET_NULL,
@@ -60,6 +60,12 @@ class UserModel(TokenModel):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class UserModel(CreatedUpdatedModel):
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
 
     class Meta:

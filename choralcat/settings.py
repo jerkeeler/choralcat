@@ -116,6 +116,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "choralcat.core.middleware.TimezoneMiddleware",
+    "choralcat.web.middleware.OrganizationMiddleware",
 ]
 
 ROOT_URLCONF = "choralcat.urls"
@@ -200,6 +201,7 @@ AWS_LOCATION = env("AWS_LOCATION")
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
+AWS_S3_FILE_OVERWRITE = False  # If a file with the same name is uploaded this will append random character to the end
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

@@ -4,6 +4,7 @@ from .models import (
     Category,
     Composition,
     Instrument,
+    Organization,
     Person,
     Program,
     Tag,
@@ -12,9 +13,14 @@ from .models import (
 )
 
 
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ("name", "token")
+
+
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "timezone")
+    list_display = ("user", "timezone", "organization")
 
 
 @admin.register(Person)
@@ -23,7 +29,7 @@ class PersonAdmin(admin.ModelAdmin):
         "id",
         "last_name",
         "first_name",
-        "user",
+        "organization",
         "slug",
         "created_at",
         "updated_at",
@@ -33,36 +39,36 @@ class PersonAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "value", "user", "created_at", "updated_at")
+    list_display = ("id", "value", "organization", "created_at", "updated_at")
     search_fields = ["value"]
 
 
 @admin.register(Instrument)
 class InstrumentAdmin(admin.ModelAdmin):
-    list_display = ("id", "value", "user", "created_at", "updated_at")
+    list_display = ("id", "value", "organization", "created_at", "updated_at")
     search_fields = ["value"]
 
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ("id", "value", "user", "created_at", "updated_at")
+    list_display = ("id", "value", "organization", "created_at", "updated_at")
     search_fields = ["value"]
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ("id", "value", "user", "created_at", "updated_at")
+    list_display = ("id", "value", "organization", "created_at", "updated_at")
     search_fields = ["value"]
 
 
 @admin.register(Composition)
 class CompositionAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "user", "slug", "created_at", "updated_at")
+    list_display = ("id", "title", "organization", "slug", "created_at", "updated_at")
     search_fields = ("token", "title")
-    list_filter = ["user"]
+    list_filter = ["organization"]
 
 
 @admin.register(Program)
 class ProgramAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "season", "user", "slug", "created_at", "updated_at")
+    list_display = ("id", "title", "season", "organization", "slug", "created_at", "updated_at")
     search_fields = ("token", "title")

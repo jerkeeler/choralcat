@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .consts import DEFAULT_TIME_ZONE
-from .models import UserProfile
+from .models import Organization, UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,11 @@ logger = logging.getLogger(__name__)
 def create_user_profile(instance: User, created: bool, **_: Any) -> None:
     logger.debug("Signal for user post-save")
     if created and not UserProfile.objects.filter(user=instance).exists():
-        UserProfile.objects.create(user=instance, timezone=DEFAULT_TIME_ZONE)
+        # For now automatically add everyone to the chanticleer organization, should be updated if choralcat
+        # ever moves beyond chanticleer.
+        chanticleer = Organization.objects.get(name="Chanticleer")
+        UserProfile.objects.create(user=instance, timezone=DEFAULT_TIME_ZONE, organization=chanticleer)
         logger.info(
-            f"Created new user profile object for {instance.username} with default timezone {DEFAULT_TIME_ZONE}"
+            f"Created new user profile object for {instance.username} with default "
+            f"timezone {DEFAULT_TIME_ZONE} and organization {chanticleer}"
         )

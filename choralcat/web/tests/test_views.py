@@ -1,9 +1,15 @@
 import pytest
 from assertpy import assert_that, soft_assertions
-from django.contrib.auth.models import User
 from django.test import Client
 
 from .. import models as m
+from ..models import Organization
+
+
+@pytest.mark.django_db
+def test_login(client: Client):
+    res = client.post("/login/", {"name": "test_user", "password": "testpassword"})
+    assert_that(res.status_code).is_equal_to(200)
 
 
 @pytest.mark.django_db
@@ -70,9 +76,9 @@ def test_add_new_value(logged_in_client: Client) -> None:
 
 @pytest.mark.django_db
 @soft_assertions()
-def test_add_current_value(logged_in_client: Client, user: User) -> None:
+def test_add_current_value(logged_in_client: Client, org: Organization) -> None:
     for url, name, model in simple_add_urls:
-        model.objects.create(value="an oldie but a goodie", user=user)
+        model.objects.create(value="an oldie but a goodie", organization=org)
         assert_that(model.objects.filter(value="an oldie but a goodie").count()).is_equal_to(1)
         res = logged_in_client.post(url, {f"new_{name}": "an oldie but a goodie"})
         assert_that(res.status_code).is_equal_to(200)

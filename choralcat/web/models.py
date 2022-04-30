@@ -9,17 +9,26 @@ from django.urls import reverse
 
 from choralcat.core.consts import VARCHAR_LENGTH
 from choralcat.core.fields import AutoSlugField, UnidecodeField
-from choralcat.core.models import UserModel
+from choralcat.core.models import CreatedUpdatedModel
 
 logger = logging.getLogger(__name__)
+
+
+class Organization(CreatedUpdatedModel):
+    name = models.CharField(max_length=VARCHAR_LENGTH)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     timezone = models.CharField(max_length=VARCHAR_LENGTH, default=settings.TIME_ZONE)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True)
 
 
-class Person(UserModel):
+class Person(CreatedUpdatedModel):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=VARCHAR_LENGTH)
     last_name = models.CharField(max_length=VARCHAR_LENGTH, blank=True)
     slug = AutoSlugField(populated_from=["first_name", "last_name"])
@@ -49,11 +58,12 @@ class Person(UserModel):
         return reverse("person_detail", kwargs={"slug": self.slug})
 
 
-class SimpleModel(UserModel):
+class SimpleModel(CreatedUpdatedModel):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     value = models.CharField(max_length=VARCHAR_LENGTH, blank=True, unique=True, null=True)
 
     class Meta:
-        ordering = ["value", "user"]
+        ordering = ["value", "organization"]
         abstract = True
 
     def __str__(self) -> str:
@@ -77,10 +87,11 @@ class Tag(SimpleModel):
     value = models.CharField(max_length=VARCHAR_LENGTH, blank=True, null=True)
 
     class Meta:
-        unique_together = ("user", "value")
+        unique_together = ("organization", "value")
 
 
-class Composition(UserModel):
+class Composition(CreatedUpdatedModel):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=VARCHAR_LENGTH)
     title_unidecode = UnidecodeField(populated_from="title", max_length=VARCHAR_LENGTH)
     slug = AutoSlugField(populated_from="title")
@@ -124,7 +135,8 @@ class Composition(UserModel):
         return reverse("composition_detail", kwargs={"slug": self.slug})
 
 
-class Program(UserModel):
+class Program(CreatedUpdatedModel):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=VARCHAR_LENGTH)
     slug = AutoSlugField(populated_from="title")
     compositions = models.ManyToManyField(Composition, blank=True)

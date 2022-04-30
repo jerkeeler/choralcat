@@ -24,10 +24,7 @@ mypy:
 	mypy choralcat/
 
 test:
-	pytest
-
-load_testdata:
-	python manage.py loaddata choralcat/web/fixtures/*
+	pytest --no-migrations
 
 docker_build:
 	docker build . --tag jerkeeler/choralcat:app-dev -f docker/app/Dockerfile --target dev

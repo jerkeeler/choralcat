@@ -1,26 +1,25 @@
 import pytest
 from assertpy import assert_that
-from django.contrib.auth.models import User
 
-from ..models import Composition, Program
-
-
-@pytest.fixture
-@pytest.mark.django_db
-def composition1(user: User) -> Composition:
-    return Composition.objects.create(title="Composition Example", user=user, slug="comp-1")
+from ..models import Composition, Organization, Program
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def composition2(user: User) -> Composition:
-    return Composition.objects.create(title="Composition2 Example", user=user, slug="comp-2")
+def composition1(org: Organization) -> Composition:
+    return Composition.objects.create(title="Composition Example", organization=org, slug="comp-1")
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def program(user: User, composition1) -> Program:
-    program = Program.objects.create(title="Program Example", user=user)
+def composition2(org: Organization) -> Composition:
+    return Composition.objects.create(title="Composition2 Example", organization=org, slug="comp-2")
+
+
+@pytest.fixture
+@pytest.mark.django_db
+def program(org: Organization, composition1) -> Program:
+    program = Program.objects.create(title="Program Example", organization=org)
     program.add(composition1)
     return program
 
