@@ -1,5 +1,4 @@
 -c requirements.txt
-# Dev dependencies version shouldn't matter
 assertpy
 autoflake
 black

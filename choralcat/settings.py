@@ -37,6 +37,11 @@ env = environ.Env(
     REDIS_PASSWORD=(str, "notarealpassword"),
     SECRET_KEY=(str, get_random_secret_key()),  # type: ignore
     SENTRY_DSN=(str, None),
+    AWS_S3_ACCESS_KEY_ID=(str, None),
+    AWS_S3_SECRET_ACCESS_KEY=(str, None),
+    AWS_STORAGE_BUCKET_NAME=(str, None),
+    AWS_S3_ENDPOINT_URL=(str, None),
+    AWS_LOCATION=(str, "uploads"),
 )
 
 
@@ -93,6 +98,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_celery_beat",
     # "defender",
+    "storages",
     "debug_toolbar",
     "choralcat.core.apps.ChoralcatCoreConfig",
     "choralcat.data_migrations.apps.DataMigrationsConfig",
@@ -183,6 +189,17 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 if DEBUG:
     STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+AWS_S3_ACCESS_KEY_ID = env("AWS_S3_ACCESS_KEY_ID")
+AWS_S3_SECRET_ACCESS_KEY = env("AWS_S3_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+AWS_LOCATION = env("AWS_LOCATION")
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

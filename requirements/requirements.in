@@ -1,11 +1,13 @@
+# django-defender
 Django>=4<5
+boto3
 celery[redis]
 django-celery-beat
 django-celery-results
 django-debug-toolbar
-# django-defender
 django-environ
 django-extensions
+django-storages
 gunicorn
 ipython
 pip-tools
