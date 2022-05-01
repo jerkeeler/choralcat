@@ -1,16 +1,14 @@
 from operator import itemgetter
-from typing import Any, Optional, TypeVar
+from typing import Any, Optional
 
 from django.db import models
 from django.db.models import QuerySet
 from django.forms.widgets import SelectMultiple, TextInput
 
-T = TypeVar("T", bound=models.Model)
-
 
 class TagWidget(SelectMultiple):
     template_name = "web/widgets/tag_widget.html"
-    queryset: Optional[QuerySet[T]]
+    queryset: Optional[QuerySet[models.Model]]
 
     def __init__(self, attrs: Optional[dict[str, Any]] = None) -> None:
         super().__init__(attrs)
@@ -42,7 +40,7 @@ class TagWidget(SelectMultiple):
 
 class AutocompleteStringWidget(TextInput):
     template_name = "web/widgets/string_widget.html"
-    queryset: Optional[QuerySet[T]]
+    queryset: Optional[QuerySet[models.Model]]
 
     def __init__(self, field: str, attrs: Optional[dict[str, Any]] = None) -> None:
         super().__init__(attrs)

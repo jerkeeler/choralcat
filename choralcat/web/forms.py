@@ -103,7 +103,7 @@ class CompositionForm(OrgForm):
         self.fields["language"].widget.queryset = comp_filter
         self.fields["voicing"].widget.queryset = comp_filter
 
-        def simple_choices(model: Type[Model]):
+        def simple_choices(model: Type[Model]) -> Any:
             return model.objects.filter(organization=self.org).values_list("pk", "value")
 
         self.fields["categories"].widget.choices = simple_choices(Category)
