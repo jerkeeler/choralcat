@@ -5,19 +5,16 @@ from ..models import Composition, Organization, Program
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def composition1(org: Organization) -> Composition:
     return Composition.objects.create(title="Composition Example", organization=org, slug="comp-1")
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def composition2(org: Organization) -> Composition:
     return Composition.objects.create(title="Composition2 Example", organization=org, slug="comp-2")
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def program(org: Organization, composition1: Composition) -> Program:
     program = Program.objects.create(title="Program Example", organization=org)
     program.add(composition1)

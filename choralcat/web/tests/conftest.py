@@ -19,7 +19,6 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def all_fixtures(org: Organization) -> None:
     Composition.objects.create(slug="fratres-ego-enim-accepi-RKAQ", organization=org)
     Program.objects.create(slug="live-from-london-S4xg", organization=org)
@@ -29,26 +28,22 @@ def all_fixtures(org: Organization) -> None:
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def user() -> User:
     return User.objects.get(username="test_user")
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def org() -> Organization:
     return Organization.objects.get(name="Chanticleer")
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def logged_in_client(client: Client) -> Client:
     client.login(username="test_user", password="testpassword")
     return client
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def logged_out_client(client: Client) -> Client:
     client.logout()
     return client
