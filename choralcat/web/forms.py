@@ -2,7 +2,7 @@ from typing import Any, Type
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Model
-from django.forms import ModelForm, widgets
+from django.forms import FileField, Form, ModelForm, widgets
 from django.urls import reverse_lazy
 
 from .models import Category, Composition, Instrument, Person, Program, Tag, Topic
@@ -183,3 +183,7 @@ class CompositionForm(OrgForm):
                 }
             ),
         }
+
+
+class CompositionScoreForm(Form):
+    file = FileField()

@@ -1,0 +1,5 @@
+<form method="post" action="{% url 'catalog_file_upload' composition.slug %}" method="post">>
+  {% csrf_token %}
+  <input type="file" name="file">
+  <input type="submit" id="submit" value="upload">
+</form>

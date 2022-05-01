@@ -23,7 +23,8 @@
               <span class="font-light">Composed by: &nbsp;</span>
               {% for composer in composition.composers.all %}
                 <a class="text-primary hover:text-primary300"
-                   href="{% url 'person_detail' composer.slug %}">{{ composer }}{% if not forloop.last %};{% endif %}</a>
+                   href="{% url 'person_detail' composer.slug %}">
+                  {{ composer }}{% if not forloop.last %};{% endif %}</a>
               {% endfor %}
             </div>
           {% endif %}
@@ -32,13 +33,14 @@
               <span class="font-light">Arranged by: &nbsp;</span>
               {% for arranger in composition.arrangers.all %}
                 <a class="text-primary hover:text-primary300"
-                   href="{% url 'person_detail' arranger.slug %}">{{ arranger }}{% if not forloop.last %};{% endif %}</a>
+                   href="{% url 'person_detail' arranger.slug %}">
+                  {{ arranger }}{% if not forloop.last %};{% endif %}</a>
               {% endfor %}
             </div>
           {% endif %}
           {% if composition.rating %}
             <div class="text-lg flex items-center mt-1 text-yellow-300">
-              {% for i in composition.stars %}
+              {% for _ in composition.stars %}
                 {% star_icon "h-5 w-5" %}
               {% endfor %}
             </div>
@@ -80,17 +82,18 @@
           {% endif %}
           {% if composition.tags.count %}
             <div><span class="mr-2 font-light text-gray-500">Tags:</span>
-              {% for tag in composition.tags.all %}{% tag tag.value %}{% endfor %}</div>
+              {% for tag in composition.tags.all %}{% tag tag.value %}{% endfor %}
+            </div>
           {% endif %}
           {% if composition.categories.count %}
-            <div class="mt-1"><span
-                class="mr-2 font-light text-gray-500">Categories:</span>{% for category in composition.categories.all %}
-              {% tag category.value %}{% endfor %}</div>
+            <div class="mt-1"><span class="mr-2 font-light text-gray-500">Categories:</span>
+              {% for category in composition.categories.all %}{% tag category.value %}{% endfor %}
+            </div>
           {% endif %}
-          {% if composition.topics.all %}
+          {% if composition.topics.count %}
             <div class="mt-1"><span class="mr-2 font-light text-gray-500">Topics:</span>
-              {% for topic in composition.topics.all %}
-                {% tag topic.value %}{% endfor %}</div>
+              {% for topic in composition.topics.all %}{% tag topic.value %}{% endfor %}
+            </div>
           {% endif %}
         </div>
         <div class="grid justify-items-end text-gray-600">
@@ -116,17 +119,24 @@
           <div class="inline-flex items-center mt-1">
             {% if composition.starting_key or composition.ending_key %}
               {% music_notes_icon "flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" %}
-              <p>
-                {{ composition.starting_key }}/{{ composition.ending_key }}
-              </p>
+              <p>{{ composition.starting_key }}/{{ composition.ending_key }}</p>
             {% endif %}
           </div>
         </div>
       </div>
       {% if composition.score_link %}
         <div class="mt-2">
-          <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score PDF</a></pkk>
+          <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score PDF</a></p>
         </div>
+      {% endif %}
+      {% if composition.has_score_attachment %}
+        <div><p>{{ composition.score_attachment.name }}</p></div>
+      {% else %}
+        <form method="post" enctype="multipart/form-data" action="{% url 'catalog_file_upload' composition.slug %}" >
+          {% csrf_token %}
+          <input type="file" name="file">
+          <input type="submit" id="submit" value="upload">
+        </form>
       {% endif %}
       {% if composition.notes or composition.edition_notes %}
         <hr class="mt-4 mb-4"/>

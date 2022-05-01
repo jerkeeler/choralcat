@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Type, TypeVar
 
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
-from django.http.response import HttpResponseBase
+from django.http.response import Http404, HttpResponseBase, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
@@ -16,10 +17,11 @@ from django.views.generic import DetailView, ListView
 
 from .common_views import OrgCreateView, OrgFilterMixin, OrgUpdateView
 from .consts import DEFAULT_NUM_PER_PAGE
-from .forms import CompositionForm, PersonForm, ProgramForm
+from .forms import CompositionForm, CompositionScoreForm, PersonForm, ProgramForm
 from .models import (
     Category,
     Composition,
+    CompositionScore,
     Instrument,
     Person,
     Program,
@@ -126,6 +128,21 @@ def _render_catalog_modal(request: CCHttpRequest, slug: str) -> HttpResponse:
         template_name="partials/program_modal/modal_content.html",
         context=context,
     )
+
+
+@login_required
+@require_POST
+def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
+    composition = get_object_or_404(Composition, request, slug=slug)
+    form = CompositionScoreForm(request.POST, request.FILES)
+    if form.is_valid() and request.org:
+        file = request.FILES["file"]
+        composition_score, _ = CompositionScore.objects.get_or_create(composition=composition)
+        composition_score.name = str(file)
+        upload_path = os.path.join(request.org.slug, composition_score.name)
+        composition_score.file.save(upload_path, file)
+        return HttpResponseRedirect(reverse_lazy("composition_detail", kwargs={"slug": slug}))
+    raise Http404
 
 
 class CatalogView(LoginRequiredMixin, OrgFilterMixin, ListView):

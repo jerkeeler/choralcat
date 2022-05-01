@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class Organization(CreatedUpdatedModel):
     name = models.CharField(max_length=VARCHAR_LENGTH)
+    slug = AutoSlugField(populated_from="name")
 
     def __str__(self) -> str:
         return self.name
@@ -134,6 +135,14 @@ class Composition(CreatedUpdatedModel):
     def get_absolute_url(self) -> str:
         return reverse("composition_detail", kwargs={"slug": self.slug})
 
+    @property
+    def has_score_attachment(self) -> bool:
+        try:
+            _ = self.score_attachment
+            return True
+        except CompositionScore.DoesNotExist:
+            return False
+
 
 class Program(CreatedUpdatedModel):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
@@ -191,3 +200,22 @@ class Program(CreatedUpdatedModel):
     def reorder(self, new_order: list[str]) -> None:
         logger.info(f"Reordering program {self} to {new_order}")
         self.ordering["compositions"] = new_order
+
+
+class Attachment(models.Model):
+    file = models.FileField()
+    name = models.CharField(max_length=VARCHAR_LENGTH)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class CompositionAttachment(Attachment):
+    composition = models.ForeignKey(Composition, on_delete=models.CASCADE, related_name="attachment")
+
+
+class CompositionScore(Attachment):
+    composition = models.OneToOneField(Composition, on_delete=models.CASCADE, related_name="score_attachment")

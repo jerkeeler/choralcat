@@ -3,6 +3,7 @@ from django.contrib import admin
 from .models import (
     Category,
     Composition,
+    CompositionScore,
     Instrument,
     Organization,
     Person,
@@ -72,3 +73,8 @@ class CompositionAdmin(admin.ModelAdmin):
 class ProgramAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "season", "organization", "slug", "created_at", "updated_at")
     search_fields = ("token", "title")
+
+
+@admin.register(CompositionScore)
+class CompositionScoreAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "composition")
