@@ -1,10 +1,11 @@
-from typing import Any
+from typing import Any, Type
 
 from django.contrib.auth.forms import AuthenticationForm
+from django.db.models import Model
 from django.forms import ModelForm, widgets
 from django.urls import reverse_lazy
 
-from .models import Composition, Person, Program
+from .models import Category, Composition, Instrument, Person, Program, Tag, Topic
 from .widgets import AutocompleteStringWidget, MtMStringWidget, TagWidget
 
 
@@ -30,7 +31,13 @@ text_input_classes = (
 )
 
 
-class ProgramForm(ModelForm):
+class OrgForm(ModelForm):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.org = kwargs.pop("org")
+        super().__init__(*args, **kwargs)
+
+
+class ProgramForm(OrgForm):
     template_name = "web/program/program_form.html"
 
     class Meta:
@@ -55,8 +62,12 @@ class ProgramForm(ModelForm):
 checkbox_input_classes = "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
 
 
-class PersonForm(ModelForm):
+class PersonForm(OrgForm):
     template_name = "web/people/person_form.html"
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields["nationality"].widget.queryset = Person.objects.filter(organization=self.org)
 
     class Meta:
         model = Person
@@ -77,15 +88,32 @@ class PersonForm(ModelForm):
             "death": widgets.DateInput(attrs={"class": text_input_classes}),
             "poc": widgets.CheckboxInput(attrs={"class": checkbox_input_classes}),
             "non_male_identifying": widgets.CheckboxInput(attrs={"class": checkbox_input_classes}),
-            "nationality": AutocompleteStringWidget(
-                model=Person, field="nationality", attrs={"placeholder": "georgian"}
-            ),
+            "nationality": AutocompleteStringWidget(field="nationality", attrs={"placeholder": "georgian"}),
             "bio": widgets.Textarea(attrs={"class": text_input_classes}),
         }
 
 
-class CompositionForm(ModelForm):
+class CompositionForm(OrgForm):
     template_name = "web/catalog/catalog_form.html"
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        comp_filter = Composition.objects.filter(organization=self.org)
+        self.fields["time_period"].widget.queryset = comp_filter
+        self.fields["language"].widget.queryset = comp_filter
+        self.fields["voicing"].widget.queryset = comp_filter
+
+        def simple_choices(model: Type[Model]):
+            return model.objects.filter(organization=self.org).values_list("pk", "value")
+
+        self.fields["categories"].widget.choices = simple_choices(Category)
+        self.fields["tags"].widget.choices = simple_choices(Tag)
+        self.fields["topics"].widget.choices = simple_choices(Topic)
+        self.fields["accompaniment"].widget.choices = simple_choices(Instrument)
+
+        composer_choices = [(c.pk, c.name) for c in Person.objects.filter(organization=self.org)]
+        self.fields["composers"].widget.choices = composer_choices
+        self.fields["arrangers"].widget.choices = composer_choices
 
     class Meta:
         model = Composition
@@ -114,13 +142,11 @@ class CompositionForm(ModelForm):
             "title": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "Title"}),
             "starting_key": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "C"}),
             "ending_key": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "Cm"}),
-            "voicing": AutocompleteStringWidget(model=Composition, field="voicing", attrs={"placeholder": "satb"}),
+            "voicing": AutocompleteStringWidget(field="voicing", attrs={"placeholder": "satb"}),
             "duration": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "03:00"}),
             "number_of_voices": widgets.NumberInput(attrs={"class": text_input_classes, "placeholder": 4}),
-            "time_period": AutocompleteStringWidget(
-                model=Composition, field="time_period", attrs={"placeholder": "Modern"}
-            ),
-            "language": AutocompleteStringWidget(model=Composition, field="language", attrs={"placeholder": "Klingon"}),
+            "time_period": AutocompleteStringWidget(field="time_period", attrs={"placeholder": "Modern"}),
+            "language": AutocompleteStringWidget(field="language", attrs={"placeholder": "Klingon"}),
             "rating": widgets.NumberInput(attrs={"class": text_input_classes, "placeholder": "1-5"}),
             "score_link": widgets.TextInput(attrs={"class": text_input_classes, "placeholder": "keeler.dev"}),
             "notes": widgets.Textarea(

@@ -6,17 +6,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Model, Q, QuerySet
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBase
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import DetailView, ListView
-from django.views.generic.base import TemplateResponseMixin, View
 
-from choralcat.core.views import UserCreateView, UserUpdateView
-
+from .common_views import OrgCreateView, OrgFilterMixin, OrgUpdateView
 from .consts import DEFAULT_NUM_PER_PAGE
 from .forms import CompositionForm, PersonForm, ProgramForm
 from .models import (
@@ -52,38 +50,6 @@ class ChoralcatLogoutView(LogoutView):
         if self.request.user and self.request.user.is_authenticated:
             logger.info(f"User {self.request.user} has logged out")
         return super().dispatch(request, *args, **kwargs)
-
-
-class OrgCreateView(UserCreateView):
-    request: CCHttpRequest
-
-    def form_valid(self, form: Any) -> HttpResponse:
-        logger.info(
-            f"{form.instance.__class__.__name__} {form.instance} created by "
-            f"{self.request.user} for org {self.request.org}"
-        )
-        form.instance.organization = self.request.org
-        return super().form_valid(form)
-
-
-class OrgUpdateView(UserUpdateView):
-    request: CCHttpRequest
-
-    def form_valid(self, form: Any) -> HttpResponse:
-        logger.info(
-            f"{form.instance.__class__.__name__} {form.instance} updated by "
-            f"{self.request.user} for org {self.request.org}"
-        )
-        form.instance.organization = self.request.org
-        return super().form_valid(form)
-
-
-class OrgFilterMixin(TemplateResponseMixin, View):
-    model: Type[Model]
-    request: CCHttpRequest
-
-    def get_queryset(self) -> QuerySet[Model]:
-        return org_filter(self.model, self.request)
 
 
 @login_required

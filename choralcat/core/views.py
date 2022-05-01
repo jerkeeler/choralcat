@@ -12,7 +12,6 @@ class UserCreateView(CreateView):
         logger.info(f"{form.instance.__class__.__name__} {form.instance} created by {self.request.user}")
         form.instance.created_by = self.request.user
         form.instance.updated_by = self.request.user
-        form.instance.user = self.request.user
         return super().form_valid(form)
 
 
