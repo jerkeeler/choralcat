@@ -63,7 +63,7 @@
           {% button_link location=logout_url text="Log Out" %}
         {% else %}
           {% url 'login' as login_url %}
-          {% button_link location=login_url text="Log In" %}
+          {% button_link text="Log In" location=login_url  %}
         {% endif %}
       </div>
     </div>

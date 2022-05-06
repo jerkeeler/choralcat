@@ -1,4 +1,5 @@
 {% extends "web/base.html" %}
+{% load choralcat_components %}
 {% block main %}
   <form action="{% url 'composition_edit' composition.slug %}" method="post">
     {% csrf_token %}
@@ -7,8 +8,8 @@
       <div class="pt-5">
         <div class="flex justify-end">
           {% url 'composition_detail' composition.slug as back_url %}
-          {% include "partials/forms/cancel_button.html" with label="Cancel" url=back_url %}
-          {% include "partials/forms/action_button.html" with label="Save" %}
+          {% form_cancel_button label="Cancel" url=back_url %}
+          {% form_action_button label="Save" %}
         </div>
       </div>
     </div>

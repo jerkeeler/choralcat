@@ -1,11 +1,17 @@
+import dataclasses
 import hashlib
 import os
 from glob import glob
+from typing import Any, Callable, Optional, Type, TypeVar
 
 from django import template
 from django.conf import settings
+from django.forms.fields import BoundField
+
+from choralcat.web.utils import assert_field_instance, camel_to_snake
 
 register = template.Library()
+COMPONENTS_DIR = os.path.join("web", "components")
 
 tag_colors = [
     ("bg-yellow-100", "text-yellow-800"),
@@ -61,11 +67,71 @@ for icon in glob(icon_glob):
     _create_icon_component(icon_name)
 
 
-@register.inclusion_tag("web/components/buttons/button_link.html")
-def button_link(location: str, text: str) -> dict[str, str]:
-    return {"location": location, "text": text}
+T = TypeVar("T")
 
 
-@register.inclusion_tag("web/components/buttons/button.html")
-def button(type: str, text: str) -> dict[str, str]:
-    return {"type": type, "text": text}
+def component(template_str: Optional[str]) -> Callable[[Type[T]], Type[T]]:
+    def wrapper(component_class: Type[T]) -> Type[T]:
+        cls = dataclasses.dataclass(component_class)
+        fields = dataclasses.fields(cls)
+        field_dct = {field.name: field for field in fields}
+        component_name = camel_to_snake(cls.__name__)
+        template_name = f"{template_str}.html" if template_str else f"{component_name}.html"
+
+        @register.inclusion_tag(os.path.join(COMPONENTS_DIR, template_name), name=component_name)
+        def _(*args: Any, **kwargs: Any) -> dict:
+            res = {}
+            for kwarg_key, kwarg_value in kwargs.items():
+                assert kwarg_key in field_dct, f"kwarg {kwarg_key} is not valid for component {component_name}"
+                field = field_dct[kwarg_key]
+                assert_field_instance(kwarg_value, field)
+                res[field.name] = kwarg_value
+            for field, arg in zip(fields, args):
+                assert_field_instance(arg, field)
+                res[field.name] = arg
+            return res
+
+        return cls
+
+    return wrapper
+
+
+@component("buttons/button")
+class Button:
+    type: str
+    text: str
+
+
+@component("buttons/button_link")
+class ButtonLink:
+    location: str
+    text: str
+
+
+@component("forms/action_button")
+class FormActionButton:
+    label: str
+
+
+@component("forms/cancel_button")
+class FormCancelButton:
+    label: str
+    url: str
+
+
+@component("forms/text_input")
+class TextInput:
+    field: BoundField
+    label: str
+
+
+@component("forms/tag_input")
+class TagInput:
+    field: BoundField
+    label: str
+
+
+@component("forms/checkbox")
+class Checkbox:
+    field: BoundField
+    label: str

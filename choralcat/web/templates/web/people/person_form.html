@@ -1,3 +1,4 @@
+{% load choralcat_components %}
 {{ form.non_field_errors }}
 <div>
   <div>
@@ -7,26 +8,26 @@
       </h3>
     </div>
     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-      {% include "partials/forms/text_input.html" with label="First name" field=form.first_name %}
-      {% include "partials/forms/text_input.html" with label="Last name" field=form.last_name %}
+      {% text_input label="First name" field=form.first_name %}
+      {% text_input label="Last name" field=form.last_name %}
     </div>
     <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-      {% include "partials/forms/text_input.html" with label="Birth date" field=form.birth %}
-      {% include "partials/forms/text_input.html" with label="Death date" field=form.death %}
+      {% text_input label="Birth date" field=form.birth %}
+      {% text_input label="Death date" field=form.death %}
     </div>
   </div>
   <div class="pt-4">
     <fieldset>
       <div class="mt-4 space-y-4">
-        {% include "partials/forms/checkbox.html" with field=form.poc label="Person of color" %}
-        {% include "partials/forms/checkbox.html" with field=form.non_male_identifying label="Non-male identifying" %}
+        {% checkbox label="Person of color" field=form.poc %}
+        {% checkbox label="Non-male identifying" field=form.non_male_identifying %}
       </div>
     </fieldset>
   </div>
   <div class="pt-4">
-    {% include "partials/forms/text_input.html" with field=form.nationality label="Nationality" %}
+    {% text_input label="Nationality" field=form.nationality %}
   </div>
   <div class="pt-4">
-    {% include "partials/forms/text_input.html" with field=form.bio label="Bio" %}
+    {% text_input label="Bio" field=form.bio %}
   </div>
 </div>

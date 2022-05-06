@@ -1,3 +1,4 @@
+{% load choralcat_components %}
 {{ form.non_field_errors }}
 <div>
   <div>
@@ -6,7 +7,7 @@
     </h3>
   </div>
   <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-    {% include "partials/forms/text_input.html" with field=form.title label="Title" %}
-    {% include "partials/forms/text_input.html" with field=form.season label="Season" %}
+    {% text_input field=form.title label="Title" %}
+    {% text_input field=form.season label="Season" %}
   </div>
 </div>
