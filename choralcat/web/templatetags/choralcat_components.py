@@ -70,7 +70,7 @@ for icon in glob(icon_glob):
 T = TypeVar("T")
 
 
-def component(template_str: Optional[str]) -> Callable[[Type[T]], Type[T]]:
+def component(template_str: Optional[str] = None) -> Callable[[Type[T]], Type[T]]:
     def wrapper(component_class: Type[T]) -> Type[T]:
         cls = dataclasses.dataclass(component_class)
         fields = dataclasses.fields(cls)
@@ -135,3 +135,10 @@ class TagInput:
 class Checkbox:
     field: BoundField
     label: str
+
+
+@component()
+class TableHeaderWithAction:
+    text: str
+    location: str
+    action_text: str

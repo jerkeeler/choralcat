@@ -1,11 +1,12 @@
 {% extends "web/base.html" %}
+{% load choralcat_components %}
 
 {% block title %} - Programs{% endblock %}
 
 {% load static %}
 {% block main %}
   {% url "program_new" as location %}
-  {% include "partials/table_header_with_action.html" with text="Programs" action_text="New Program" location=location %}
+  {% table_header_with_action text="Programs" action_text="New Program" location=location %}
 
   <!-- This example requires Tailwind CSS v2.0+ -->
   <div class="flex flex-col py-4">
