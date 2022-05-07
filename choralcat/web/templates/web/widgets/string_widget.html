@@ -1,22 +1,8 @@
-<div x-data="{
-options: [{% for opt in ordered_options %}'{{ opt|escapejs }}',{% endfor %}],
-filtered: [{% for opt in ordered_options %}'{{ opt|escapejs }}',{% endfor %}],
-idx: -1,
-maxIdx: {{ ordered_options|length }},
-{{ widget.name }}: '{% firstof widget.value '' %}',
-showDropdown: false,
-filterOptions() {
-  this.filtered = this.options.filter((val) => val.toLowerCase().includes(this.{{ widget.name }}.toLowerCase()));
-  this.maxIdx = this.filtered.length;
-  if (this.filtered.length === 0) this.showDropdown = false;
-  else this.showDropdown = true;
-},
-setValue() {
-  if (this.idx !== -1) this.{{ widget.name }} = this.filtered[this.idx];
-  this.idx = -1;
-  this.filterOptions();
-}
-}"
+<div x-data="stringWidget(
+  '{{ widget.name|escapejs }}',
+  '{% firstof widget.value '' %}',
+  [{% for opt in ordered_options %}'{{ opt|escapejs }}',{% endfor %}],
+)"
      class="relative"
 >
   <input type="text"
@@ -33,7 +19,7 @@ setValue() {
          @blur="showDropdown = false"
          @click.away="showDropdown = false"
          @focus="showDropdown = true;filterOptions()"
-         x-model="{{ widget.name }}"
+         x-model="currentValue"
          maxlength="256"
          value="{{ widget.value }}"
   >
@@ -49,7 +35,7 @@ setValue() {
           :id="'listbox-option-' + index"
           :class="{'text-white bg-indigo-600': idx == index, 'text-gray-900': idx != index}"
           @mouseenter="idx = index"
-          @click="{{ widget.name }} = value;showDropdown = false"
+          @click="currentValue = value;showDropdown = false"
           role="option">
         <span class="block truncate"
               :class="{'font-semibold': idx == index, 'font-normal': idx != index}"

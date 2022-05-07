@@ -1,5 +1,7 @@
 {% extends "web/base.html" %}
+
 {% load choralcat_components %}
+
 {% block main %}
   <form action="{% url 'composition_new' %}" method="post">
     {% csrf_token %}

@@ -1,44 +1,10 @@
 {% load choralcat_components %}
 
-<div x-data="{
-options: [
-  {% for opt in sorted_options %}
-    [{{ opt.value }}, '{{ opt.label|escapejs }}'],
-  {% endfor %}
-],
-filtered: [
-  {% for opt in sorted_options %}
-    [{{ opt.value }}, '{{ opt.label|escapejs }}'],
-  {% endfor %}
-],
-selected: [
-  {% for opt in selected %}
-  [{{ opt.value }}, '{{ opt.label|escapejs }}'],
-  {% endfor %}
-],
-idx: -1,
-maxIdx: {{ sorted_options|length }},
-itemVal: '',
-showDropdown: false,
-filterOptions() {
-  this.filtered = this.options.filter((val) => val[1].toLowerCase().includes(this.itemVal.toLowerCase()));
-  this.maxIdx = this.filtered.length;
-  if (this.filtered.length === 0) this.showDropdown = false;
-  else this.showDropdown = true;
-},
-addValue() {
-  const alreadyAdded = this.selected.find(val => val[0] === this.filtered[this.idx][0]);
-  if (this.idx !== -1 && !alreadyAdded) this.selected.push(this.filtered[this.idx]);
-  this.idx = -1;
-  this.itemVal = '';
-  this.filterOptions();
-},
-removeValue(opt) {
-  this.selected = this.selected.filter(val => val[0] !== opt[0]);
-}
-}"
-     class="relative"
->
+<div x-data="mtmWidget(
+  [{% for opt in sorted_options %}[{{ opt.value }}, '{{ opt.label|escapejs }}'],{% endfor %}],
+  [{% for opt in selected %}[{{ opt.value }}, '{{ opt.label|escapejs }}'],{% endfor %}],
+)"
+     class="relative">
   <div>
     <select multiple
             id="id_{{ widget_name }}"

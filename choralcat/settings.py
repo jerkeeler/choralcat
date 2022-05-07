@@ -44,7 +44,6 @@ env = environ.Env(
     AWS_LOCATION=(str, "uploads"),
 )
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -149,6 +148,27 @@ DATABASES = {
     }
 }
 
+# Caches
+# https://docs.djangoproject.com/en/4.0/topics/cache/
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
+REDIS_PASSWORD = env("REDIS_PASSWORD")
+REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+    }
+}
+if DEBUG:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -221,11 +241,7 @@ EMAIL_USE_TLS = True
 #     ADMINS = list(zip(ADMIN_NAMES, ADMIN_EMAILS))
 
 # CELERY CONFIG
-REDIS_HOST = env("REDIS_HOST")
-REDIS_PORT = env("REDIS_PORT")
-REDIS_PASSWORD = env("REDIS_PASSWORD")
-
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 

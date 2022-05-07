@@ -1,9 +1,10 @@
 {% extends "web/base.html" %}
+
+{% load static %}
 {% load choralcat_components %}
 
 {% block title %} - Catalog{% endblock %}
 
-{% load static %}
 {% block main %}
   {% url "composition_new" as location %}
   {% table_header_with_action text="Catalog" action_text="New Composition" location=location %}

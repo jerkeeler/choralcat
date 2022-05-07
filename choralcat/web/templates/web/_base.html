@@ -27,6 +27,6 @@
     event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
   });
 </script>
-<script src="{% static 'bundle.js' %}"></script>
+<script defer src="{% static 'bundle.js' %}"></script>
 </body>
 </html>
