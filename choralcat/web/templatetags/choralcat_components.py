@@ -6,7 +6,7 @@ from typing import Any, Callable, Optional, Type, TypeVar
 
 from django import template
 from django.conf import settings
-from django.forms.fields import BoundField
+from django.forms.boundfield import BoundField
 
 from choralcat.web.utils import assert_field_instance, camel_to_snake
 
