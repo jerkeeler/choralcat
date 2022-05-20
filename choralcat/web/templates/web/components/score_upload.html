@@ -5,10 +5,12 @@
     hx-swap="outerHTML"
     {% if composition.has_score_attachment %}
     hx-delete="{% url 'catalog_score_remove' composition.slug composition.score_attachment.name %}"
-    hx-confirm="Are you sure you wish to remove this file?"
+    {# hx-confirm="Are you sure you wish to remove this file?"#}
+    @submit="submitted = false"
     {% else %}
     hx-post="{% url 'catalog_score_upload' composition.slug %}"
     hx-encoding="multipart/form-data"
+    @submit="submitted = true"
     {% endif %}
     @htmx:xhr:progress="progress = $event.detail.loaded/$event.detail.total * 100"
     x-data="{progress: '0', selectedFile: null, submitted: false}"
@@ -19,7 +21,9 @@
     <p>Attached score:</p>
     <div class="flex">
       <button class="border border-slate-100 h-full inline-block rounded-md px-6
-                                     py-2 font-medium text-base">
+                                     py-2 font-medium text-base"
+              hx-get="{% url 'catalog_score_retrieve' composition.slug %}"
+      >
         {{ composition.score_attachment.name }}
       </button>
       <button type="submit" class="ml-4">
@@ -35,7 +39,6 @@
             class="hidden"
             id="fileUpload"
             x-model="selectedFile"
-            :disabled="submitted"
         >
         <label for="fileUpload"
                class="border border-slate-100 h-full inline-block rounded-md px-6
@@ -50,7 +53,6 @@
         <button
             class="rounded-md shadow"
             type="submit"
-            @click="submitted = true"
             :class="submitted ? 'hover:cursor-not-allowed' : 'hover:cursor-pointer'"
             :disabled="submitted"
         >

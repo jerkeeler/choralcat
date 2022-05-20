@@ -141,7 +141,8 @@ def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
         composition_score.name = str(file)
         upload_path = os.path.join(request.org.slug, composition_score.name)
         composition_score.file.save(upload_path, file)
-        return render(request, template_name="web/components/score_upload.html", context={"composition": composition})
+        context = {"composition": composition}
+        return render(request, template_name="web/components/score_upload.html", context=context)
     raise Http404
 
 
@@ -156,6 +157,15 @@ def catalog_score_remove(request: CCHttpRequest, slug: str, name: str) -> HttpRe
     composition.refresh_from_db()
     context = {"composition": composition}
     return render(request, template_name="web/components/score_upload.html", context=context)
+
+
+@login_required
+@require_GET
+def catalog_score_retrieve(request: CCHttpRequest, slug: str) -> HttpResponse:
+    composition = get_object_or_404(Composition, request, slug=slug)
+    response = HttpResponse(content=composition.score_attachment.file.url)
+    response["HX-Redirect"] = composition.score_attachment.file.url
+    return response
 
 
 class CatalogView(LoginRequiredMixin, OrgFilterMixin, ListView):
