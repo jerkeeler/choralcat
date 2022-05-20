@@ -136,7 +136,7 @@ def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
     composition = get_object_or_404(Composition, request, slug=slug)
     form = CompositionScoreForm(request.POST, request.FILES)
     if form.is_valid() and request.org:
-        with transaction:
+        with transaction.atomic():
             file = request.FILES["file"]
             composition_score, _ = CompositionScore.objects.get_or_create(composition=composition)
             composition_score.name = str(file)
