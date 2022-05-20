@@ -12,7 +12,7 @@ window.Alpine = Alpine;
 window.htmx = htmx;
 window.Sortable = Sortable;
 
-htmx.onLoad((content) =>  {
+htmx.onLoad((content) => {
   const sortables = content.querySelectorAll('.sortable');
   for (let i = 0; i < sortables.length; i++) {
     const sortable = sortables[i];

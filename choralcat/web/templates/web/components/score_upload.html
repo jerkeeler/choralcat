@@ -1,0 +1,55 @@
+{% load choralcat_components %}
+
+<form
+    id="scoreUpload"
+    hx-swap="outerHTML"
+    {% if composition.has_score_attachment %}
+    hx-delete="{% url 'catalog_score_remove' composition.slug composition.score_attachment.name %}"
+    hx-confirm="Are you sure you wish to remove this file?"
+    {% else %}
+    hx-post="{% url 'catalog_score_upload' composition.slug %}"
+    hx-encoding="multipart/form-data"
+    {% endif %}
+    @htmx:xhr:progress="progress = $event.detail.loaded/$event.detail.total * 100"
+    x-data="{progress: '0', selectedFile: null, submitted: false}"
+    class="grid"
+>
+  {% csrf_token %}
+  {% if composition.has_score_attachment %}
+    <p>Attached score:</p>
+    <div class="flex">
+      <button class="border border-slate-100 h-full inline-block rounded-md px-6
+                                     py-2 font-medium text-base">
+        {{ composition.score_attachment.name }}
+      </button>
+      <button type="submit" class="ml-4">
+        {% x_icon 'h-6 w-6 text-red-600' %}
+      </button>
+    </div>
+  {% else %}
+    <div class="grid">
+      <div>
+        <input type="file" name="file" class="hidden" id="fileUpload" x-model="selectedFile" :disabled="submitted">
+        <label for="fileUpload" class="hover:cursor-pointer border border-slate-100 h-full inline-block rounded-md px-6
+                                     py-2 font-medium text-base">
+          <span x-show="!selectedFile">Select a file</span>
+          <span x-show="selectedFile" x-text="selectedFile && selectedFile.split('\\').pop()"></span>
+          {% upload_icon 'h-6 w-6 inline' %}
+        </label>
+        <button class="rounded-md shadow" type="submit" @click="submitted = true" :disabled="submitted">
+          <span
+              class="w-full flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium
+             rounded-md text-white bg-primary hover:bg-primary300">
+            Upload
+          </span>
+        </button>
+      </div>
+      <div class="flex w-1/2 mt-2" x-show="submitted">
+        {% spinner_icon 'h-6 w-6 inline-block' %}
+        <div class="w-full flex items-center ml-4 border rounded-md">
+          <div :style="`width:${progress}%`" class="h-full bg-blue-400 rounded-md"></div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</form>

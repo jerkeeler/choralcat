@@ -130,15 +130,9 @@
           <p><a class="text-primary hover:text-primary300" href="{{ composition.score_link }}">Score PDF</a></p>
         </div>
       {% endif %}
-      {% if composition.has_score_attachment %}
-        <div><p>{{ composition.score_attachment.name }}</p></div>
-      {% else %}
-        <form method="post" enctype="multipart/form-data" action="{% url 'catalog_file_upload' composition.slug %}" >
-          {% csrf_token %}
-          <input type="file" name="file">
-          <input type="submit" id="submit" value="upload">
-        </form>
-      {% endif %}
+
+      {% score_upload composition %}
+
       {% if composition.notes or composition.edition_notes %}
         <hr class="mt-4 mb-4"/>
         <div class="mt-2">

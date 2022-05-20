@@ -9,10 +9,10 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
-from django.http.response import Http404, HttpResponseBase, HttpResponseRedirect
+from django.http.response import Http404, HttpResponseBase
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.views.generic import DetailView, ListView
 
 from .common_views import OrgCreateView, OrgFilterMixin, OrgUpdateView
@@ -141,8 +141,21 @@ def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
         composition_score.name = str(file)
         upload_path = os.path.join(request.org.slug, composition_score.name)
         composition_score.file.save(upload_path, file)
-        return HttpResponseRedirect(reverse_lazy("composition_detail", kwargs={"slug": slug}))
+        return render(request, template_name="web/components/score_upload.html", context={"composition": composition})
     raise Http404
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def catalog_score_remove(request: CCHttpRequest, slug: str, name: str) -> HttpResponse:
+    composition = get_object_or_404(Composition, request, slug=slug)
+    logger.info(f"Removing score from {slug}")
+    composition.score_attachment.file.delete()
+    composition.score_attachment.delete()
+    composition.save()
+    composition.refresh_from_db()
+    context = {"composition": composition}
+    return render(request, template_name="web/components/score_upload.html", context=context)
 
 
 class CatalogView(LoginRequiredMixin, OrgFilterMixin, ListView):

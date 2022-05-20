@@ -8,6 +8,7 @@ from django import template
 from django.conf import settings
 from django.forms.boundfield import BoundField
 
+from choralcat.web.models import Composition
 from choralcat.web.utils import assert_field_instance, camel_to_snake
 
 register = template.Library()
@@ -55,13 +56,13 @@ def _get_tag_info(tag: str) -> dict[str, str]:
 
 
 def _create_icon_component(name: str) -> None:
-    @register.inclusion_tag(f"web/components/icons/{name}.html", name=f"{name}_icon")
+    @register.inclusion_tag(f"web/components/icons/{name}.svg", name=f"{name}_icon")
     def _icon(classes: str = "") -> dict[str, str]:
         return {"classes": classes}
 
 
 # Dynamically create all icon tags from html files
-icon_glob = os.path.join(settings.BASE_DIR, "choralcat", "web", "templates", "web", "components", "icons", "*.html")
+icon_glob = os.path.join(settings.BASE_DIR, "choralcat", "web", "templates", "web", "components", "icons", "*.svg")
 for icon in glob(icon_glob):
     icon_name = os.path.splitext(os.path.basename(icon))[0]
     _create_icon_component(icon_name)
@@ -142,3 +143,8 @@ class TableHeaderWithAction:
     text: str
     location: str
     action_text: str
+
+
+@component()
+class ScoreUpload:
+    composition: Composition
