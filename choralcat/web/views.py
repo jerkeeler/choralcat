@@ -144,6 +144,7 @@ def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
                 f'Uploading new score "{composition_score.name}" to composition {composition} and org {request.org}'
             )
             upload_path = os.path.join(request.org.slug, composition_score.name)
+            logger.info(f"Upload bucket: {upload_path}")
             composition_score.file.save(upload_path, file)
             logger.info(f"Successfully uploaded {composition_score.name}")
         context = {"composition": composition}
