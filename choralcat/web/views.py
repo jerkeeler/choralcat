@@ -136,15 +136,16 @@ def catalog_score_upload(request: CCHttpRequest, slug: str) -> HttpResponse:
     composition = get_object_or_404(Composition, request, slug=slug)
     form = CompositionScoreForm(request.POST, request.FILES)
     if form.is_valid() and request.org:
-        file = request.FILES["file"]
-        composition_score, _ = CompositionScore.objects.get_or_create(composition=composition)
-        composition_score.name = str(file)
-        logger.info(
-            f'Uploading new score "{composition_score.name}" to composition {composition} and org {request.org}'
-        )
-        upload_path = os.path.join(request.org.slug, composition_score.name)
-        composition_score.file.save(upload_path, file)
-        logger.info(f"Successfully uploaded {composition_score.name}")
+        with transaction:
+            file = request.FILES["file"]
+            composition_score, _ = CompositionScore.objects.get_or_create(composition=composition)
+            composition_score.name = str(file)
+            logger.info(
+                f'Uploading new score "{composition_score.name}" to composition {composition} and org {request.org}'
+            )
+            upload_path = os.path.join(request.org.slug, composition_score.name)
+            composition_score.file.save(upload_path, file)
+            logger.info(f"Successfully uploaded {composition_score.name}")
         context = {"composition": composition}
         return render(request, template_name="web/components/score_upload.html", context=context)
     logger.warning("Score upload form is not valid")
