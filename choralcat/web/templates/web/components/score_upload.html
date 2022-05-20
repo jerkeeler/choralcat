@@ -29,17 +29,36 @@
   {% else %}
     <div class="grid">
       <div>
-        <input type="file" name="file" class="hidden" id="fileUpload" x-model="selectedFile" :disabled="submitted">
-        <label for="fileUpload" class="hover:cursor-pointer border border-slate-100 h-full inline-block rounded-md px-6
-                                     py-2 font-medium text-base">
+        <input
+            type="file"
+            name="file"
+            class="hidden"
+            id="fileUpload"
+            x-model="selectedFile"
+            :disabled="submitted"
+        >
+        <label for="fileUpload"
+               class="border border-slate-100 h-full inline-block rounded-md px-6
+                      py-2 font-medium text-base"
+               :class="submitted ? 'hover:cursor-not-allowed' : 'hover:cursor-pointer'"
+               :disabled="submitted"
+        >
           <span x-show="!selectedFile">Select a file</span>
           <span x-show="selectedFile" x-text="selectedFile && selectedFile.split('\\').pop()"></span>
           {% upload_icon 'h-6 w-6 inline' %}
         </label>
-        <button class="rounded-md shadow" type="submit" @click="submitted = true" :disabled="submitted">
+        <button
+            class="rounded-md shadow"
+            type="submit"
+            @click="submitted = true"
+            :class="submitted ? 'hover:cursor-not-allowed' : 'hover:cursor-pointer'"
+            :disabled="submitted"
+        >
           <span
               class="w-full flex items-center justify-center px-6 py-2 border border-transparent text-base font-medium
-             rounded-md text-white bg-primary hover:bg-primary300">
+                     rounded-md text-white bg-primary"
+              :class="!submitted && 'hover:bg-primary300'"
+          >
             Upload
           </span>
         </button>
