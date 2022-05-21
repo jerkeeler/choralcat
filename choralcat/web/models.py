@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import timedelta
-from typing import cast
+from typing import AnyStr, cast
 
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -214,7 +214,7 @@ class Attachment(models.Model):
         return self.name
 
     @property
-    def extension(self) -> str:
+    def extension(self) -> AnyStr:
         _, extension = os.path.splitext(self.file.name)
         return extension
 
