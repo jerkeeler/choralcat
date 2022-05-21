@@ -1,5 +1,7 @@
+import io
 import logging
 import os
+import zipfile
 from typing import Any, Type, TypeVar
 
 from django.contrib.auth.decorators import login_required
@@ -365,6 +367,24 @@ def _render_program_catalog(request: HttpRequest, program: Program) -> HttpRespo
         template_name="partials/program/program_catalog.html",
         context=context,
     )
+
+
+@login_required
+@require_GET
+def program_download(request: CCHttpRequest, slug: str) -> HttpResponse:
+    program = get_object_or_404(Program, request, slug=slug)
+    logger.info(f"Creating zip file for {program}")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as program_zip:
+        for idx, composition in enumerate(program.compositions_ordered):
+            if composition.has_score_attachment:
+                filename = f"{str(idx).zfill(3)}-{composition.score_attachment.name}"
+                logger.info(f"Writing file {filename} to zip")
+                program_zip.writestr(filename, composition.score_attachment.file.read())
+    response = HttpResponse(buffer.getvalue(), content_type=f"application/zip")
+    response["Content-Disposition"] = f'attachment; filename="{program.slug}.zip"'
+    logger.info("Sending zip file to user")
+    return response
 
 
 class PersonListView(LoginRequiredMixin, OrgFilterMixin, ListView):

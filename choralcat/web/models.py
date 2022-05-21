@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import timedelta
 from typing import cast
 
@@ -211,6 +212,11 @@ class Attachment(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def extension(self) -> str:
+        _, extension = os.path.splitext(self.file.name)
+        return extension
 
 
 class CompositionAttachment(Attachment):
