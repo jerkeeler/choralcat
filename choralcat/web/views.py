@@ -378,7 +378,7 @@ def program_download(request: CCHttpRequest, slug: str) -> HttpResponse:
     with zipfile.ZipFile(buffer, "w") as program_zip:
         for idx, composition in enumerate(program.compositions_ordered):
             if composition.has_score_attachment:
-                filename = f"{str(idx).zfill(3)}-{composition.score_attachment.name}"
+                filename = f"{str(idx).zfill(3)}-{composition.title}{composition.score_attachment.extension}"
                 logger.info(f"Writing file {filename} to zip")
                 program_zip.writestr(filename, composition.score_attachment.file.read())
     response = HttpResponse(buffer.getvalue(), content_type=f"application/zip")
